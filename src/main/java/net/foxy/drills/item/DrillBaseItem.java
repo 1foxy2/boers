@@ -137,35 +137,37 @@ public class DrillBaseItem extends Item {
         if (used > 9 && livingEntity instanceof Player player) {
             BlockHitResult result = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
             ItemStack drill = stack.getOrDefault(ModDataComponents.DRILL_CONTENTS, DrillContents.EMPTY).items;
-            if (result.getType() == HitResult.Type.BLOCK && !drill.isEmpty()) {
-                if (level.isClientSide) {
-                    Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
-                    spawnSparks(level, player, result);
-                } else if (player instanceof ServerPlayer serverPlayer) {
-                    BlockPos pos = stack.get(ModDataComponents.BREAKING_POS);
-                    if (pos == null || !pos.equals(result.getBlockPos())) {
-                        pos = result.getBlockPos();
-                        stack.set(ModDataComponents.BREAKING_POS, pos);
-                        stack.set(ModDataComponents.START_TICK, remainingUseDuration);
+            if (!drill.isEmpty()) {
+                if (result.getType() == HitResult.Type.BLOCK) {
+                    if (level.isClientSide) {
+                        Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
+                        spawnSparks(level, player, result);
+                    } else if (player instanceof ServerPlayer serverPlayer) {
+                        BlockPos pos = stack.get(ModDataComponents.BREAKING_POS);
+                        if (pos == null || !pos.equals(result.getBlockPos())) {
+                            pos = result.getBlockPos();
+                            stack.set(ModDataComponents.BREAKING_POS, pos);
+                            stack.set(ModDataComponents.START_TICK, remainingUseDuration);
+                        }
+
+                        int startTick = stack.get(ModDataComponents.START_TICK);
+
+                        BlockState state = level.getBlockState(pos);
+
+                        int i = startTick - remainingUseDuration;
+                        float progress = state.getDestroyProgress(player, level, pos) * (float) (i + 1);
+                        level.destroyBlockProgress(-1, pos, (int) (progress * 10));
+                        if (progress >= 1) {
+                            level.levelEvent(2001, pos, Block.getId(state));
+                            serverPlayer.gameMode.destroyBlock(pos);
+                            drill.hurtAndBreak(1, livingEntity, livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                            stack.set(ModDataComponents.DRILL_CONTENTS.get(), new DrillContents(drill));
+                        }
+                        level.playSound(null, result.getBlockPos(), ModSounds.STONE.get(), SoundSource.PLAYERS, 1f, 1f);
                     }
-
-                    int startTick = stack.get(ModDataComponents.START_TICK);
-
-                    BlockState state = level.getBlockState(pos);
-
-                    int i = startTick - remainingUseDuration;
-                    float progress = state.getDestroyProgress(player, level, pos)  * (float)(i + 1);
-                    level.destroyBlockProgress(-1, pos, (int) (progress * 10));
-                    if (progress >= 1) {
-                        level.levelEvent(2001, pos, Block.getId(state));
-                        serverPlayer.gameMode.destroyBlock(pos);
-                        drill.hurtAndBreak(1, livingEntity, livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
-                        stack.set(ModDataComponents.DRILL_CONTENTS.get(), new DrillContents(drill));
-                    }
-                    level.playSound(null, result.getBlockPos(), ModSounds.STONE.get(), SoundSource.PLAYERS, 1f, 1f);
+                } else if (!level.isClientSide) {
+                    level.playSound(null, result.getBlockPos(), ModSounds.AIR.get(), SoundSource.PLAYERS, 1f, 1f);
                 }
-            } else if (!level.isClientSide) {
-                level.playSound(null, result.getBlockPos(), ModSounds.AIR.get(), SoundSource.PLAYERS, 1f, 1f);
             }
         }
 
@@ -311,7 +313,7 @@ public class DrillBaseItem extends Item {
 
 
     private void spawnSparks(Level level, Player player, BlockHitResult hitResult) {
-        //if (!isHardMaterial(level.getBlockState(hitResult.getBlockPos()))) return;
+        if (!isHardMaterial(level.getBlockState(hitResult.getBlockPos()))) return;
 
         Vec3 hitPos = hitResult.getLocation();
         Vec3 playerEye = player.getEyePosition();
