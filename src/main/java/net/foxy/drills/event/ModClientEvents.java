@@ -3,10 +3,12 @@ package net.foxy.drills.event;
 import net.foxy.drills.DrillsMod;
 import net.foxy.drills.base.ModEnums;
 import net.foxy.drills.base.ModItems;
+import net.foxy.drills.base.ModParticles;
 import net.foxy.drills.client.ClientDrillTooltip;
 import net.foxy.drills.client.DrillBaseRenderer;
 import net.foxy.drills.client.model.DrillModel;
 import net.foxy.drills.item.DrillContents;
+import net.foxy.drills.particle.spark.SparkParticleProvider;
 import net.foxy.drills.util.ModItemProperties;
 import net.foxy.drills.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -22,6 +24,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +41,11 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void registerTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(DrillContents.class, ClientDrillTooltip::new);
+    }
+
+    @SubscribeEvent
+    public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(ModParticles.SPARK_PARTICLE.get(), SparkParticleProvider::new);
     }
 
     @SubscribeEvent

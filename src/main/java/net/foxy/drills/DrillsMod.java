@@ -21,5 +21,6 @@ public class DrillsMod {
         ModCreativeModeTabs.TABS.register(modEventBus);
         ModSounds.SOUND_EVENTS.register(modEventBus);
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
+        ModParticles.PARTICLE_TYPES.register(modEventBus);
     }
 }

@@ -1,9 +1,12 @@
 package net.foxy.drills.item;
 
+import com.mojang.logging.LogUtils;
 import net.foxy.drills.base.ModDataComponents;
 import net.foxy.drills.base.ModItems;
+import net.foxy.drills.base.ModParticles;
 import net.foxy.drills.base.ModSounds;
 import net.foxy.drills.data.DrillHead;
+import net.foxy.drills.particle.spark.SparkParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,6 +15,7 @@ import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -28,9 +32,12 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
 import java.util.Locale;
@@ -124,14 +131,16 @@ public class DrillBaseItem extends Item {
 
     @Override
     public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
-        stack.set(ModDataComponents.USED, stack.getOrDefault(ModDataComponents.USED, 0) + 1);
+        int used = stack.getOrDefault(ModDataComponents.USED, 0) + 1;
+        stack.set(ModDataComponents.USED, used);
 
-        if (livingEntity instanceof Player player) {
+        if (used > 9 && livingEntity instanceof Player player) {
             BlockHitResult result = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
             ItemStack drill = stack.getOrDefault(ModDataComponents.DRILL_CONTENTS, DrillContents.EMPTY).items;
             if (result.getType() == HitResult.Type.BLOCK && !drill.isEmpty()) {
                 if (level.isClientSide) {
                     Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
+                    spawnSparks(level, player, result);
                 } else if (player instanceof ServerPlayer serverPlayer) {
                     BlockPos pos = stack.get(ModDataComponents.BREAKING_POS);
                     if (pos == null || !pos.equals(result.getBlockPos())) {
@@ -298,5 +307,46 @@ public class DrillBaseItem extends Item {
 
     private void playDropContentsSound(Entity entity) {
         entity.playSound(SoundEvents.BUNDLE_DROP_CONTENTS, 0.8F, 0.8F + entity.level().getRandom().nextFloat() * 0.4F);
+    }
+
+
+    private void spawnSparks(Level level, Player player, BlockHitResult hitResult) {
+        //if (!isHardMaterial(level.getBlockState(hitResult.getBlockPos()))) return;
+
+        Vec3 hitPos = hitResult.getLocation();
+        Vec3 playerEye = player.getEyePosition();
+        Direction blockFace = hitResult.getDirection();
+
+        Vec3 offset = Vec3.atLowerCornerOf(blockFace.getNormal()).scale(0.05);
+        Vec3 spawnPos = hitPos.add(offset);
+
+        int sparkCount = 3 + level.random.nextInt(4);
+
+        for (int i = 0; i < sparkCount; i++) {
+            double spreadX = (level.random.nextDouble() - 0.5) * 0.15;
+            double spreadY = (level.random.nextDouble() - 0.5) * 0.15;
+            double spreadZ = (level.random.nextDouble() - 0.5) * 0.15;
+
+            Vec3 sparkPos = spawnPos.add(spreadX, spreadY, spreadZ);
+
+            Vec3 velocity = SparkParticle.generateConeVelocity(
+                    hitPos, playerEye, 0.4F
+            );
+
+            level.addParticle(
+                    ModParticles.SPARK_PARTICLE.get(),
+                    sparkPos.x, sparkPos.y, sparkPos.z,
+                    velocity.x, velocity.y, velocity.z
+            );
+        }
+    }
+
+    private boolean isHardMaterial(BlockState state) {
+        return state.is(Tags.Blocks.STONES) ||
+                state.is(Tags.Blocks.ORES) ||
+                state.is(BlockTags.NEEDS_IRON_TOOL) ||
+                state.is(BlockTags.NEEDS_DIAMOND_TOOL) ||
+                state.getBlock() == Blocks.OBSIDIAN ||
+                state.getBlock() == Blocks.ANCIENT_DEBRIS;
     }
 }

@@ -32,7 +32,7 @@ public record DrillHead(ResourceLocation id, Texture texture, float defaultMinin
                     new DrillHead(id1.orElseGet(() -> Utils.rl("")),
                             texture1, miningSpeed1, durability1, miningLevel))
     );
-    public static final Codec<java.util.Optional<net.neoforged.neoforge.common.conditions.WithConditions<DrillHead>>> CONDITIONAL_CODEC = net.neoforged.neoforge.common.conditions.ConditionalOps.createConditionalCodecWithConditions(CODEC);
+    public static final Codec<Optional<net.neoforged.neoforge.common.conditions.WithConditions<DrillHead>>> CONDITIONAL_CODEC = net.neoforged.neoforge.common.conditions.ConditionalOps.createConditionalCodecWithConditions(CODEC);
 
     public static final Codec<DrillHead> ITEM_CODEC =
             ResourceLocation.CODEC.xmap(ModEvents.DRILL_MANAGER::getDrillHead, DrillHead::id);
