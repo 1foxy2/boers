@@ -5,6 +5,7 @@ import net.foxy.drills.base.ModDataComponents;
 import net.foxy.drills.base.ModItems;
 import net.foxy.drills.base.ModParticles;
 import net.foxy.drills.base.ModSounds;
+import net.foxy.drills.client.DrillSoundInstance;
 import net.foxy.drills.data.DrillHead;
 import net.foxy.drills.particle.spark.SparkParticle;
 import net.minecraft.client.Minecraft;
@@ -140,6 +141,9 @@ public class DrillBaseItem extends Item {
             if (!drill.isEmpty()) {
                 if (result.getType() == HitResult.Type.BLOCK) {
                     if (level.isClientSide) {
+                        if (player.tickCount % 30 == 0 || used == 10) {
+                            Minecraft.getInstance().getSoundManager().play(new DrillSoundInstance(ModSounds.STONE.get(), SoundSource.PLAYERS, 1f, 1f, livingEntity, player.getRandom().nextLong()));
+                        }
                         Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
                         spawnSparks(level, player, result);
                     } else if (player instanceof ServerPlayer serverPlayer) {
@@ -163,10 +167,11 @@ public class DrillBaseItem extends Item {
                             drill.hurtAndBreak(1, livingEntity, livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                             stack.set(ModDataComponents.DRILL_CONTENTS.get(), new DrillContents(drill));
                         }
-                        level.playSound(null, result.getBlockPos(), ModSounds.STONE.get(), SoundSource.PLAYERS, 1f, 1f);
                     }
-                } else if (!level.isClientSide) {
-                    level.playSound(null, result.getBlockPos(), ModSounds.AIR.get(), SoundSource.PLAYERS, 1f, 1f);
+                } else if (level.isClientSide) {
+                    if (player.tickCount % 30 == 0 || used == 10) {
+                        Minecraft.getInstance().getSoundManager().play(new DrillSoundInstance(ModSounds.AIR.get(), SoundSource.PLAYERS, 1f, 1f, livingEntity, player.getRandom().nextLong()));
+                    }
                 }
             }
         }
