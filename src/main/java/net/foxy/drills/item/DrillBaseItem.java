@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -20,10 +21,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -136,9 +134,29 @@ public class DrillBaseItem extends Item {
         stack.set(ModDataComponents.USED, used);
 
         if (used > 9 && livingEntity instanceof Player player) {
-            BlockHitResult result = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
             ItemStack drill = stack.getOrDefault(ModDataComponents.DRILL_CONTENTS, DrillContents.EMPTY).items;
             if (!drill.isEmpty()) {
+
+                Entity targetEntity = getTargetEntity(player, level);
+
+                if (targetEntity instanceof LivingEntity target && target.getType() == EntityType.IRON_GOLEM) {
+                    if (level.isClientSide) {
+                        Vec3 hitPos = target.position().add(0, target.getBbHeight() * 0.5, 0);
+                        Vec3 playerEye = player.getEyePosition();
+                        spawnEntitySparks(level, hitPos, playerEye, target);
+                    } else {
+                        if (used % 10 == 0) {
+                            target.hurt(level.damageSources().playerAttack(player), 1.0F);
+                            drill.hurtAndBreak(1, livingEntity, livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                            stack.set(ModDataComponents.DRILL_CONTENTS, new DrillContents(drill));
+
+                            level.playSound(null, target.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.3F, 1.8F);
+                        }
+                    }
+                    return;
+                }
+
+                BlockHitResult result = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
                 if (result.getType() == HitResult.Type.BLOCK) {
                     if (level.isClientSide) {
                         if (player.tickCount % 30 == 0 || used == 10) {
@@ -155,7 +173,6 @@ public class DrillBaseItem extends Item {
                         }
 
                         int startTick = stack.get(ModDataComponents.START_TICK);
-
                         BlockState state = level.getBlockState(pos);
 
                         int i = startTick - remainingUseDuration;
@@ -177,6 +194,55 @@ public class DrillBaseItem extends Item {
         }
 
         super.onUseTick(level, livingEntity, stack, remainingUseDuration);
+    }
+
+    private Entity getTargetEntity(Player player, Level level) {
+        double reachDistance = 5.0;
+        Vec3 eyePos = player.getEyePosition();
+        Vec3 lookVec = player.getLookAngle();
+        Vec3 reachVec = eyePos.add(lookVec.scale(reachDistance));
+
+        return level.getEntities(player, player.getBoundingBox().expandTowards(lookVec.scale(reachDistance)).inflate(1.0),
+                        entity -> entity instanceof LivingEntity && !entity.isSpectator())
+                .stream()
+                .filter(entity -> {
+                    Vec3 entityVec = entity.getBoundingBox().getCenter();
+                    double distance = eyePos.distanceTo(entityVec);
+                    return distance <= reachDistance;
+                })
+                .min((e1, e2) -> {
+                    double d1 = eyePos.distanceToSqr(e1.position());
+                    double d2 = eyePos.distanceToSqr(e2.position());
+                    return Double.compare(d1, d2);
+                })
+                .orElse(null);
+    }
+
+    private void spawnEntitySparks(Level level, Vec3 hitPos, Vec3 playerEye, LivingEntity target) {
+        int sparkCount = 5 + level.random.nextInt(6);
+
+        for (int i = 0; i < sparkCount; i++) {
+            double spreadX = (level.random.nextDouble() - 0.5) * target.getBbWidth() * 0.8;
+            double spreadY = (level.random.nextDouble() - 0.5) * target.getBbHeight() * 0.5;
+            double spreadZ = (level.random.nextDouble() - 0.5) * target.getBbWidth() * 0.8;
+
+            Vec3 sparkPos = hitPos.add(spreadX, spreadY, spreadZ);
+
+            Vec3 velocity = SparkParticle.generateConeVelocity(
+                    sparkPos, playerEye, 0.5F
+            );
+
+            level.addParticle(
+                    ModParticles.SPARK_PARTICLE.get(),
+                    sparkPos.x, sparkPos.y, sparkPos.z,
+                    velocity.x, velocity.y, velocity.z
+            );
+        }
+    }
+
+    @Override
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        return false;
     }
 
     @Override
@@ -349,11 +415,70 @@ public class DrillBaseItem extends Item {
     }
 
     private boolean isHardMaterial(BlockState state) {
-        return state.is(Tags.Blocks.STONES) ||
-                state.is(Tags.Blocks.ORES) ||
-                state.is(BlockTags.NEEDS_IRON_TOOL) ||
-                state.is(BlockTags.NEEDS_DIAMOND_TOOL) ||
-                state.getBlock() == Blocks.OBSIDIAN ||
-                state.getBlock() == Blocks.ANCIENT_DEBRIS;
+        Block block = state.getBlock();
+
+        if (state.is(Tags.Blocks.STONES)) return true;
+        if (state.is(Tags.Blocks.ORES)) return true;
+        if (state.is(BlockTags.NEEDS_IRON_TOOL)) return true;
+        if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) return true;
+
+        if (state.is(Tags.Blocks.STORAGE_BLOCKS_IRON)) return true;
+        if (state.is(Tags.Blocks.STORAGE_BLOCKS_GOLD)) return true;
+        if (state.is(Tags.Blocks.STORAGE_BLOCKS_COPPER)) return true;
+        if (state.is(Tags.Blocks.STORAGE_BLOCKS_DIAMOND)) return true;
+        if (state.is(Tags.Blocks.STORAGE_BLOCKS_EMERALD)) return true;
+        if (state.is(Tags.Blocks.STORAGE_BLOCKS_NETHERITE)) return true;
+
+        if (block == Blocks.IRON_BLOCK) return true;
+        if (block == Blocks.GOLD_BLOCK) return true;
+        if (block == Blocks.DIAMOND_BLOCK) return true;
+        if (block == Blocks.EMERALD_BLOCK) return true;
+        if (block == Blocks.NETHERITE_BLOCK) return true;
+        if (block == Blocks.COPPER_BLOCK) return true;
+        if (block == Blocks.EXPOSED_COPPER) return true;
+        if (block == Blocks.WEATHERED_COPPER) return true;
+        if (block == Blocks.OXIDIZED_COPPER) return true;
+
+        if (block == Blocks.ANVIL) return true;
+        if (block == Blocks.CHIPPED_ANVIL) return true;
+        if (block == Blocks.DAMAGED_ANVIL) return true;
+        if (block == Blocks.IRON_BARS) return true;
+        if (block == Blocks.IRON_DOOR) return true;
+        if (block == Blocks.IRON_TRAPDOOR) return true;
+        if (block == Blocks.HOPPER) return true;
+        if (block == Blocks.CAULDRON) return true;
+        if (block == Blocks.LAVA_CAULDRON) return true;
+        if (block == Blocks.WATER_CAULDRON) return true;
+        if (block == Blocks.POWDER_SNOW_CAULDRON) return true;
+        if (block == Blocks.CHAIN) return true;
+        if (block == Blocks.LANTERN) return true;
+        if (block == Blocks.SOUL_LANTERN) return true;
+
+        if (block == Blocks.RAIL) return true;
+        if (block == Blocks.POWERED_RAIL) return true;
+        if (block == Blocks.DETECTOR_RAIL) return true;
+        if (block == Blocks.ACTIVATOR_RAIL) return true;
+
+        if (block == Blocks.OBSIDIAN) return true;
+        if (block == Blocks.CRYING_OBSIDIAN) return true;
+        if (block == Blocks.ANCIENT_DEBRIS) return true;
+        if (block == Blocks.NETHERITE_BLOCK) return true;
+
+        if (block == Blocks.LODESTONE) return true;
+        if (block == Blocks.RESPAWN_ANCHOR) return true;
+
+        if (block == Blocks.BLAST_FURNACE) return true;
+        if (block == Blocks.FURNACE) return true;
+        if (block == Blocks.SMOKER) return true;
+
+        if (block == Blocks.BELL) return true;
+
+        String blockId = BuiltInRegistries.BLOCK.getKey(block).getPath();
+        if (blockId.contains("iron")) return true;
+        if (blockId.contains("steel")) return true;
+        if (blockId.contains("metal")) return true;
+        if (blockId.contains("copper")) return true;
+
+        return false;
     }
 }
