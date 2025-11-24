@@ -1,25 +1,27 @@
 package net.foxy.drills.client;
 
+import net.foxy.drills.event.ModClientEvents;
 import net.minecraft.client.resources.sounds.EntityBoundSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 
 public class DrillSoundInstance extends EntityBoundSoundInstance {
-    private final LivingEntity entity2;
 
     public DrillSoundInstance(SoundEvent soundEvent, SoundSource source, float volume, float pitch, LivingEntity entity, long seed) {
         super(soundEvent, source, volume, pitch, entity, seed);
-        entity2 = entity;
+        looping = true;
+    }
+
+    public void remove() {
+        this.stop();
     }
 
     @Override
-    public void tick() {
-        if (!entity2.isUsingItem()) {
-            stop();
+    public boolean canPlaySound() {
+        if (ModClientEvents.usingProgress < 9) {
+            return false;
         }
-        super.tick();
+        return super.canPlaySound();
     }
 }

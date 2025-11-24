@@ -10,6 +10,11 @@
       "blocks": "#minecraft:mineable/pickaxe",
       "correct_for_drops": true,
       "speed": 18.0
+    },
+    {
+      "blocks": "#minecraft:mineable/shovel",
+      "correct_for_drops": true,
+      "speed": 18.0
     }
   ],
   "texture": {

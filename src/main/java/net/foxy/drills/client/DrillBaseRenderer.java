@@ -2,6 +2,7 @@ package net.foxy.drills.client;
 
 import net.foxy.drills.base.ModDataComponents;
 import net.foxy.drills.base.ModModels;
+import net.foxy.drills.event.ModClientEvents;
 import net.foxy.drills.item.DrillContents;
 import net.foxy.drills.util.RenderUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -18,9 +19,6 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class DrillBaseRenderer extends BlockEntityWithoutLevelRenderer {
-    public static int lastProgress = 0;
-    public static int usingProgress = 0;
-    public static int lastTick = 0;
 
     public DrillBaseRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelSet entityModelSet) {
         super(blockEntityRenderDispatcher, entityModelSet);
@@ -42,9 +40,7 @@ public class DrillBaseRenderer extends BlockEntityWithoutLevelRenderer {
                 RenderUtils.renderItemModel(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
             }
         } else {
-            int progress = stack.getOrDefault(ModDataComponents.USED, -1);
-
-            if (progress > 9) {
+            if (stack.getOrDefault(ModDataComponents.IS_USED, false)) {
                 RandomSource randomSource = Minecraft.getInstance().level.getRandom();
                 poseStack.translate(randomSource.nextFloat() / 100f, randomSource.nextFloat() / 100f, randomSource.nextFloat() / 100f);
             }
@@ -54,22 +50,7 @@ public class DrillBaseRenderer extends BlockEntityWithoutLevelRenderer {
                 poseStack.translate(-0.8f, 0.1, -0.15f);
                 poseStack.mulPose(Axis.ZN.rotationDegrees(10));
             } else if (displayContext.firstPerson()) {
-                Player player = Minecraft.getInstance().player;
-                if (lastTick != player.tickCount) {
-                    if (lastTick > player.tickCount) {
-                        usingProgress = progress;
-                        lastProgress = progress;
-                    } else {
-                        lastProgress = usingProgress;
-                        if (progress < 0) {
-                            usingProgress = Math.max(0, usingProgress - (player.tickCount - lastTick));
-                        } else {
-                            usingProgress = Math.min(10, usingProgress + (player.tickCount - lastTick));
-                        }
-                    }
-                    lastTick = player.tickCount;
-                }
-                poseStack.mulPose(Axis.YN.rotationDegrees(Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true), lastProgress, usingProgress) / 10f, 0, 0, 14, 100)));
+                poseStack.mulPose(Axis.YN.rotationDegrees(Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100)));
             }
 
             RenderUtils.renderItemModel(stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.DRILL_BASE);

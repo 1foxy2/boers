@@ -2,6 +2,7 @@ package net.foxy.drills.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.foxy.drills.event.ModEvents;
 import net.foxy.drills.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -75,10 +76,13 @@ public record DrillHead(ResourceLocation id, Texture texture, float defaultMinin
         this(null, texture, miningSpeed, durability, miningLevel);
     }
     public DrillHead(ResourceLocation id, ResourceLocation texture, float miningSpeed, int durability, TagKey<Block> miningLevel) {
-        this(id, new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(), texture.getPath() + "_idle"), texture) , 1.0f, durability, List.of(Tool.Rule.deniesDrops(miningLevel), Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed)));
+        this(id, new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
+                        texture.getPath() + "_idle"), texture), 1.0f, durability,
+                List.of(Tool.Rule.deniesDrops(miningLevel),
+                        Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed),
+                        Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed)
+                ));
     }
-
-    // TagKey.codec(Registries.BLOCK);
 
     public record Texture(ResourceLocation idle, ResourceLocation active) {
         public static StreamCodec<FriendlyByteBuf, Texture> STREAM_CODEC = StreamCodec.composite(

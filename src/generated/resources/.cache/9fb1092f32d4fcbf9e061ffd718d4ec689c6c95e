@@ -1,2 +1,12 @@
-// 1.21.1	2025-11-15T22:31:38.5422284	Recipes
+// 1.21.1	2025-11-24T21:33:18.0853227	Recipes
+71d2aaa7027f7cbc276e30972b2a73a5566f5903 data/drills/advancement/recipes/tools/diamond_drill_head_smithing.json
+b160092e1a7ee7609b14e3cd65cf7cf0a0a8401c data/drills/advancement/recipes/tools/drill_head_copper.json
+47b5b6e5739e94a79276b82ce9077d022613e643 data/drills/advancement/recipes/tools/drill_head_diamond.json
+c6dad52bd8c6be3eb98ce88db9947700dc6edbd7 data/drills/advancement/recipes/tools/drill_head_golden.json
+de614d1a4a86602248b6a9356e35e6832be67adc data/drills/advancement/recipes/tools/drill_head_iron.json
+0a622eb8f4fe9193f9cbdd6747fec5a291ff5a03 data/drills/recipe/diamond_drill_head_smithing.json
 c7e25d17941a1f3b4c73953ebf817b0f43140a32 data/drills/recipe/drill_base_coloring.json
+de0bc829bb3eb44de6bd35757653a4da14dfe103 data/drills/recipe/drill_head_copper.json
+01162311b4832143553eb58cfff2861ee51abd24 data/drills/recipe/drill_head_diamond.json
+17bf2f1b69309fed1793924a20f8b54d1625c983 data/drills/recipe/drill_head_golden.json
+530fe8dd93cbb9d6a26d51d4ba92143ca198ed34 data/drills/recipe/drill_head_iron.json

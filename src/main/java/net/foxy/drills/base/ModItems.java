@@ -1,5 +1,7 @@
 package net.foxy.drills.base;
 
+import net.foxy.drills.util.Utils;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.foxy.drills.DrillsMod;
 import net.foxy.drills.data.DrillHead;
 import net.foxy.drills.item.DrillBaseItem;
@@ -13,5 +15,5 @@ public class ModItems {
 
     public static final DeferredItem<DrillBaseItem> DRILL_BASE = ITEMS.register("drill_base", DrillBaseItem::new);
     public static final DeferredItem<Item> DRILL_HEAD = ITEMS.register("drill_head", () ->
-            new DrillHeadItem(new Item.Properties().component(ModDataComponents.DRILL, DrillHead.DEFAULT).durability(1)));
+            new DrillHeadItem(new Item.Properties().component(ModDataComponents.DRILL_ID, Utils.rl("default")).durability(1)));
 }

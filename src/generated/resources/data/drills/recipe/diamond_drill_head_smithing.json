@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "base": {
+    "type": "neoforge:components",
+    "components": {
+      "drills:drill_id": "drills:diamond"
+    },
+    "items": "drills:drill_head"
+  },
+  "result": {
+    "components": {
+      "drills:drill_id": "drills:netherite"
+    },
+    "count": 1,
+    "id": "drills:drill_head"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
+}

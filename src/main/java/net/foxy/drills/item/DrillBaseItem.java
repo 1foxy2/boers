@@ -1,12 +1,15 @@
 package net.foxy.drills.item;
 
 import com.mojang.logging.LogUtils;
+import net.foxy.drills.util.Utils;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.foxy.drills.base.ModDataComponents;
 import net.foxy.drills.base.ModItems;
 import net.foxy.drills.base.ModParticles;
 import net.foxy.drills.base.ModSounds;
 import net.foxy.drills.client.DrillSoundInstance;
 import net.foxy.drills.data.DrillHead;
+import net.foxy.drills.event.ModClientEvents;
 import net.foxy.drills.particle.spark.SparkParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -28,11 +31,13 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -69,18 +74,11 @@ public class DrillBaseItem extends Item {
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (isSelected) {
             entity.setYBodyRot(entity.getYHeadRot() + 37);
-
-            if (entity instanceof LivingEntity livingEntity && livingEntity.getUseItem() == stack) {
-                return;
-            }
-
-            int progress = stack.getOrDefault(ModDataComponents.USED, 1);
-            if (progress < 0) {
-                if (progress == -1) {
-                    stack.remove(ModDataComponents.USED);
-                } else {
-                    stack.set(ModDataComponents.USED, progress + 1);
-                }
+            if (entity instanceof Player player && stack.getOrDefault(ModDataComponents.IS_USED, false)) {
+                player.attackStrengthTicker = 10;
+                player.swinging = false;
+                player.attackAnim = 0;
+                player.swingTime = 0;
             }
         }
 
@@ -100,22 +98,10 @@ public class DrillBaseItem extends Item {
     @Override
     public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
         super.onStopUsing(stack, entity, count);
-        stack.set(ModDataComponents.USED, Math.max(-10, -stack.getOrDefault(ModDataComponents.USED, 0)));
         if (entity instanceof ServerPlayer serverPlayer) {
             serverPlayer.gameMode.handleBlockBreakAction(serverPlayer.gameMode.destroyPos,
                     ServerboundPlayerActionPacket.Action.ABORT_DESTROY_BLOCK, Direction.UP, entity.level().getMaxBuildHeight(), 0);
         }
-        stack.remove(ModDataComponents.BREAKING_POS);
-        stack.remove(ModDataComponents.START_TICK);
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        player.startUsingItem(usedHand);
-        ItemStack stack = player.getItemInHand(usedHand);
-        stack.set(ModDataComponents.USED, -stack.getOrDefault(ModDataComponents.USED, 0));
-
-        return InteractionResultHolder.pass(stack);
     }
 
     @Override
@@ -124,98 +110,83 @@ public class DrillBaseItem extends Item {
     }
 
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        DrillHead tool = stack.getOrDefault(ModDataComponents.DRILL_CONTENTS, DrillContents.EMPTY).items.get(ModDataComponents.DRILL);
+        DrillHead tool = Utils.getDrill(stack.getOrDefault(ModDataComponents.DRILL_CONTENTS, DrillContents.EMPTY).items);
         return tool != null ? tool.getMiningSpeed(state) : 1.0F;
     }
 
     @Override
-    public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
-        int used = stack.getOrDefault(ModDataComponents.USED, 0) + 1;
-        stack.set(ModDataComponents.USED, used);
+    public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
+        DrillContents drillContents = stack.get(ModDataComponents.DRILL_CONTENTS);
+        if (drillContents == null) {
+            return false;
+        } else {
+            if (!level.isClientSide && state.getDestroySpeed(level, pos) != 0.0F) {
+                ItemStack drill = drillContents.getItemUnsafe();
+                drill.hurtAndBreak(1, miningEntity, EquipmentSlot.MAINHAND);
+                stack.set(ModDataComponents.DRILL_CONTENTS.get(), new DrillContents(drill));
+            }
 
-        if (used > 9 && livingEntity instanceof Player player) {
-            ItemStack drill = stack.getOrDefault(ModDataComponents.DRILL_CONTENTS, DrillContents.EMPTY).items;
-            if (!drill.isEmpty()) {
+            return true;
+        }
+    }
 
-                Entity targetEntity = getTargetEntity(player, level);
+    public void onAttackTick(Level level, Player player, ItemStack stack, int used) {
+        ItemStack drill = stack.getOrDefault(ModDataComponents.DRILL_CONTENTS, DrillContents.EMPTY).items;
+        if (!drill.isEmpty()) {
+            List<LivingEntity> targetEntities = getTargetEntity(player, level);
 
-                if (targetEntity instanceof LivingEntity target && target.getType() == EntityType.IRON_GOLEM) {
+            if (!targetEntities.isEmpty()) {
+                for (LivingEntity target : targetEntities) {
                     if (level.isClientSide) {
                         Vec3 hitPos = target.position().add(0, target.getBbHeight() * 0.5, 0);
                         Vec3 playerEye = player.getEyePosition();
-                        spawnEntitySparks(level, hitPos, playerEye, target);
+
+                        if (target.getType() == EntityType.IRON_GOLEM) {
+                            spawnEntitySparks(level, hitPos, playerEye, target);
+                        }
                     } else {
-                        if (used % 10 == 0) {
-                            target.hurt(level.damageSources().playerAttack(player), 1.0F);
-                            drill.hurtAndBreak(1, livingEntity, livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                        if (player.tickCount % 10 == 0) {
+                            target.hurt(level.damageSources().playerAttack(player), 2.0F);
+                            drill.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
                             stack.set(ModDataComponents.DRILL_CONTENTS, new DrillContents(drill));
 
                             level.playSound(null, target.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.3F, 1.8F);
                         }
                     }
-                    return;
                 }
+                return;
+            }
 
-                BlockHitResult result = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-                if (result.getType() == HitResult.Type.BLOCK) {
-                    if (level.isClientSide) {
-                        if (player.tickCount % 30 == 0 || used == 10) {
-                            Minecraft.getInstance().getSoundManager().play(new DrillSoundInstance(ModSounds.STONE.get(), SoundSource.PLAYERS, 1f, 1f, livingEntity, player.getRandom().nextLong()));
-                        }
-                        Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
-                        spawnSparks(level, player, result);
-                    } else if (player instanceof ServerPlayer serverPlayer) {
-                        BlockPos pos = stack.get(ModDataComponents.BREAKING_POS);
-                        if (pos == null || !pos.equals(result.getBlockPos())) {
-                            pos = result.getBlockPos();
-                            stack.set(ModDataComponents.BREAKING_POS, pos);
-                            stack.set(ModDataComponents.START_TICK, remainingUseDuration);
-                        }
-
-                        int startTick = stack.get(ModDataComponents.START_TICK);
-                        BlockState state = level.getBlockState(pos);
-
-                        int i = startTick - remainingUseDuration;
-                        float progress = state.getDestroyProgress(player, level, pos) * (float) (i + 1);
-                        level.destroyBlockProgress(-1, pos, (int) (progress * 10));
-                        if (progress >= 1) {
-                            level.levelEvent(2001, pos, Block.getId(state));
-                            serverPlayer.gameMode.destroyBlock(pos);
-                            drill.hurtAndBreak(1, livingEntity, livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
-                            stack.set(ModDataComponents.DRILL_CONTENTS.get(), new DrillContents(drill));
-                        }
+            BlockHitResult result = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
+            if (result.getType() == HitResult.Type.BLOCK) {
+                if (level.isClientSide) {
+                    if (ModClientEvents.soundInstance == null || !Minecraft.getInstance().getSoundManager().isActive(ModClientEvents.soundInstance)) {
+                        if (ModClientEvents.idleSoundInstance != null)
+                            ModClientEvents.idleSoundInstance.remove();
+                        ModClientEvents.soundInstance = new DrillSoundInstance(ModSounds.STONE.get(), SoundSource.PLAYERS, 0.25f, 1f, player, player.getRandom().nextLong());
+                        Minecraft.getInstance().getSoundManager().play(ModClientEvents.soundInstance);
                     }
-                } else if (level.isClientSide) {
-                    if (player.tickCount % 30 == 0 || used == 10) {
-                        Minecraft.getInstance().getSoundManager().play(new DrillSoundInstance(ModSounds.AIR.get(), SoundSource.PLAYERS, 1f, 1f, livingEntity, player.getRandom().nextLong()));
-                    }
+                    Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
+                    spawnSparks(level, player, result);
+                }
+            } else if (level.isClientSide) {
+                if (ModClientEvents.idleSoundInstance == null || !Minecraft.getInstance().getSoundManager().isActive(ModClientEvents.idleSoundInstance)) {
+                    if (ModClientEvents.soundInstance != null)
+                        ModClientEvents.soundInstance.remove();
+                    ModClientEvents.idleSoundInstance = new DrillSoundInstance(ModSounds.AIR.get(), SoundSource.PLAYERS, 0.25f, 1f, player, player.getRandom().nextLong());
+                    Minecraft.getInstance().getSoundManager().play(ModClientEvents.idleSoundInstance);
                 }
             }
         }
-
-        super.onUseTick(level, livingEntity, stack, remainingUseDuration);
     }
 
-    private Entity getTargetEntity(Player player, Level level) {
-        double reachDistance = 5.0;
+    private List<LivingEntity> getTargetEntity(Player player, Level level) {
+        double reachDistance = 1.5f;
         Vec3 eyePos = player.getEyePosition();
         Vec3 lookVec = player.getLookAngle();
         Vec3 reachVec = eyePos.add(lookVec.scale(reachDistance));
-
-        return level.getEntities(player, player.getBoundingBox().expandTowards(lookVec.scale(reachDistance)).inflate(1.0),
-                        entity -> entity instanceof LivingEntity && !entity.isSpectator())
-                .stream()
-                .filter(entity -> {
-                    Vec3 entityVec = entity.getBoundingBox().getCenter();
-                    double distance = eyePos.distanceTo(entityVec);
-                    return distance <= reachDistance;
-                })
-                .min((e1, e2) -> {
-                    double d1 = eyePos.distanceToSqr(e1.position());
-                    double d2 = eyePos.distanceToSqr(e2.position());
-                    return Double.compare(d1, d2);
-                })
-                .orElse(null);
+        return level.getEntitiesOfClass(LivingEntity.class, new AABB(reachVec.x, reachVec.y, reachVec.z, reachVec.x, reachVec.y, reachVec.z).inflate(1),
+                        entity -> !entity.isSpectator() && entity != player);
     }
 
     private void spawnEntitySparks(Level level, Vec3 hitPos, Vec3 playerEye, LivingEntity target) {
@@ -247,7 +218,7 @@ public class DrillBaseItem extends Item {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        DrillHead head = stack.getOrDefault(ModDataComponents.DRILL_CONTENTS, DrillContents.EMPTY).items.get(ModDataComponents.DRILL);
+        DrillHead head = Utils.getDrill(stack.getOrDefault(ModDataComponents.DRILL_CONTENTS, DrillContents.EMPTY).items);
         if (head != null) {
             return head.isCorrectForDrops(state);
         }
@@ -384,7 +355,7 @@ public class DrillBaseItem extends Item {
 
 
     private void spawnSparks(Level level, Player player, BlockHitResult hitResult) {
-        if (!isHardMaterial(level.getBlockState(hitResult.getBlockPos()))) return;
+        if (level.getBlockState(hitResult.getBlockPos()).getDestroySpeed(level, hitResult.getBlockPos()) < 1.1) return;
 
         Vec3 hitPos = hitResult.getLocation();
         Vec3 playerEye = player.getEyePosition();
@@ -412,73 +383,5 @@ public class DrillBaseItem extends Item {
                     velocity.x, velocity.y, velocity.z
             );
         }
-    }
-
-    private boolean isHardMaterial(BlockState state) {
-        Block block = state.getBlock();
-
-        if (state.is(Tags.Blocks.STONES)) return true;
-        if (state.is(Tags.Blocks.ORES)) return true;
-        if (state.is(BlockTags.NEEDS_IRON_TOOL)) return true;
-        if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) return true;
-
-        if (state.is(Tags.Blocks.STORAGE_BLOCKS_IRON)) return true;
-        if (state.is(Tags.Blocks.STORAGE_BLOCKS_GOLD)) return true;
-        if (state.is(Tags.Blocks.STORAGE_BLOCKS_COPPER)) return true;
-        if (state.is(Tags.Blocks.STORAGE_BLOCKS_DIAMOND)) return true;
-        if (state.is(Tags.Blocks.STORAGE_BLOCKS_EMERALD)) return true;
-        if (state.is(Tags.Blocks.STORAGE_BLOCKS_NETHERITE)) return true;
-
-        if (block == Blocks.IRON_BLOCK) return true;
-        if (block == Blocks.GOLD_BLOCK) return true;
-        if (block == Blocks.DIAMOND_BLOCK) return true;
-        if (block == Blocks.EMERALD_BLOCK) return true;
-        if (block == Blocks.NETHERITE_BLOCK) return true;
-        if (block == Blocks.COPPER_BLOCK) return true;
-        if (block == Blocks.EXPOSED_COPPER) return true;
-        if (block == Blocks.WEATHERED_COPPER) return true;
-        if (block == Blocks.OXIDIZED_COPPER) return true;
-
-        if (block == Blocks.ANVIL) return true;
-        if (block == Blocks.CHIPPED_ANVIL) return true;
-        if (block == Blocks.DAMAGED_ANVIL) return true;
-        if (block == Blocks.IRON_BARS) return true;
-        if (block == Blocks.IRON_DOOR) return true;
-        if (block == Blocks.IRON_TRAPDOOR) return true;
-        if (block == Blocks.HOPPER) return true;
-        if (block == Blocks.CAULDRON) return true;
-        if (block == Blocks.LAVA_CAULDRON) return true;
-        if (block == Blocks.WATER_CAULDRON) return true;
-        if (block == Blocks.POWDER_SNOW_CAULDRON) return true;
-        if (block == Blocks.CHAIN) return true;
-        if (block == Blocks.LANTERN) return true;
-        if (block == Blocks.SOUL_LANTERN) return true;
-
-        if (block == Blocks.RAIL) return true;
-        if (block == Blocks.POWERED_RAIL) return true;
-        if (block == Blocks.DETECTOR_RAIL) return true;
-        if (block == Blocks.ACTIVATOR_RAIL) return true;
-
-        if (block == Blocks.OBSIDIAN) return true;
-        if (block == Blocks.CRYING_OBSIDIAN) return true;
-        if (block == Blocks.ANCIENT_DEBRIS) return true;
-        if (block == Blocks.NETHERITE_BLOCK) return true;
-
-        if (block == Blocks.LODESTONE) return true;
-        if (block == Blocks.RESPAWN_ANCHOR) return true;
-
-        if (block == Blocks.BLAST_FURNACE) return true;
-        if (block == Blocks.FURNACE) return true;
-        if (block == Blocks.SMOKER) return true;
-
-        if (block == Blocks.BELL) return true;
-
-        String blockId = BuiltInRegistries.BLOCK.getKey(block).getPath();
-        if (blockId.contains("iron")) return true;
-        if (blockId.contains("steel")) return true;
-        if (blockId.contains("metal")) return true;
-        if (blockId.contains("copper")) return true;
-
-        return false;
     }
 }

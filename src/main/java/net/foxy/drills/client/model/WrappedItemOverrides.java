@@ -3,6 +3,7 @@ package net.foxy.drills.client.model;
 import net.foxy.drills.base.ModDataComponents;
 import net.foxy.drills.data.DrillHead;
 import net.foxy.drills.item.DrillContents;
+import net.foxy.drills.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -44,9 +45,9 @@ public class WrappedItemOverrides extends ItemOverrides {
             if (stack.isEmpty()) {
                 stack = bore;
             }
-            DrillHead.Texture head = stack.getOrDefault(ModDataComponents.DRILL.get(), DrillHead.DEFAULT).texture();
+            DrillHead.Texture head = Utils.drillOrDefault(stack).texture();
             final ResourceLocation texture;
-            if (bore.getOrDefault(ModDataComponents.USED.get(), 0) <= 9) {
+            if (!bore.getOrDefault(ModDataComponents.IS_USED.get(), false)) {
                 texture = head.idle();
             } else {
                 texture = head.active();

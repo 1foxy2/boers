@@ -11,15 +11,17 @@
   },
   "air": {
     "sounds": [
-      "drills:air",
-      "drills:air2",
-      "drills:air3"
+      "drills:idle0",
+      "drills:idle1",
+      "drills:idle2"
     ]
   },
   "stone": {
     "sounds": [
-      "drills:stone",
-      "drills:stone2"
+      "drills:drill0",
+      "drills:drill1",
+      "drills:drill2",
+      "drills:drill3"
     ]
   }
 }

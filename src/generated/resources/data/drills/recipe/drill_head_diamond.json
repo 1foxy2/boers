@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "  X",
+    "XX ",
+    "XX "
+  ],
+  "result": {
+    "components": {
+      "drills:drill_id": "drills:diamond"
+    },
+    "count": 1,
+    "id": "drills:drill_head"
+  }
+}

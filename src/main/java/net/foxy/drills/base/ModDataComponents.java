@@ -1,5 +1,8 @@
 package net.foxy.drills.base;
 
+import com.mojang.serialization.Codec;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.foxy.drills.DrillsMod;
 import net.foxy.drills.data.DrillHead;
 import net.foxy.drills.item.DrillContents;
@@ -17,15 +20,12 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DrillHead>> DRILL =
             COMPONENTS.registerComponentType("drill", builder -> builder.persistent(DrillHead.ITEM_CODEC)
                     .networkSynchronized(DrillHead.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> USED =
-            COMPONENTS.registerComponentType("used", builder -> builder
-                    .networkSynchronized(ByteBufCodecs.INT));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> BREAKING_POS =
-            COMPONENTS.registerComponentType("breaking_pos", builder -> builder
-                    .networkSynchronized(BlockPos.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> START_TICK =
-            COMPONENTS.registerComponentType("start_tick", builder -> builder
-                    .networkSynchronized(ByteBufCodecs.INT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> DRILL_ID =
+            COMPONENTS.registerComponentType("drill_id", builder -> builder.persistent(ResourceLocation.CODEC)
+                    .networkSynchronized(ResourceLocation.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> IS_USED =
+            COMPONENTS.registerComponentType("o_used", builder -> builder
+                    .networkSynchronized(ByteBufCodecs.BOOL));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DrillContents>> DRILL_CONTENTS = COMPONENTS.registerComponentType(
             "drill_contents", builder -> builder.persistent(DrillContents.CODEC).networkSynchronized(DrillContents.STREAM_CODEC)
