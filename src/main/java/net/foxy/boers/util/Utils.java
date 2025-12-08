@@ -32,7 +32,7 @@ public class Utils {
         return stack.get(ModDataComponents.BOER.get());
     }
 
-    public static float getUsedFor(ItemStack stack) {
+    public static int getUsedFor(ItemStack stack) {
         return stack.getOrDefault(ModDataComponents.USED_FOR, 0);
     }
 

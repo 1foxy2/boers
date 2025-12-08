@@ -72,10 +72,20 @@ configurations {
 
 repositories {
     mavenLocal()
+    exclusiveContent {
+        forRepository {
+            maven {
+                url "https://cursemaven.com"
+            }
+        }
+        filter {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
-
+    runtimeOnly "curse.maven:ferritecore-429235:5850121"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

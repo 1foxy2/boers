@@ -55,14 +55,14 @@ public class WrappedItemOverrides extends ItemOverrides {
                 texture = head.texture().active();
             }
             return boerModel.children.computeIfAbsent(texture, key -> {
-                if (key == null) {
-                    return new SimpleBakedModel(List.of(), quadsMap, boerModel.useAmbientOcclusion(), boerModel.usesBlockLight(), boerModel.isGui3d(), boerModel.getParticleIcon(), boerModel.getTransforms(), boerModel.getOverrides());
-                }
                 TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(key);
+                if (key == null) {
+                    return new SimpleModel(List.of(), sprite, boerModel.getTransforms());
+                }
 
                 var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(0, sprite, null);
                 var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> sprite, BlockModelRotation.X0_Y0);
-                return new SimpleBakedModel(quads, quadsMap, boerModel.useAmbientOcclusion(), boerModel.usesBlockLight(), boerModel.isGui3d(), Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture), boerModel.getTransforms(), boerModel.getOverrides());
+                return new SimpleModel(quads, sprite, boerModel.getTransforms());
             });
         }
 
