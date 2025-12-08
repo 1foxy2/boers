@@ -1,5 +1,6 @@
 package net.foxy.boers.item;
 
+import com.mojang.logging.LogUtils;
 import net.foxy.boers.base.ModDataComponents;
 import net.foxy.boers.base.ModItems;
 import net.foxy.boers.base.ModParticles;
@@ -415,7 +416,7 @@ public class BoerBaseItem extends Item {
         Vec3 offset = Vec3.atLowerCornerOf(blockFace.getNormal()).scale(0.05);
         Vec3 spawnPos = hitPos.add(offset);
 
-        int sparkCount = 3 + level.random.nextInt(4);
+        int sparkCount = BoersClientConfig.CONFIG.PARTICLE_COUNT.get() + level.random.nextInt(BoersClientConfig.CONFIG.PARTICLE_COUNT.get());
 
         for (int i = 0; i < sparkCount; i++) {
             double spreadX = (level.random.nextDouble() - 0.5) * 0.15;
