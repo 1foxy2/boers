@@ -6,7 +6,7 @@
   "client": [
     "HumanoidModelMixin",
     "LivingEntityMixin",
-    "LocalPlayerMixin"
+    "MultiPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

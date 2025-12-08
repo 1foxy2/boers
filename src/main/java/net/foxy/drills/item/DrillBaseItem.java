@@ -1,29 +1,23 @@
 package net.foxy.drills.item;
 
-import com.mojang.logging.LogUtils;
-import net.foxy.drills.util.Utils;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.foxy.drills.base.ModDataComponents;
 import net.foxy.drills.base.ModItems;
 import net.foxy.drills.base.ModParticles;
 import net.foxy.drills.base.ModSounds;
 import net.foxy.drills.client.DrillSoundInstance;
+import net.foxy.drills.client.DrillsClientConfig;
 import net.foxy.drills.data.DrillHead;
 import net.foxy.drills.event.ModClientEvents;
 import net.foxy.drills.particle.spark.SparkParticle;
+import net.foxy.drills.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -31,20 +25,15 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 public class DrillBaseItem extends Item {
@@ -157,24 +146,28 @@ public class DrillBaseItem extends Item {
                 return;
             }
 
-            BlockHitResult result = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-            if (result.getType() == HitResult.Type.BLOCK) {
-                if (level.isClientSide) {
-                    if (ModClientEvents.soundInstance == null || !Minecraft.getInstance().getSoundManager().isActive(ModClientEvents.soundInstance)) {
-                        if (ModClientEvents.idleSoundInstance != null)
-                            ModClientEvents.idleSoundInstance.remove();
-                        ModClientEvents.soundInstance = new DrillSoundInstance(ModSounds.STONE.get(), SoundSource.PLAYERS, 0.25f, 1f, player, player.getRandom().nextLong());
-                        Minecraft.getInstance().getSoundManager().play(ModClientEvents.soundInstance);
+            if (level.isClientSide) {
+                BlockHitResult result = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
+                if (result.getType() == HitResult.Type.BLOCK) {
+                    if (DrillsClientConfig.CONFIG.BREAKING_SOUNDS.get()) {
+                        if (ModClientEvents.soundInstance == null || !Minecraft.getInstance().getSoundManager().isActive(ModClientEvents.soundInstance)) {
+                            if (ModClientEvents.idleSoundInstance != null)
+                                ModClientEvents.idleSoundInstance.remove();
+                            ModClientEvents.soundInstance = new DrillSoundInstance(ModSounds.STONE.get(), SoundSource.PLAYERS, 0.25f, 1f, player, player.getRandom().nextLong());
+                            Minecraft.getInstance().getSoundManager().play(ModClientEvents.soundInstance);
+                        }
                     }
                     Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
                     spawnSparks(level, player, result);
-                }
-            } else if (level.isClientSide) {
-                if (ModClientEvents.idleSoundInstance == null || !Minecraft.getInstance().getSoundManager().isActive(ModClientEvents.idleSoundInstance)) {
-                    if (ModClientEvents.soundInstance != null)
-                        ModClientEvents.soundInstance.remove();
-                    ModClientEvents.idleSoundInstance = new DrillSoundInstance(ModSounds.AIR.get(), SoundSource.PLAYERS, 0.25f, 1f, player, player.getRandom().nextLong());
-                    Minecraft.getInstance().getSoundManager().play(ModClientEvents.idleSoundInstance);
+                } else {
+                    if (DrillsClientConfig.CONFIG.BREAKING_SOUNDS.get()) {
+                        if (ModClientEvents.idleSoundInstance == null || !Minecraft.getInstance().getSoundManager().isActive(ModClientEvents.idleSoundInstance)) {
+                            if (ModClientEvents.soundInstance != null)
+                                ModClientEvents.soundInstance.remove();
+                            ModClientEvents.idleSoundInstance = new DrillSoundInstance(ModSounds.AIR.get(), SoundSource.PLAYERS, 0.25f, 1f, player, player.getRandom().nextLong());
+                            Minecraft.getInstance().getSoundManager().play(ModClientEvents.idleSoundInstance);
+                        }
+                    }
                 }
             }
         }

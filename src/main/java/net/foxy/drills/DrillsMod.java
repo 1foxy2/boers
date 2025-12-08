@@ -1,6 +1,8 @@
 package net.foxy.drills;
 
 import net.foxy.drills.base.*;
+import net.foxy.drills.client.DrillsClientConfig;
+import net.neoforged.fml.config.ModConfig;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;

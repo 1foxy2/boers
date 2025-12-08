@@ -1,11 +1,10 @@
 package net.foxy.drills.util;
 
-import net.foxy.drills.event.ModEvents;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.foxy.drills.DrillsMod;
 import net.foxy.drills.base.ModDataComponents;
 import net.foxy.drills.base.ModItems;
 import net.foxy.drills.data.DrillHead;
+import net.foxy.drills.event.ModEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
