@@ -9,12 +9,16 @@
     {
       "blocks": "#minecraft:mineable/pickaxe",
       "correct_for_drops": true,
-      "speed": 16.0
+      "max_speed": 48.0,
+      "speed": 16.0,
+      "speed_per_tick": 0.1
     },
     {
       "blocks": "#minecraft:mineable/shovel",
       "correct_for_drops": true,
-      "speed": 16.0
+      "max_speed": 48.0,
+      "speed": 16.0,
+      "speed_per_tick": 0.1
     }
   ],
   "texture": {

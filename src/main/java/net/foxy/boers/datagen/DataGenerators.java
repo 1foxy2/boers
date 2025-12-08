@@ -9,6 +9,7 @@ import net.foxy.boers.datagen.loot.ModLootTablesProvider;
 import net.foxy.boers.util.Utils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.Vec3i;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
@@ -57,7 +58,7 @@ public class DataGenerators {
                             );
                             bootstrap.register(
                                     ModRegistries.NETHERITE,
-                                    create("netherite", 18, 1000, BlockTags.INCORRECT_FOR_NETHERITE_TOOL)
+                                    create("netherite", 18, 1000, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, new Vec3i(5, 5, 5))
                             );
                         }
                 ),
@@ -82,6 +83,10 @@ public class DataGenerators {
     }
 
     private static BoerHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine) {
-        return new BoerHead(Utils.rl("item/boer/" + id + "_boer_head"), miningSpeed, durability, canMine);
+        return new BoerHead(Utils.rl("item/boer/" + id + "_boer_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine);
+    }
+
+    private static BoerHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine, Vec3i radius) {
+        return new BoerHead(Utils.rl("item/boer/" + id + "_boer_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine, radius);
     }
 }

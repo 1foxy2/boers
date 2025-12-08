@@ -9,13 +9,22 @@
     {
       "blocks": "#minecraft:mineable/pickaxe",
       "correct_for_drops": true,
-      "speed": 18.0
+      "max_speed": 54.0,
+      "speed": 18.0,
+      "speed_per_tick": 0.1
     },
     {
       "blocks": "#minecraft:mineable/shovel",
       "correct_for_drops": true,
-      "speed": 18.0
+      "max_speed": 54.0,
+      "speed": 18.0,
+      "speed_per_tick": 0.1
     }
+  ],
+  "radius": [
+    1,
+    0,
+    0
   ],
   "texture": {
     "active": "boers:item/boer/netherite_boer_head",
