@@ -21,11 +21,6 @@
       "speed_per_tick": 0.1
     }
   ],
-  "radius": [
-    1,
-    0,
-    0
-  ],
   "texture": {
     "active": "boers:item/boer/netherite_boer_head",
     "idle": "boers:item/boer/netherite_boer_head_idle"
