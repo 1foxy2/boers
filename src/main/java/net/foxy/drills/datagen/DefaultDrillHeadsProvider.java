@@ -1,7 +1,6 @@
 package net.foxy.drills.datagen;
 
 import net.foxy.drills.data.DrillHead;
-import net.foxy.drills.data.DrillHeadsProvider;
 import net.foxy.drills.data.DrillOutput;
 import net.foxy.drills.util.Utils;
 import net.minecraft.core.HolderLookup;
@@ -12,12 +11,10 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DefaultDrillHeadsProvider extends DrillHeadsProvider {
+public class DefaultDrillHeadsProvider {
     public DefaultDrillHeadsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
     }
 
-    @Override
     protected void buildDrills(DrillOutput output) {
         create(output, "default", 1, 100, BlockTags.INCORRECT_FOR_IRON_TOOL);
         create(output, "copper", 10, 95, BlockTags.INCORRECT_FOR_STONE_TOOL);

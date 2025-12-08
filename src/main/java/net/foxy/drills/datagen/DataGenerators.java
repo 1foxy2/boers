@@ -35,7 +35,7 @@ public class DataGenerators {
                 new ModBlockTagsProvider(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new ModItemTagsProvider(packOutput,
                 lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
-        generator.addProvider(event.includeServer(), new DefaultDrillHeadsProvider(packOutput, lookupProvider));
+        //generator.addProvider(event.includeServer(), new DefaultDrillHeadsProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new ModGLM(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new ModLootTablesProvider(packOutput, List.of(new LootTableProvider.SubProviderEntry(

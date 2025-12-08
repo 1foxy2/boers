@@ -2,13 +2,14 @@ package net.foxy.drills.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.foxy.drills.event.ModEvents;
+import net.foxy.drills.base.ModRegistries;
 import net.foxy.drills.util.Utils;
+import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -33,24 +34,9 @@ public record DrillHead(ResourceLocation id, Texture texture, float defaultMinin
                     new DrillHead(id1.orElseGet(() -> Utils.rl("")),
                             texture1, miningSpeed1, durability1, miningLevel))
     );
-    public static final Codec<Optional<net.neoforged.neoforge.common.conditions.WithConditions<DrillHead>>> CONDITIONAL_CODEC = net.neoforged.neoforge.common.conditions.ConditionalOps.createConditionalCodecWithConditions(CODEC);
+    public static final Codec<Holder<DrillHead>> ITEM_CODEC = RegistryFixedCodec.create(ModRegistries.DRILL_HEAD);
 
-    public static final Codec<DrillHead> ITEM_CODEC =
-            ResourceLocation.CODEC.xmap(ModEvents.DRILL_MANAGER::getDrillHead, DrillHead::id);
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, DrillHead> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC,
-            DrillHead::id,
-            Texture.STREAM_CODEC,
-            DrillHead::texture,
-            ByteBufCodecs.FLOAT,
-            DrillHead::defaultMiningSpeed,
-            ByteBufCodecs.VAR_INT,
-            DrillHead::durability,
-            Tool.Rule.STREAM_CODEC.apply(ByteBufCodecs.list()),
-            DrillHead::miningRules,
-            DrillHead::new
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DrillHead>> STREAM_CODEC = ByteBufCodecs.holderRegistry(ModRegistries.DRILL_HEAD);
 
     public float getMiningSpeed(BlockState state) {
         for (Tool.Rule tool$rule : miningRules) {

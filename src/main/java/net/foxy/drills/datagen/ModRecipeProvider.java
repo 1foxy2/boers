@@ -36,17 +36,17 @@ public class ModRecipeProvider extends RecipeProvider {
         drillHead(recipeOutput, "iron", Items.IRON_INGOT);
         ItemStack stack = ModItems.DRILL_HEAD.toStack();
         ItemStack result = ModItems.DRILL_HEAD.toStack();
-        result.set(ModDataComponents.DRILL_ID, Utils.rl("netherite"));
+        /*result.set(ModDataComponents.DRILL, Utils.rl("netherite"));
         StackSmithingTransformRecipeBuilder.smithing(
                         Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), DataComponentIngredient.of(false, ModDataComponents.DRILL_ID.get(), Utils.rl("diamond"), ModItems.DRILL_HEAD), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.TOOLS, result
                 )
                 .unlocks("has_drill_base", has(ModItems.DRILL_BASE))
-                .save(recipeOutput, Utils.rl("diamond_drill_head_smithing"));
+                .save(recipeOutput, Utils.rl("diamond_drill_head_smithing"));*/
     }
 
     public static void drillHead(RecipeOutput recipeOutput, String drillHead, Item item) {
         ItemStack stack = ModItems.DRILL_HEAD.toStack();
-        stack.set(ModDataComponents.DRILL_ID, Utils.rl(drillHead));
+        //stack.set(ModDataComponents.DRILL_ID, Utils.rl(drillHead));
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_drill_base", has(ModItems.DRILL_BASE)).save(recipeOutput, Utils.rl("drill_head_" + drillHead));
     }
 }

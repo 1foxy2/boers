@@ -1,6 +1,7 @@
 package net.foxy.drills.base;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.foxy.drills.DrillsMod;
@@ -17,12 +18,9 @@ public class ModDataComponents {
     public static final DeferredRegister.DataComponents COMPONENTS =
             DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, DrillsMod.MODID);
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DrillHead>> DRILL =
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Holder<DrillHead>>> DRILL =
             COMPONENTS.registerComponentType("drill", builder -> builder.persistent(DrillHead.ITEM_CODEC)
                     .networkSynchronized(DrillHead.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> DRILL_ID =
-            COMPONENTS.registerComponentType("drill_id", builder -> builder.persistent(ResourceLocation.CODEC)
-                    .networkSynchronized(ResourceLocation.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> IS_USED =
             COMPONENTS.registerComponentType("o_used", builder -> builder
                     .networkSynchronized(ByteBufCodecs.BOOL));

@@ -26,9 +26,9 @@ public class ModCreativeModeTabs {
                             .title(Component.translatable("item.drills.drills"))
                             .displayItems((pParameters, pOutput) -> {
                                 pOutput.accept(ModItems.DRILL_BASE);
-                                for (DrillHead drillHead : ModEvents.DRILL_MANAGER.getDrillHeads().values()) {
-                                    pOutput.accept(Utils.drill(drillHead));
-                                }
+                                pParameters.holders().lookupOrThrow(ModRegistries.DRILL_HEAD).listElements().forEach(drillHeadReference -> {
+                                    pOutput.accept(Utils.drill(drillHeadReference));
+                                });
                             })
                             .build());
 }
