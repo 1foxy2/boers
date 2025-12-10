@@ -42,7 +42,7 @@ import java.util.Optional;
 public class BoerBaseItem extends Item {
     public BoerBaseItem() {
         super(new Properties().stacksTo(1)
-                .component(ModDataComponents.BOER_CONTENTS, BoerContents.EMPTY).component(DataComponents.BASE_COLOR, DyeColor.BLUE)
+                .component(ModDataComponents.BOER_CONTENTS, BoerContents.EMPTY).component(DataComponents.BASE_COLOR, DyeColor.BLUE).rarity(Rarity.EPIC)
         );
     }
 
@@ -65,8 +65,8 @@ public class BoerBaseItem extends Item {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (isSelected) {
-            entity.setYBodyRot(entity.getYHeadRot() + 37);
             if (entity instanceof Player player) {
+                entity.setYBodyRot(entity.getYHeadRot() + (player.getMainArm() == HumanoidArm.LEFT ? -37 : 37));
                 if (Utils.isUsed(stack)) {
                     player.swinging = false;
                     player.attackAnim = 0;
@@ -75,6 +75,9 @@ public class BoerBaseItem extends Item {
                     Utils.decreaseUseFor(stack);
                 }
             }
+        } else {
+            Utils.setUsed(stack, false);
+            Utils.decreaseUseFor(stack);
         }
 
         super.inventoryTick(stack, level, entity, slotId, isSelected);

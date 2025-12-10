@@ -13,8 +13,13 @@ public class ModEnums {
     );
 
     public static void applyPose(HumanoidModel<?> model, LivingEntity entity, HumanoidArm arm) {
-        model.rightArm.xRot = 0;
-        model.leftArm.xRot = (float) - Math.toRadians(35);
+        if (arm == HumanoidArm.RIGHT) {
+            model.leftArm.xRot = (float) -Math.toRadians(35);
+            model.rightArm.xRot = 0;
+        } else {
+            model.leftArm.xRot = 0;
+            model.rightArm.xRot = (float) -Math.toRadians(35);
+        }
         model.rightArm.yRot = 0;
         model.leftArm.yRot = 0;
         model.rightArm.zRot = 0;
