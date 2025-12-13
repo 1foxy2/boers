@@ -5,7 +5,9 @@
       "conditions": {
         "items": [
           {
-            "items": "boers:boer_base"
+            "items": [
+              "boers:boer_base"
+            ]
           }
         ]
       },
@@ -13,20 +15,21 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "boers:boer_head_copper"
+        "recipe": "boers:boer_head_golden"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_boer_base"
+      "has_boer_base",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "boers:boer_head_copper"
+      "boers:boer_head_golden"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

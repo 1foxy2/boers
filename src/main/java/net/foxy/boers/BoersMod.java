@@ -28,6 +28,7 @@ public class BoersMod {
         ModSounds.SOUND_EVENTS.register(modEventBus);
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
         ModParticles.PARTICLE_TYPES.register(modEventBus);
+        ModGlobalLootModifiers.LOOT_MODIFIERS.register(modEventBus);
         modEventBus.addListener(BoersMod::buildCreativeTabs);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             BoersModClient.init(context);

@@ -1,5 +1,6 @@
 package net.foxy.boers.datagen;
 
+import com.mojang.logging.LogUtils;
 import net.foxy.boers.BoersMod;
 import net.foxy.boers.base.ModItems;
 import net.foxy.boers.data.BoerColoring;
@@ -22,6 +23,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
+        LogUtils.getLogger().warn("testu");
         entity(ModItems.BOER_BASE).transforms()
                 .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(-72.5f, -16, -27).translation(-5.325f, 5, -2.25f).scale(1, 1, 0.5f).end()
                 .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND).rotation(107.5f, 16, -153).translation(-5.325f, 5, -2.25f).scale(1, 1, 0.5f).end()

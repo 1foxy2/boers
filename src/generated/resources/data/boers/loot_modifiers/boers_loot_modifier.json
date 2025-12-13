@@ -1,10 +1,9 @@
 {
-  "type": "neoforge:add_table",
+  "type": "boers:example_codec",
   "conditions": [
     {
-      "condition": "neoforge:loot_table_id",
+      "condition": "forge:loot_table_id",
       "loot_table_id": "minecraft:chests/abandoned_mineshaft"
     }
-  ],
-  "table": "boers:chests/abandoned_mineshaft_modifier"
+  ]
 }

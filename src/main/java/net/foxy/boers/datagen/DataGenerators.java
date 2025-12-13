@@ -13,8 +13,11 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,47 +27,48 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(modid = BoersMod.MODID)
+@Mod.EventBusSubscriber(modid = BoersMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        /*event.createDatapackRegistryObjects(
-                new RegistrySetBuilder().add(
-                        ModRegistries.BOER_HEAD, bootstrap -> {
-                            bootstrap.register(
-                                    ModRegistries.DEFAULT,
-                                    create("default", 1, 100, BlockTags.INCORRECT_FOR_IRON_TOOL)
-                            );
-                            bootstrap.register(
-                                    ModRegistries.COPPER,
-                                    create("copper", 10, 95, BlockTags.INCORRECT_FOR_STONE_TOOL)
-                            );
-                            bootstrap.register(
-                                    ModRegistries.IRON,
-                                    create("iron", 12, 125, BlockTags.INCORRECT_FOR_IRON_TOOL)
-                            );
-                            bootstrap.register(
-                                    ModRegistries.DIAMOND,
-                                    create("diamond", 16, 800, BlockTags.INCORRECT_FOR_DIAMOND_TOOL)
-                            );
-                            bootstrap.register(
-                                    ModRegistries.GOLDEN,
-                                    create("golden", 24, 16, BlockTags.INCORRECT_FOR_GOLD_TOOL)
-                            );
-                            bootstrap.register(
-                                    ModRegistries.NETHERITE,
-                                    create("netherite", 18, 1000, BlockTags.INCORRECT_FOR_NETHERITE_TOOL)
-                            );
-                        }
-                ),
-                conditions -> {},
-                Set.of(BoersMod.MODID)
-        );*/
-
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        generator.addProvider(event.includeServer(),
+                new DatapackBuiltinEntriesProvider(packOutput, lookupProvider,
+                        new RegistrySetBuilder().add(
+                                ModRegistries.BOER_HEAD, bootstrap -> {
+                                    bootstrap.register(
+                                            ModRegistries.DEFAULT,
+                                            create("default", 1, 100, Tiers.IRON)
+                                    );
+                                    bootstrap.register(
+                                            ModRegistries.COPPER,
+                                            create("copper", 10, 95, Tiers.STONE)
+                                    );
+                                    bootstrap.register(
+                                            ModRegistries.IRON,
+                                            create("iron", 12, 125, Tiers.IRON)
+                                    );
+                                    bootstrap.register(
+                                            ModRegistries.DIAMOND,
+                                            create("diamond", 16, 800, Tiers.DIAMOND)
+                                    );
+                                    bootstrap.register(
+                                            ModRegistries.GOLDEN,
+                                            create("golden", 24, 16, Tiers.GOLD)
+                                    );
+                                    bootstrap.register(
+                                            ModRegistries.NETHERITE,
+                                            create("netherite", 18, 1000, Tiers.NETHERITE)
+                                    );
+                                }
+                        ) ,
+                        Set.of(BoersMod.MODID)
+                )
+        );
+
 
         generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
 
@@ -72,15 +76,15 @@ public class DataGenerators {
                 new ModBlockTagsProvider(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new ModItemTagsProvider(packOutput,
                 lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new ModGLM(packOutput));
     }
 
-    private static BoerHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine) {
+    private static BoerHead create(String id, float miningSpeed, int durability, Tier canMine) {
         return new BoerHead(Utils.rl("item/boer/" + id + "_boer_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine);
     }
 
-    private static BoerHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine, Vec3i radius) {
+    private static BoerHead create(String id, float miningSpeed, int durability, Tier canMine, Vec3i radius) {
         return new BoerHead(Utils.rl("item/boer/" + id + "_boer_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine, radius);
     }
 }

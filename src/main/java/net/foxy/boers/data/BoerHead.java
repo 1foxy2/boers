@@ -19,8 +19,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.TierSortingRegistry;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +58,7 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
     public boolean isCorrectForDrops(BlockState state) {
         for (Rule tool$rule : this.miningRules) {
             if (tool$rule.correctForDrops().isPresent() && state.is(tool$rule.blocks())) {
-                return tool$rule.correctForDrops().get();
+                return tool$rule.correctForDrops().get() && (tool$rule.tier.isEmpty() || TierSortingRegistry.isCorrectTierForDrops(tool$rule.tier.get(), state));
             }
         }
 
@@ -73,30 +75,30 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
         return 1;
     }
 
-    public BoerHead(ResourceLocation texture, float miningSpeed, int durability, TagKey<Block> miningLevel) {
+    public BoerHead(ResourceLocation texture, float miningSpeed, int durability, Tier tier) {
         this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
-                List.of(Rule.deniesDrops(miningLevel),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed)
+                List.of(
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, tier, miningSpeed),
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, tier, miningSpeed)
                 ), Optional.empty());
     }
 
-    public BoerHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, TagKey<Block> miningLevel) {
+    public BoerHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, Tier tier) {
         this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
-                List.of(Rule.deniesDrops(miningLevel),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed, maxSpeed, speedPerTick),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed, maxSpeed, speedPerTick)
+                List.of(
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, tier, miningSpeed, maxSpeed, speedPerTick),
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, tier, miningSpeed, maxSpeed, speedPerTick)
                 ), Optional.empty());
     }
 
-    public BoerHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, TagKey<Block> miningLevel, Vec3i radius) {
+    public BoerHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, Tier tier, Vec3i radius) {
         this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
-                List.of(Rule.deniesDrops(miningLevel),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed, maxSpeed, speedPerTick),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed, maxSpeed, speedPerTick)
+                List.of(
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, tier, miningSpeed, maxSpeed, speedPerTick),
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, tier, miningSpeed, maxSpeed, speedPerTick)
                 ), Optional.of(radius));
     }
 
@@ -126,10 +128,11 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
     }
 
 
-    public record Rule(HolderSet<Block> blocks, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> speedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
+    public record Rule(HolderSet<Block> blocks, Optional<Tier> tier, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> speedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
         public static final Codec<Rule> CODEC = RecordCodecBuilder.create(
                 p_337954_ -> p_337954_.group(
                                 RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(Rule::blocks),
+                                ResourceLocation.CODEC.xmap(TierSortingRegistry::byName, TierSortingRegistry::getName).optionalFieldOf("tier").forGetter(Rule::tier),
                                 ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("speed").forGetter(Rule::speed),
                                 ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("max_speed").forGetter(Rule::maxSpeed),
                                 ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("speed_per_tick").forGetter(Rule::speedPerTick),
@@ -140,35 +143,35 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
         );
 
         public static Rule minesAndDrops(List<Block> blocks, float speed) {
-            return forBlocks(blocks, Optional.of(speed), Optional.empty(), Optional.empty(), Optional.of(true), Optional.empty());
+            return forBlocks(blocks, Optional.empty(), Optional.of(speed), Optional.empty(), Optional.empty(), Optional.of(true), Optional.empty());
         }
 
-        public static Rule minesAndDrops(TagKey<Block> blocks, float speed) {
-            return forTag(blocks, Optional.of(speed), Optional.empty(), Optional.empty(), Optional.of(true), Optional.empty());
+        public static Rule minesAndDrops(TagKey<Block> blocks, Tier tier, float speed) {
+            return forTag(blocks, Optional.of(tier), Optional.of(speed), Optional.empty(), Optional.empty(), Optional.of(true), Optional.empty());
         }
 
-        public static Rule minesAndDrops(TagKey<Block> blocks, float speed, float maxSpeed, float speedPerTick) {
-            return forTag(blocks, Optional.of(speed), Optional.of(maxSpeed), Optional.of(speedPerTick), Optional.of(true), Optional.empty());
+        public static Rule minesAndDrops(TagKey<Block> blocks, Tier tier, float speed, float maxSpeed, float speedPerTick) {
+            return forTag(blocks, Optional.of(tier), Optional.of(speed), Optional.of(maxSpeed), Optional.of(speedPerTick), Optional.of(true), Optional.empty());
         }
 
         public static Rule deniesDrops(TagKey<Block> blocks) {
-            return forTag(blocks, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(false), Optional.empty());
+            return forTag(blocks, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(false), Optional.empty());
         }
 
         public static Rule overrideSpeed(TagKey<Block> blocks, float speed) {
-            return forTag(blocks, Optional.of(speed), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+            return forTag(blocks, Optional.empty(), Optional.of(speed), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         }
 
         public static Rule overrideSpeed(List<Block> blocks, float speed) {
-            return forBlocks(blocks, Optional.of(speed), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+            return forBlocks(blocks, Optional.empty(), Optional.of(speed), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         }
 
-        private static Rule forTag(TagKey<Block> tag, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> maxSpeedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
-            return new Rule(BuiltInRegistries.BLOCK.getOrCreateTag(tag), speed, maxSpeed, maxSpeedPerTick, correctForDrops, damagePerBlock);
+        private static Rule forTag(TagKey<Block> tag, Optional<Tier> tier, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> maxSpeedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
+            return new Rule(BuiltInRegistries.BLOCK.getOrCreateTag(tag), tier, speed, maxSpeed, maxSpeedPerTick, correctForDrops, damagePerBlock);
         }
 
-        private static Rule forBlocks(List<Block> blocks, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> maxSpeedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
-            return new Rule(HolderSet.direct(blocks.stream().map(Block::builtInRegistryHolder).collect(Collectors.toList())), speed, maxSpeed, maxSpeedPerTick, correctForDrops, damagePerBlock);
+        private static Rule forBlocks(List<Block> blocks, Optional<Tier> tier, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> maxSpeedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
+            return new Rule(HolderSet.direct(blocks.stream().map(Block::builtInRegistryHolder).collect(Collectors.toList())), tier, speed, maxSpeed, maxSpeedPerTick, correctForDrops, damagePerBlock);
         }
     }
 }

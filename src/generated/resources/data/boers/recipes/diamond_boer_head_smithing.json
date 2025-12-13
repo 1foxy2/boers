@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "base": {
+    "type": "forge:partial_nbt",
+    "item": "boers:boer_head",
+    "nbt": "{boer:\"boers:diamond\"}"
+  },
+  "result": {
+    "item": "boers:boer_head",
+    "nbt": "{Damage:0,boer:\"boers:netherite\"}"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
+}

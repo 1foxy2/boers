@@ -3,22 +3,20 @@
   "durability": 95,
   "mining_rules": [
     {
-      "blocks": "#minecraft:incorrect_for_stone_tool",
-      "correct_for_drops": false
-    },
-    {
       "blocks": "#minecraft:mineable/pickaxe",
       "correct_for_drops": true,
       "max_speed": 30.0,
       "speed": 10.0,
-      "speed_per_tick": 0.1
+      "speed_per_tick": 0.1,
+      "tier": "minecraft:stone"
     },
     {
       "blocks": "#minecraft:mineable/shovel",
       "correct_for_drops": true,
       "max_speed": 30.0,
       "speed": 10.0,
-      "speed_per_tick": 0.1
+      "speed_per_tick": 0.1,
+      "tier": "minecraft:stone"
     }
   ],
   "texture": {

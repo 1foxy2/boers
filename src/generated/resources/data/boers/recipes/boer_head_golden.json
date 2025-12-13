@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "X": {
-      "item": "minecraft:copper_ingot"
+      "item": "minecraft:gold_ingot"
     }
   },
   "pattern": [
@@ -12,10 +12,8 @@
     "XX "
   ],
   "result": {
-    "components": {
-      "boers:boer": "boers:copper"
-    },
-    "count": 1,
-    "id": "boers:boer_head"
-  }
+    "item": "boers:boer_head",
+    "nbt": "{Damage:0,boer:\"boers:golden\"}"
+  },
+  "show_notification": true
 }

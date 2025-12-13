@@ -5,7 +5,9 @@
       "conditions": {
         "items": [
           {
-            "items": "boers:boer_base"
+            "items": [
+              "boers:boer_base"
+            ]
           }
         ]
       },
@@ -20,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_boer_base"
+      "has_boer_base",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "boers:boer_head_iron"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

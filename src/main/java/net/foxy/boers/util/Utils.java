@@ -28,9 +28,21 @@ public class Utils {
         return boer;
     }
 
+    public static ItemStack boer(ResourceKey<BoerHead> head) {
+        ItemStack boer = ModItems.BOER_HEAD.get().getDefaultInstance();
+        boer.getOrCreateTag().putString(ModDataComponents.BOER, head.location().toString());
+        return boer;
+    }
+
     public static CompoundTag boerTag(Holder<BoerHead> head) {
         CompoundTag result = new CompoundTag();
         result.putString(ModDataComponents.BOER, head.unwrapKey().map(ResourceKey::location).orElseThrow().toString());
+        return result;
+    }
+
+    public static CompoundTag boerTag(ResourceKey<BoerHead> head) {
+        CompoundTag result = new CompoundTag();
+        result.putString(ModDataComponents.BOER, head.location().toString());
         return result;
     }
 
@@ -53,7 +65,7 @@ public class Utils {
         }
 
 
-        return access.lookupOrThrow(ModRegistries.BOER_HEAD).getOrThrow(ResourceKey.create(ModRegistries.BOER_HEAD, ResourceLocation.parse(stack.getTag().getString(ModDataComponents.BOER))));
+        return access.lookupOrThrow(ModRegistries.BOER_HEAD).get(ResourceKey.create(ModRegistries.BOER_HEAD, ResourceLocation.parse(stack.getTag().getString(ModDataComponents.BOER)))).orElse(null);
     }
 
     public static int getUsedFor(ItemStack stack) {
