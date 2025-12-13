@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.foxy.boers.base.ModDataComponents;
 import net.foxy.boers.base.ModRegistries;
+import net.foxy.boers.client.BoersClientConfig;
 import net.foxy.boers.util.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -96,6 +98,23 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
                         Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed, maxSpeed, speedPerTick),
                         Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed, maxSpeed, speedPerTick)
                 ), Optional.of(radius));
+    }
+
+    public int getMaxAcceleration(ItemStack stack) {
+        int max = 0;
+        for (Rule tool$rule : miningRules) {
+            if (tool$rule.speed().isPresent()) {
+                if (tool$rule.maxSpeed.isPresent() && tool$rule.speedPerTick.isPresent()) {
+                    float maxSpeed = tool$rule.maxSpeed.get() - tool$rule.speed.get();
+                    int m = (int) Mth.lerp(Math.min(tool$rule.speedPerTick.get() * Utils.getUsedFor(stack), maxSpeed) / maxSpeed, 0, BoersClientConfig.CONFIG.MAX_BOER_HEATING.getAsInt());
+                    if (m > max) {
+                        max = m;
+                    }
+                }
+            }
+        }
+
+        return max;
     }
 
     public record Texture(ResourceLocation idle, ResourceLocation active) {

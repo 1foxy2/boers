@@ -1,4 +1,4 @@
-// 1.21.1	2025-12-08T02:29:55.3087619	Recipes
+// 1.21.1	2025-12-09T21:47:10.9201597	Recipes
 7f7a0dfb889bcfb77ec2a73e726012308440158c data/boers/advancement/recipes/tools/boer_head_copper.json
 56b754a7b466c3e27940ef8c0a95065f27176cab data/boers/advancement/recipes/tools/boer_head_diamond.json
 1c4af87395b4faac19965f75784469ef0d64b958 data/boers/advancement/recipes/tools/boer_head_golden.json
@@ -9,4 +9,4 @@ b02a0469fb1ed3d15d64af632ec4a79de7b0b205 data/boers/recipe/boer_head_copper.json
 86be135a6b8d24f106b28c56afe06f90c1a5a87d data/boers/recipe/boer_head_diamond.json
 cd6e48d35ed1f1ae0fb181f2230fdb1594894a00 data/boers/recipe/boer_head_golden.json
 d99c3001caa2b262e7d896e83a3b9edba05adeab data/boers/recipe/boer_head_iron.json
-43e3063c263f0920a7f4fff138e4118b66643cb8 data/boers/recipe/diamond_boer_head_smithing.json
+26a5ce1442022757ac19ef754d4563d169a18f19 data/boers/recipe/diamond_boer_head_smithing.json

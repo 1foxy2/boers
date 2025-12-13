@@ -125,7 +125,6 @@ public class BoerModel implements IUnbakedGeometry<BoerModel> {
         private final TextureAtlasSprite particle;
         private final ItemOverrides overrides;
         private final ItemTransforms transforms;
-        public final HashMap<ResourceLocation, BakedModel> children = new HashMap<>();
 
         public Baked(boolean isGui3d, boolean isSideLit, boolean isAmbientOcclusion, TextureAtlasSprite particle, ItemTransforms transforms, ItemOverrides overrides, ImmutableMap<String, List<BakedQuad>> children) {
             this.isAmbientOcclusion = isAmbientOcclusion;

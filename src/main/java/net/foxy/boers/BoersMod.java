@@ -20,12 +20,27 @@ public class BoersMod {
         IEventBus modEventBus = context.getModEventBus();
         ModItems.ITEMS.register(modEventBus);
         //ModDataComponents.COMPONENTS.register(modEventBus);
-        ModCreativeModeTabs.TABS.register(modEventBus);
+        //ModCreativeModeTabs.TABS.register(modEventBus);
         ModSounds.SOUND_EVENTS.register(modEventBus);
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
         ModParticles.PARTICLE_TYPES.register(modEventBus);
+        modEventBus.addListener(BoersMod::buildCreativeTabs);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             BoersModClient.init(context);
+        }
+    }
+
+    public static void buildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            // event.insertAfter();
+            event.getParameters().holders().lookupOrThrow(ModRegistries.BOER_HEAD).listElements().forEach(boerHeadReference -> {
+                event.insertAfter(Items.NETHERITE_HOE.getDefaultInstance(), Utils.boer(boerHeadReference), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            });
+            for (DyeColor color : BoerColoring.ALLOWED_COLORS) {
+                ItemStack stack = ModItems.BOER_BASE.toStack();
+                stack.set(DataComponents.BASE_COLOR, color);
+                event.insertAfter(Items.NETHERITE_HOE.getDefaultInstance(), stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            }
         }
     }
 }

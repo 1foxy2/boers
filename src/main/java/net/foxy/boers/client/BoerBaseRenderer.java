@@ -1,10 +1,11 @@
 package net.foxy.boers.client;
 
-import net.foxy.boers.base.ModModels;
-import net.foxy.boers.event.ModClientEvents;
-import net.foxy.boers.util.RenderUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.foxy.boers.base.ModModels;
+import net.foxy.boers.data.BoerHead;
+import net.foxy.boers.event.ModClientEvents;
+import net.foxy.boers.util.RenderUtils;
 import net.foxy.boers.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -25,7 +26,7 @@ public class BoerBaseRenderer extends BlockEntityWithoutLevelRenderer {
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         poseStack.pushPose();
-        if (displayContext == ItemDisplayContext.GUI || displayContext == ItemDisplayContext.FIXED) {
+        if (displayContext == ItemDisplayContext.GUI || displayContext == ItemDisplayContext.FIXED || displayContext == ItemDisplayContext.GROUND) {
             ItemStack itemStack = Utils.getBoerContents(stack);
             boolean flag = itemStack != null && !itemStack.isEmpty();
             if (!flag) {
@@ -40,15 +41,26 @@ public class BoerBaseRenderer extends BlockEntityWithoutLevelRenderer {
         } else {
             if (Utils.isUsed(stack)) {
                 RandomSource randomSource = Minecraft.getInstance().level.getRandom();
-                poseStack.translate(randomSource.nextFloat() / 100f, randomSource.nextFloat() / 100f, randomSource.nextFloat() / 100f);
+                float usedFor = 100f - Math.min(Utils.getUsedFor(stack), 100) / 100f;
+                poseStack.translate(randomSource.nextFloat() / usedFor, randomSource.nextFloat() / usedFor, randomSource.nextFloat() / usedFor);
             }
 
             if (displayContext == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND) {
                 poseStack.scale(3.75f, 3.75f, 1.875f);
                 poseStack.translate(-0.8f, 0.1, -0.15f);
                 poseStack.mulPose(Axis.ZN.rotationDegrees(10));
+            } else if (displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
+                poseStack.scale(3.75f, 3.75f, 1.875f);
+                poseStack.translate(-0.8f, -0.227, -0.15f);
+                poseStack.mulPose(Axis.ZP.rotationDegrees(10));
+                poseStack.rotateAround(Axis.YP.rotationDegrees(180), 0.95f, 0, 0.5f);
             } else if (displayContext.firstPerson()) {
-                poseStack.mulPose(Axis.YN.rotationDegrees(Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getFrameTime(), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100)));
+                float angle = Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100);
+                if (displayContext == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) {
+                    poseStack.mulPose(Axis.YN.rotationDegrees(angle));
+                } else {
+                    poseStack.rotateAround(Axis.YP.rotationDegrees(angle), 0, 0, 1);
+                }
             }
 
             RenderUtils.renderItemModel(stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BOER_BASE);
@@ -56,7 +68,13 @@ public class BoerBaseRenderer extends BlockEntityWithoutLevelRenderer {
             poseStack.translate(12 * 0.0625, 5 * 0.0625, -0.005f);
             ItemStack itemStack = Utils.getBoerContents(stack);
             if (itemStack != null && !itemStack.isEmpty()) {
-                RenderUtils.renderItemModel(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
+                BoerHead boerHead = Utils.getBoer(itemStack.getItemUnsafe());
+                int usedFor = 0;
+                if (boerHead != null) {
+                    usedFor = boerHead.getMaxAcceleration(stack);
+                }
+                int color = Math.max(255 - usedFor, 255 - BoersClientConfig.CONFIG.MAX_BOER_HEATING.get());
+                RenderUtils.renderItemModel(stack, displayContext, poseStack, buffer, packedLight, packedOverlay, 255, color, color, 255);
             }
         }
         poseStack.popPose();

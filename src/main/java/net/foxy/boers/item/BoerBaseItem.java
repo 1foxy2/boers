@@ -44,7 +44,7 @@ import java.util.function.Consumer;
 
 public class BoerBaseItem extends Item {
     public BoerBaseItem() {
-        super(new Properties().stacksTo(1)
+        super(new Properties().stacksTo(1).rarity(Rarity.EPIC)
                 //.component(ModDataComponents.BOER_CONTENTS, BoerContents.EMPTY).component(DataComponents.BASE_COLOR, DyeColor.BLUE)
         );
     }
@@ -91,8 +91,8 @@ public class BoerBaseItem extends Item {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (isSelected) {
-            entity.setYBodyRot(entity.getYHeadRot() + 37);
             if (entity instanceof Player player) {
+                entity.setYBodyRot(entity.getYHeadRot() + (player.getMainArm() == HumanoidArm.LEFT ? -37 : 37));
                 if (Utils.isUsed(stack)) {
                     player.swinging = false;
                     player.attackAnim = 0;
@@ -101,6 +101,9 @@ public class BoerBaseItem extends Item {
                     Utils.decreaseUseFor(stack);
                 }
             }
+        } else {
+            Utils.setUsed(stack, false);
+            Utils.decreaseUseFor(stack);
         }
 
         super.inventoryTick(stack, level, entity, slotId, isSelected);
@@ -387,6 +390,7 @@ public class BoerBaseItem extends Item {
         return Utils.getBoerContentsOrEmpty(stack).getBarWidth();
     }
 
+    @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         return Optional.of(new BoerTooltip(Utils.getBoerContents(stack)));
     }
@@ -423,7 +427,7 @@ public class BoerBaseItem extends Item {
         Vec3 offset = Vec3.atLowerCornerOf(blockFace.getNormal()).scale(0.05);
         Vec3 spawnPos = hitPos.add(offset);
 
-        int sparkCount = 3 + level.random.nextInt(4);
+        int sparkCount = BoersClientConfig.CONFIG.PARTICLE_COUNT.get() + level.random.nextInt(BoersClientConfig.CONFIG.PARTICLE_COUNT.get());
 
         for (int i = 0; i < sparkCount; i++) {
             double spreadX = (level.random.nextDouble() - 0.5) * 0.15;

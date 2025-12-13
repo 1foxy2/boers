@@ -23,7 +23,11 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         entity(ModItems.BOER_BASE).transforms()
-                .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(-72.5f, -16, -27).translation(-5.325f, 5, -2.25f).end().end();
+                .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(-72.5f, -16, -27).translation(-5.325f, 5, -2.25f).scale(1, 1, 0.5f).end()
+                .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND).rotation(107.5f, 16, -153).translation(-5.325f, 5, -2.25f).scale(1, 1, 0.5f).end()
+                .end();
+
+        // right 110 -16 153 left -70 16 27
         ItemModelBuilder.OverrideBuilder override = tool(ModItems.BOER_BASE).override();
         ItemModelBuilder.OverrideBuilder overrideGui = tool("boer_base_gui", "boer_base_gui").override();
 

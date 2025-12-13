@@ -1,11 +1,33 @@
 {
   "parent": "boers:item/entity",
   "display": {
+    "firstperson_lefthand": {
+      "rotation": [
+        107.5,
+        16,
+        -153
+      ],
+      "scale": [
+        1,
+        1,
+        0.5
+      ],
+      "translation": [
+        -5.325,
+        5,
+        -2.25
+      ]
+    },
     "firstperson_righthand": {
       "rotation": [
         -72.5,
         -16,
         -27
+      ],
+      "scale": [
+        1,
+        1,
+        0.5
       ],
       "translation": [
         -5.325,
