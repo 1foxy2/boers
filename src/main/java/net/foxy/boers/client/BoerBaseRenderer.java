@@ -55,7 +55,7 @@ public class BoerBaseRenderer extends BlockEntityWithoutLevelRenderer {
                 poseStack.mulPose(Axis.ZP.rotationDegrees(10));
                 poseStack.rotateAround(Axis.YP.rotationDegrees(180), 0.95f, 0, 0.5f);
             } else if (displayContext.firstPerson()) {
-                float angle = Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100);
+                float angle = Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getPartialTick(), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100);
                 if (displayContext == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) {
                     poseStack.mulPose(Axis.YN.rotationDegrees(angle));
                 } else {
@@ -68,7 +68,7 @@ public class BoerBaseRenderer extends BlockEntityWithoutLevelRenderer {
             poseStack.translate(12 * 0.0625, 5 * 0.0625, -0.005f);
             ItemStack itemStack = Utils.getBoerContents(stack);
             if (itemStack != null && !itemStack.isEmpty()) {
-                BoerHead boerHead = Utils.getBoer(itemStack.getItemUnsafe());
+                BoerHead boerHead = Utils.getBoer(itemStack);
                 int usedFor = 0;
                 if (boerHead != null) {
                     usedFor = boerHead.getMaxAcceleration(stack);

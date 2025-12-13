@@ -106,7 +106,7 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
             if (tool$rule.speed().isPresent()) {
                 if (tool$rule.maxSpeed.isPresent() && tool$rule.speedPerTick.isPresent()) {
                     float maxSpeed = tool$rule.maxSpeed.get() - tool$rule.speed.get();
-                    int m = (int) Mth.lerp(Math.min(tool$rule.speedPerTick.get() * Utils.getUsedFor(stack), maxSpeed) / maxSpeed, 0, BoersClientConfig.CONFIG.MAX_BOER_HEATING.getAsInt());
+                    int m = (int) Mth.lerp(Math.min(tool$rule.speedPerTick.get() * Utils.getUsedFor(stack), maxSpeed) / maxSpeed, 0, BoersClientConfig.CONFIG.MAX_BOER_HEATING.get());
                     if (m > max) {
                         max = m;
                     }

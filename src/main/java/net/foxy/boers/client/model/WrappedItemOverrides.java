@@ -28,7 +28,7 @@ public class WrappedItemOverrides extends ItemOverrides {
 
     @Override
     public @Nullable BakedModel resolve(BakedModel model, ItemStack bore, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
-        ItemStack stack = Utils.getBoerContentsOrEmpty(bore).itemsCopy();
+        ItemStack stack = Utils.getBoerContentsOrEmpty(bore);
         if (stack.isEmpty()) {
             stack = bore;
         }
@@ -47,8 +47,8 @@ public class WrappedItemOverrides extends ItemOverrides {
                 return new SimpleModel(List.of(), sprite, model.getTransforms());
             }
 
-            var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(0, sprite, null);
-            var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> sprite, BlockModelRotation.X0_Y0);
+            var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(0, sprite.contents(), null);
+            var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> sprite, BlockModelRotation.X0_Y0, Utils.rl("boer"));
             return new SimpleModel(quads, sprite, model.getTransforms());
         });
     }

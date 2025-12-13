@@ -2,7 +2,11 @@ package net.foxy.boers;
 
 import com.mojang.logging.LogUtils;
 import net.foxy.boers.base.*;
+import net.foxy.boers.data.BoerColoring;
+import net.foxy.boers.util.Utils;
+import net.minecraft.world.item.*;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -34,12 +38,12 @@ public class BoersMod {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             // event.insertAfter();
             event.getParameters().holders().lookupOrThrow(ModRegistries.BOER_HEAD).listElements().forEach(boerHeadReference -> {
-                event.insertAfter(Items.NETHERITE_HOE.getDefaultInstance(), Utils.boer(boerHeadReference), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                event.getEntries().putAfter(Items.NETHERITE_HOE.getDefaultInstance(), Utils.boer(boerHeadReference), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             });
             for (DyeColor color : BoerColoring.ALLOWED_COLORS) {
-                ItemStack stack = ModItems.BOER_BASE.toStack();
-                stack.set(DataComponents.BASE_COLOR, color);
-                event.insertAfter(Items.NETHERITE_HOE.getDefaultInstance(), stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                ItemStack stack = ModItems.BOER_BASE.get().getDefaultInstance();
+                stack.getOrCreateTag().putInt("color", color.getId());
+                event.getEntries().putAfter(Items.NETHERITE_HOE.getDefaultInstance(), stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             }
         }
     }

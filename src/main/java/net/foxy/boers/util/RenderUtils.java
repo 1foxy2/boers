@@ -76,7 +76,7 @@ public class RenderUtils {
 
     public static void renderItemModel(ItemStack bore, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, int red, int green, int blue, int alpha) {
         boolean flag1;
-        ItemStack stack = Utils.getBoerContentsOrEmpty(bore).getItemUnsafe();
+        ItemStack stack = Utils.getBoerContentsOrEmpty(bore);
         if (stack.isEmpty()) {
             stack = bore;
         }
@@ -93,9 +93,9 @@ public class RenderUtils {
         for (var model : bakedModel.getRenderPasses(stack, flag1)) {
             VertexConsumer vertexconsumer;
             if (flag1) {
-                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, RenderType.CUTOUT, true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, RenderType.cutout(), true, stack.hasFoil());
             } else {
-                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, RenderType.CUTOUT, true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, RenderType.cutout(), true, stack.hasFoil());
             }
 
             renderModelLists(model, stack, packedLight, packedOverlay, poseStack, vertexconsumer, red, green, blue, alpha);

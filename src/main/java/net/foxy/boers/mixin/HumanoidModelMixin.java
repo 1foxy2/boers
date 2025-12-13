@@ -22,7 +22,7 @@ public class HumanoidModelMixin {
                     target = "Lnet/minecraft/client/model/HumanoidModel;leftArmPose:Lnet/minecraft/client/model/HumanoidModel$ArmPose;", ordinal = 1, opcode = Opcodes.GETFIELD))
     public HumanoidModel.ArmPose removeBob(HumanoidModel.ArmPose original) {
 
-        return original == ModEnums.BOER_STANDING_POS || rightArmPose == ModEnums.BOER_STANDING_POS.getValue() ? HumanoidModel.ArmPose.SPYGLASS : original;
+        return original == ModEnums.BOER_STANDING_POS || rightArmPose == ModEnums.BOER_STANDING_POS ? HumanoidModel.ArmPose.SPYGLASS : original;
     }
 
     @ModifyExpressionValue(
@@ -34,6 +34,6 @@ public class HumanoidModelMixin {
                     opcode = Opcodes.GETFIELD)
     )
     public HumanoidModel.ArmPose removeBobRight(HumanoidModel.ArmPose original) {
-        return original == ModEnums.BOER_STANDING_POS || leftArmPose == ModEnums.BOER_STANDING_POS.getValue() ? HumanoidModel.ArmPose.SPYGLASS : original;
+        return original == ModEnums.BOER_STANDING_POS || leftArmPose == ModEnums.BOER_STANDING_POS ? HumanoidModel.ArmPose.SPYGLASS : original;
     }
 }
