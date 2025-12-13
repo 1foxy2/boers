@@ -11,9 +11,6 @@ import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -39,7 +36,7 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
     );
     public static final Codec<Holder<BoerHead>> ITEM_CODEC = RegistryFixedCodec.create(ModRegistries.BOER_HEAD);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<BoerHead>> STREAM_CODEC = ByteBufCodecs.holderRegistry(ModRegistries.BOER_HEAD);
+    //public static final StreamCodec<RegistryFriendlyByteBuf, Holder<BoerHead>> STREAM_CODEC = ByteBufCodecs.holderRegistry(ModRegistries.BOER_HEAD);
 
     public float getMiningSpeed(ItemStack stack, BlockState state) {
         for (Rule tool$rule : miningRules) {

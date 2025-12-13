@@ -1,7 +1,6 @@
 package net.foxy.boers.event;
 
 import net.foxy.boers.BoersMod;
-import net.foxy.boers.base.ModDataComponents;
 import net.foxy.boers.base.ModEnums;
 import net.foxy.boers.base.ModItems;
 import net.foxy.boers.base.ModParticles;
@@ -10,13 +9,13 @@ import net.foxy.boers.client.BoerBaseRenderer;
 import net.foxy.boers.client.BoerSoundInstance;
 import net.foxy.boers.client.model.BoerModel;
 import net.foxy.boers.item.BoerBaseItem;
-import net.foxy.boers.item.BoerContents;
+import net.foxy.boers.item.BoerTooltip;
+import net.foxy.boers.network.NetworkHandler;
 import net.foxy.boers.network.c2s.SetUseBoerPacket;
 import net.foxy.boers.network.c2s.TickBoerPacket;
 import net.foxy.boers.particle.spark.SparkParticleProvider;
 import net.foxy.boers.util.ModItemProperties;
 import net.foxy.boers.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -25,19 +24,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.Nullable;
 
-@EventBusSubscriber(modid = BoersMod.MODID, value = Dist.CLIENT)
 public class ModClientEvents {
-    private static final ResourceLocation BOER_MODEL_LOADER = Utils.rl("boer");
     public static int lastProgress = 0;
     public static int usingProgress = 0;
     public static BoerSoundInstance soundInstance = null;
@@ -45,92 +43,79 @@ public class ModClientEvents {
     public static BoerSoundInstance idleSoundInstance = null;
     public static BoerSoundInstance idleSoundInstance2 = null;
 
-    @SubscribeEvent
-    public static void registerCustomModels(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(BOER_MODEL_LOADER, BoerModel.Loader.INSTANCE);
-    }
+    @Mod.EventBusSubscriber(modid = BoersMod.MODID, value = Dist.CLIENT)
+    public class ForgeBus {
 
-    @SubscribeEvent
-    public static void registerTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
-        event.register(BoerContents.class, ClientBoersTooltip::new);
-    }
-
-    @SubscribeEvent
-    public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
-        event.registerSpriteSet(ModParticles.SPARK_PARTICLE.get(), SparkParticleProvider::new);
-    }
-
-
-    @SubscribeEvent
-    public static void tickBoerProgress(ClientTickEvent.Post event) {
-        Player player = Minecraft.getInstance().player;
-        if (player == null) {
-            return;
-        }
-
-        ItemStack stack = player.getMainHandItem();
-        if (stack.getItem() instanceof BoerBaseItem boer) {
-            lastProgress = usingProgress;
-            if (Minecraft.getInstance().options.keyAttack.isDown()) {
-                usingProgress = Math.min(usingProgress + 1, 10);
-            } else {
-                usingProgress = Math.max(usingProgress - 1, 0);
+        @SubscribeEvent
+        public static void tickBoerProgress(TickEvent.ClientTickEvent event) {
+            if (event.phase != TickEvent.Phase.END) {
+                return;
             }
-
-            boolean isUsed = Utils.isUsed(stack);
-            if (usingProgress < 9) {
-                if (isUsed) {
-                    PacketDistributor.sendToServer(new SetUseBoerPacket(false));
-                }
-            } else {
-                if (!isUsed) {
-                    PacketDistributor.sendToServer(new SetUseBoerPacket(true));
-                }
-                boer.onAttackTick(player.level(), player, stack, usingProgress);
-                PacketDistributor.sendToServer(new TickBoerPacket(usingProgress));
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void disableAttack(InputEvent.InteractionKeyMappingTriggered event) {
-        if (event.isAttack()) {
             Player player = Minecraft.getInstance().player;
+            if (player == null) {
+                return;
+            }
+
             ItemStack stack = player.getMainHandItem();
             if (stack.getItem() instanceof BoerBaseItem boer) {
-                event.setSwingHand(false);
-                if (usingProgress <= 9) {
-                    event.setCanceled(true);
+                lastProgress = usingProgress;
+                if (Minecraft.getInstance().options.keyAttack.isDown()) {
+                    usingProgress = Math.min(usingProgress + 1, 10);
+                } else {
+                    usingProgress = Math.max(usingProgress - 1, 0);
+                }
+
+                boolean isUsed = Utils.isUsed(stack);
+                if (usingProgress < 9) {
+                    if (isUsed) {
+                        NetworkHandler.INSTANCE.sendToServer(new SetUseBoerPacket(false));
+                    }
+                } else {
+                    if (!isUsed) {
+                        NetworkHandler.INSTANCE.sendToServer(new SetUseBoerPacket(true));
+                    }
+                    boer.onAttackTick(player.level(), player, stack, usingProgress);
+                    NetworkHandler.INSTANCE.sendToServer(new TickBoerPacket(usingProgress));
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void disableAttack(InputEvent.InteractionKeyMappingTriggered event) {
+            if (event.isAttack()) {
+                Player player = Minecraft.getInstance().player;
+                ItemStack stack = player.getMainHandItem();
+                if (stack.getItem() instanceof BoerBaseItem boer) {
+                    event.setSwingHand(false);
+                    if (usingProgress <= 9) {
+                        event.setCanceled(true);
+                    }
                 }
             }
         }
     }
 
-    @SubscribeEvent
-    public static void registerItemRenderers(RegisterClientExtensionsEvent event) {
-        event.registerItem(new IClientItemExtensions() {
-            public static BoerBaseRenderer renderer = null;
+    @Mod.EventBusSubscriber(modid = BoersMod.MODID, value = Dist.CLIENT, bus = net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD)
+    public class ModBus {
 
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (renderer == null) {
-                    renderer = new BoerBaseRenderer(
-                            Minecraft.getInstance().getBlockEntityRenderDispatcher(),
-                            Minecraft.getInstance().getEntityModels());
-                }
+        @SubscribeEvent
+        public static void registerCustomModels(ModelEvent.RegisterGeometryLoaders event) {
+            event.register("boer", BoerModel.Loader.INSTANCE);
+        }
 
-                return renderer;
-            }
+        @SubscribeEvent
+        public static void registerTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
+             event.register(BoerTooltip.class, ClientBoersTooltip::new);
+        }
 
-            @Override
-            public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-                return ModEnums.BOER_STANDING_POS.getValue();
-            }
-        }, ModItems.BOER_BASE);
-    }
+        @SubscribeEvent
+        public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+            event.registerSpriteSet(ModParticles.SPARK_PARTICLE.get(), SparkParticleProvider::new);
+        }
 
-    @SubscribeEvent
-    public static void clientSetup(FMLClientSetupEvent event) {
-        ModItemProperties.addModItemProperties();
+        @SubscribeEvent
+        public static void clientSetup(FMLClientSetupEvent event) {
+            ModItemProperties.addModItemProperties();
+        }
     }
 }

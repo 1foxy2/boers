@@ -1,33 +1,28 @@
 package net.foxy.boers.network.c2s;
 
 import net.foxy.boers.item.BoerBaseItem;
-import net.foxy.boers.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
-public record TickBoerPacket(int progress) implements CustomPacketPayload {
-    public static final StreamCodec<FriendlyByteBuf, TickBoerPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT,
-            TickBoerPacket::progress,
-            TickBoerPacket::new
-    );
+import java.util.function.Supplier;
 
-    public static final Type<TickBoerPacket> TYPE = new Type<>(Utils.rl("tick_boer"));
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+public record TickBoerPacket(int progress) {
+    public static void encode(TickBoerPacket packet, FriendlyByteBuf buf) {
+        buf.writeInt(packet.progress);
     }
 
+    public static TickBoerPacket decode(FriendlyByteBuf buf) {
+        return new TickBoerPacket(buf.readInt());
+    }
 
-    public static void handle(TickBoerPacket payLoad, IPayloadContext ctx) {
-        ItemStack mainHandItem = ctx.player().getMainHandItem();
-        if (mainHandItem.getItem() instanceof BoerBaseItem boerBaseItem) {
-            boerBaseItem.onAttackTick(ctx.player().level(), ctx.player(), mainHandItem, payLoad.progress());
-        }
+    public static void handle(TickBoerPacket payLoad, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            ItemStack mainHandItem = ctx.get().getSender().getMainHandItem();
+            if (mainHandItem.getItem() instanceof BoerBaseItem boerBaseItem) {
+                boerBaseItem.onAttackTick(ctx.get().getSender().level(), ctx.get().getSender(), mainHandItem, payLoad.progress());
+            }
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

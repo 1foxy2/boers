@@ -1,9 +1,7 @@
 package net.foxy.boers.util;
 
-import net.foxy.boers.base.ModDataComponents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.foxy.boers.item.BoerContents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -33,9 +31,9 @@ public class RenderUtils {
         for (var model : bakedModel.getRenderPasses(stack, flag1)) {
             VertexConsumer vertexconsumer;
             if (flag1) {
-                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, RenderType.CUTOUT, true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, RenderType.cutout(), true, stack.hasFoil());
             } else {
-                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, RenderType.CUTOUT, true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, RenderType.cutout(), true, stack.hasFoil());
             }
 
             renderer.renderModelLists(model, stack, packedLight, packedOverlay, poseStack, vertexconsumer);
@@ -44,7 +42,7 @@ public class RenderUtils {
 
     public static void renderItemModel(ItemStack bore, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         boolean flag1;
-        ItemStack stack = Utils.getBoerContentsOrEmpty(bore).getItemUnsafe();
+        ItemStack stack = Utils.getBoerContentsOrEmpty(bore);
         if (stack.isEmpty()) {
             stack = bore;
         }
@@ -61,9 +59,9 @@ public class RenderUtils {
         for (var model : bakedModel.getRenderPasses(stack, flag1)) {
             VertexConsumer vertexconsumer;
             if (flag1) {
-                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, RenderType.CUTOUT, true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, RenderType.cutout(), true, stack.hasFoil());
             } else {
-                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, RenderType.CUTOUT, true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, RenderType.cutout(), true, stack.hasFoil());
             }
 
             renderer.renderModelLists(model, stack, packedLight, packedOverlay, poseStack, vertexconsumer);

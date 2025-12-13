@@ -20,19 +20,16 @@ links=[
 ]
 sources="https://github.com/1foxy2/boers"
 
-[[mixins]]
-config="${mod_id}.mixins.json"
+[[dependencies.${mod_id}]]
+modId="forge"
+mandatory = true
+versionRange="${neo_version_range}"
+ordering="NONE"
+side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="neoforge"
-    type="required"
-    versionRange="${neo_version_range}"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="minecraft"
-    type="required"
-    versionRange="${minecraft_version_range}"
-    ordering="NONE"
-    side="BOTH"
+modId="minecraft"
+mandatory = true
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

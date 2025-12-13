@@ -3,26 +3,39 @@ package net.foxy.boers.network;
 import net.foxy.boers.BoersMod;
 import net.foxy.boers.network.c2s.SetUseBoerPacket;
 import net.foxy.boers.network.c2s.TickBoerPacket;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.foxy.boers.util.Utils;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
-@EventBusSubscriber(modid = BoersMod.MODID)
+@Mod.EventBusSubscriber(modid = BoersMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class NetworkHandler {
-    private static final String PROTOCOL_VERSION = "3";
+    private static final String PROTOCOL_VERSION = "1";
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
+            Utils.rl("main"),
+            () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals,
+            PROTOCOL_VERSION::equals
+    );
 
     @SubscribeEvent
-    public static void onRegisterPayloads(final RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(PROTOCOL_VERSION);
-
-        registrar.playToServer(
-                TickBoerPacket.TYPE,
-                        TickBoerPacket.STREAM_CODEC,
-                        TickBoerPacket::handle)
-                .playToServer(
-                        SetUseBoerPacket.TYPE,
-                        SetUseBoerPacket.STREAM_CODEC,
-                        SetUseBoerPacket::handle);
+    public static void onRegisterPayloads(final FMLCommonSetupEvent event) {
+        int id = 0;
+        INSTANCE.registerMessage(
+                id++,
+                SetUseBoerPacket.class,
+                SetUseBoerPacket::encode,
+                SetUseBoerPacket::decode,
+                SetUseBoerPacket::handle
+                );
+        INSTANCE.registerMessage(
+                id,
+                TickBoerPacket.class,
+                TickBoerPacket::encode,
+                TickBoerPacket::decode,
+                TickBoerPacket::handle
+                );
     }
 }

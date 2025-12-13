@@ -1,27 +1,22 @@
 package net.foxy.boers.datagen.loot;
 
 import net.foxy.boers.BoersMod;
-import net.foxy.boers.base.ModLootTables;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
-import net.neoforged.neoforge.common.loot.AddTableLootModifier;
-import net.neoforged.neoforge.common.loot.LootTableIdCondition;
-
-import java.util.concurrent.CompletableFuture;
+import net.minecraftforge.common.data.GlobalLootModifierProvider;
+import net.minecraftforge.common.loot.LootTableIdCondition;
 
 public class ModGLM extends GlobalLootModifierProvider {
-    public ModGLM(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries, BoersMod.MODID);
+    public ModGLM(PackOutput output) {
+        super(output, BoersMod.MODID);
     }
 
     @Override
     protected void start() {
         add(
                 "boers_loot_modifier",
-                new AddTableLootModifier(new LootItemCondition[] {new LootTableIdCondition.Builder(BuiltInLootTables.ABANDONED_MINESHAFT.location()).build()}, ModLootTables.ABANDONED_MINESHAFT)
+                new BoerLootModifier(new LootItemCondition[] {new LootTableIdCondition.Builder(BuiltInLootTables.ABANDONED_MINESHAFT).build()})
         );
     }
 }

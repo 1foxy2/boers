@@ -3,13 +3,14 @@ package net.foxy.boers.data;
 import net.foxy.boers.base.ModRecipeSerializers;
 import net.foxy.boers.item.BoerBaseItem;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -28,16 +29,17 @@ public class BoerColoring extends CustomRecipe {
             DyeColor.BLUE
     );
 
-    public BoerColoring(CraftingBookCategory category) {
-        super(category);
+    public BoerColoring(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
-    public boolean matches(CraftingInput input, Level level) {
+    @Override
+    public boolean matches(CraftingContainer container, Level level) {
         int i = 0;
         int j = 0;
 
-        for (int k = 0; k < input.size(); k++) {
-            ItemStack itemstack = input.getItem(k);
+        for (int k = 0; k < container.getContainerSize(); k++) {
+            ItemStack itemstack = container.getItem(k);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof BoerBaseItem) {
                     i++;
@@ -58,11 +60,12 @@ public class BoerColoring extends CustomRecipe {
         return i == 1 && j == 1;
     }
 
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+
+    public ItemStack assemble(CraftingContainer input, RegistryAccess registries) {
         ItemStack itemstack = ItemStack.EMPTY;
         net.minecraft.world.item.DyeColor dyecolor = net.minecraft.world.item.DyeColor.WHITE;
 
-        for (int i = 0; i < input.size(); i++) {
+        for (int i = 0; i < input.getContainerSize(); i++) {
             ItemStack itemstack1 = input.getItem(i);
             if (!itemstack1.isEmpty()) {
                 Item item = itemstack1.getItem();
@@ -75,7 +78,7 @@ public class BoerColoring extends CustomRecipe {
             }
         }
 
-        itemstack.set(DataComponents.BASE_COLOR, dyecolor);
+        itemstack.getOrCreateTag().putInt("color", dyecolor.getId());
         return itemstack;
     }
 

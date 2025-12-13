@@ -1,9 +1,7 @@
 package net.foxy.boers.item;
 
-import net.foxy.boers.base.ModDataComponents;
-import net.foxy.boers.base.ModItems;
-import net.foxy.boers.base.ModParticles;
-import net.foxy.boers.base.ModSounds;
+import net.foxy.boers.base.*;
+import net.foxy.boers.client.BoerBaseRenderer;
 import net.foxy.boers.client.BoerSoundInstance;
 import net.foxy.boers.client.BoersClientConfig;
 import net.foxy.boers.data.BoerHead;
@@ -11,20 +9,23 @@ import net.foxy.boers.event.ModClientEvents;
 import net.foxy.boers.particle.spark.SparkParticle;
 import net.foxy.boers.util.Utils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.BundleTooltip;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ClipContext;
@@ -34,15 +35,41 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class BoerBaseItem extends Item {
     public BoerBaseItem() {
         super(new Properties().stacksTo(1)
-                .component(ModDataComponents.BOER_CONTENTS, BoerContents.EMPTY).component(DataComponents.BASE_COLOR, DyeColor.BLUE)
+                //.component(ModDataComponents.BOER_CONTENTS, BoerContents.EMPTY).component(DataComponents.BASE_COLOR, DyeColor.BLUE)
         );
+    }
+
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            public static BoerBaseRenderer renderer = null;
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (renderer == null) {
+                    renderer = new BoerBaseRenderer(
+                            Minecraft.getInstance().getBlockEntityRenderDispatcher(),
+                            Minecraft.getInstance().getEntityModels());
+                }
+
+                return renderer;
+            }
+
+            @Override
+            public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
+                return ModEnums.BOER_STANDING_POS;
+            }
+        });
     }
 
     @Override
@@ -52,12 +79,12 @@ public class BoerBaseItem extends Item {
 
     @Override
     public boolean isDamageable(ItemStack stack) {
-        ItemStack boerItem = Utils.getBoerContents(stack).getItemUnsafe();
+        ItemStack boerItem = Utils.getBoerContents(stack);
         return !boerItem.isEmpty() && boerItem.isDamageableItem();
     }
 
     @Override
-    public int getUseDuration(ItemStack stack, LivingEntity entity) {
+    public int getUseDuration(ItemStack stack) {
         return 72000;
     }
 
@@ -81,21 +108,12 @@ public class BoerBaseItem extends Item {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return Utils.getBoerContentsOrEmpty(stack).items.getMaxDamage();
+        return Utils.getBoerContentsOrEmpty(stack).getMaxDamage();
     }
 
     @Override
     public int getDamage(ItemStack stack) {
-        return Utils.getBoerContentsOrEmpty(stack).items.getDamageValue();
-    }
-
-    @Override
-    public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
-        super.onStopUsing(stack, entity, count);
-        if (entity instanceof ServerPlayer serverPlayer) {
-            serverPlayer.gameMode.handleBlockBreakAction(serverPlayer.gameMode.destroyPos,
-                    ServerboundPlayerActionPacket.Action.ABORT_DESTROY_BLOCK, Direction.UP, entity.level().getMaxBuildHeight(), 0);
-        }
+        return Utils.getBoerContentsOrEmpty(stack).getDamageValue();
     }
 
     @Override
@@ -104,7 +122,7 @@ public class BoerBaseItem extends Item {
     }
 
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        BoerHead tool = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack).items);
+        BoerHead tool = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack));
         return tool != null ? tool.getMiningSpeed(stack, state) : 1.0F;
     }
 
@@ -115,16 +133,15 @@ public class BoerBaseItem extends Item {
 
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
-        BoerContents boerContents = Utils.getBoerContents(stack);
-        if (boerContents == null) {
+        ItemStack boer = Utils.getBoerContents(stack);
+        if (boer.isEmpty()) {
             return false;
         } else {
             if (!level.isClientSide && state.getDestroySpeed(level, pos) != 0.0F) {
-                ItemStack boer = boerContents.getItemUnsafe();
-                BoerHead tool = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack).items);
+                BoerHead tool = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack));
                 int damage = tool != null ? tool.getDamage(state) : 1;
-                boer.hurtAndBreak(damage, miningEntity, EquipmentSlot.MAINHAND);
-                Utils.setBoerContents(stack, new BoerContents(boer));
+                boer.hurtAndBreak(damage, miningEntity, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+                Utils.setBoerContents(stack, boer);
                 if (tool != null && miningEntity instanceof ServerPlayer player) {
                     if (tool.radius().isPresent()) {
                         Vec3i radius;
@@ -182,7 +199,7 @@ public class BoerBaseItem extends Item {
     }
 
     public void onAttackTick(Level level, Player player, ItemStack stack, int used) {
-        ItemStack boer = Utils.getBoerContentsOrEmpty(stack).items;
+        ItemStack boer = Utils.getBoerContentsOrEmpty(stack);
         if (!boer.isEmpty()) {
             List<LivingEntity> targetEntities = getTargetEntity(player, level);
 
@@ -198,8 +215,8 @@ public class BoerBaseItem extends Item {
                     } else {
                         if (player.tickCount % 10 == 0) {
                             target.hurt(level.damageSources().playerAttack(player), 2.0F);
-                            boer.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
-                            Utils.setBoerContents(stack, new BoerContents(boer));
+                            boer.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+                            Utils.setBoerContents(stack, boer);
 
                             level.playSound(null, target.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.3F, 1.8F);
                         }
@@ -283,7 +300,7 @@ public class BoerBaseItem extends Item {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        BoerHead head = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack).items);
+        BoerHead head = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack));
         if (head != null) {
             return head.isCorrectForDrops(state);
         }
@@ -295,33 +312,28 @@ public class BoerBaseItem extends Item {
         if (stack.getCount() != 1 || action != ClickAction.SECONDARY) {
             return false;
         } else {
-            BoerContents bundlecontents = Utils.getBoerContents(stack);
-            if (bundlecontents == null) {
-                return false;
-            } else {
-                ItemStack itemstack = slot.getItem();
+            ItemStack bundlecontents = Utils.getBoerContents(stack);
 
-                BoerContents.Mutable bundlecontents$mutable = new BoerContents.Mutable(bundlecontents);
-                if (itemstack.isEmpty()) {
-                    this.playRemoveOneSound(player);
-                    ItemStack itemstack1 = bundlecontents$mutable.removeOne();
-                    if (itemstack1 != null) {
-                        ItemStack itemstack2 = slot.safeInsert(itemstack1);
-                        bundlecontents$mutable.tryInsert(itemstack2);
-                    }
-                } else if (itemstack.canFitInsideContainerItems()) { // Neo: stack-aware placeability check
-                    if (!itemstack.is(ModItems.BOER_HEAD)) {
-                        return false;
-                    }
-                    int i = bundlecontents$mutable.tryTransfer(slot, player);
-                    if (i > 0) {
-                        this.playInsertSound(player);
-                    }
+            ItemStack itemstack = slot.getItem();
+
+            if (itemstack.isEmpty()) {
+                this.playRemoveOneSound(player);
+                ItemStack itemstack1 = bundlecontents;
+                if (itemstack1 != null) {
+                    bundlecontents = slot.safeInsert(itemstack1);
                 }
-
-                Utils.setBoerContents(stack, bundlecontents$mutable.toImmutable());
-                return true;
+            } else if (itemstack.getItem().canFitInsideContainerItems()) { // Neo: stack-aware placeability check
+                if (!itemstack.is(ModItems.BOER_HEAD.get())) {
+                    return false;
+                }
+                if (bundlecontents.isEmpty()) {
+                    bundlecontents = slot.safeTake(1, 1, player);
+                    this.playInsertSound(player);
+                }
             }
+
+            Utils.setBoerContents(stack, bundlecontents);
+            return true;
         }
     }
 
@@ -331,33 +343,32 @@ public class BoerBaseItem extends Item {
     ) {
         if (stack.getCount() != 1) return false;
         if (action == ClickAction.SECONDARY && slot.allowModification(player)) {
-            BoerContents bundlecontents = Utils.getBoerContents(stack);
+            ItemStack bundlecontents = Utils.getBoerContents(stack);
             if (bundlecontents == null) {
                 return false;
             } else {
-                BoerContents.Mutable bundlecontents$mutable = new BoerContents.Mutable(bundlecontents);
                 if (other.isEmpty()) {
-                    ItemStack itemstack = bundlecontents$mutable.removeOne();
+                    ItemStack itemstack = bundlecontents.split(1);
                     if (itemstack != null) {
                         this.playRemoveOneSound(player);
                         access.set(itemstack);
                     }
                 } else {
-                    if (!other.is(ModItems.BOER_HEAD)) {
+                    if (!other.is(ModItems.BOER_HEAD.get())) {
                         return false;
                     }
-                    ItemStack itemStack = bundlecontents$mutable.removeOne();
+                    ItemStack itemStack = bundlecontents.split(1);
 
-                    int i = bundlecontents$mutable.tryInsert(other);
-                    if (i > 0) {
+                    if (bundlecontents.isEmpty()) {
+                        bundlecontents = other.split(1);
                         this.playInsertSound(player);
                     }
-                    if (itemStack != null) {
+                    if (!itemStack.isEmpty()) {
                         access.set(itemStack);
                     }
                 }
 
-                Utils.setBoerContents(stack,bundlecontents$mutable.toImmutable());
+                Utils.setBoerContents(stack, bundlecontents);
                 return true;
             }
         } else {
@@ -367,28 +378,25 @@ public class BoerBaseItem extends Item {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        ItemStack boer = Utils.getBoerContentsOrEmpty(stack).items;
+        ItemStack boer = Utils.getBoerContentsOrEmpty(stack);
         return !boer.isEmpty() && boer.isDamaged();
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return Utils.getBoerContentsOrEmpty(stack).items.getBarWidth();
+        return Utils.getBoerContentsOrEmpty(stack).getBarWidth();
     }
 
-    @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        return !stack.has(DataComponents.HIDE_TOOLTIP) && !stack.has(DataComponents.HIDE_ADDITIONAL_TOOLTIP)
-                ? Optional.ofNullable(Utils.getBoerContents(stack))
-                : Optional.empty();
+        return Optional.of(new BoerTooltip(Utils.getBoerContents(stack)));
     }
 
     @Override
     public void onDestroyed(ItemEntity itemEntity) {
-        BoerContents bundlecontents = Utils.getBoerContents(itemEntity.getItem());
+        ItemStack bundlecontents = Utils.getBoerContents(itemEntity.getItem());
         if (bundlecontents != null) {
-            Utils.setBoerContents(itemEntity.getItem(), BoerContents.EMPTY);
-            ItemUtils.onContainerDestroyed(itemEntity, List.of(bundlecontents.itemsCopy()));
+            Utils.setBoerContents(itemEntity.getItem(), ItemStack.EMPTY);
+            ItemUtils.onContainerDestroyed(itemEntity, List.of(bundlecontents.copy()).stream());
         }
     }
 

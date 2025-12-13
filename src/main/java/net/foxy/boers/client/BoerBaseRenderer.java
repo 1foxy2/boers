@@ -1,9 +1,7 @@
 package net.foxy.boers.client;
 
-import net.foxy.boers.base.ModDataComponents;
 import net.foxy.boers.base.ModModels;
 import net.foxy.boers.event.ModClientEvents;
-import net.foxy.boers.item.BoerContents;
 import net.foxy.boers.util.RenderUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -28,7 +26,7 @@ public class BoerBaseRenderer extends BlockEntityWithoutLevelRenderer {
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         poseStack.pushPose();
         if (displayContext == ItemDisplayContext.GUI || displayContext == ItemDisplayContext.FIXED) {
-            BoerContents itemStack = Utils.getBoerContents(stack);
+            ItemStack itemStack = Utils.getBoerContents(stack);
             boolean flag = itemStack != null && !itemStack.isEmpty();
             if (!flag) {
                 poseStack.translate(-1 * 0.0625, 3 * 0.0625, 0);
@@ -50,13 +48,13 @@ public class BoerBaseRenderer extends BlockEntityWithoutLevelRenderer {
                 poseStack.translate(-0.8f, 0.1, -0.15f);
                 poseStack.mulPose(Axis.ZN.rotationDegrees(10));
             } else if (displayContext.firstPerson()) {
-                poseStack.mulPose(Axis.YN.rotationDegrees(Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100)));
+                poseStack.mulPose(Axis.YN.rotationDegrees(Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getFrameTime(), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100)));
             }
 
             RenderUtils.renderItemModel(stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BOER_BASE);
             poseStack.scale(0.5f, 0.5f, 1.01f);
             poseStack.translate(12 * 0.0625, 5 * 0.0625, -0.005f);
-            BoerContents itemStack = Utils.getBoerContents(stack);
+            ItemStack itemStack = Utils.getBoerContents(stack);
             if (itemStack != null && !itemStack.isEmpty()) {
                 RenderUtils.renderItemModel(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
             }

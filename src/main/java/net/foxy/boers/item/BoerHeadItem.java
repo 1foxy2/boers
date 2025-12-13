@@ -30,6 +30,6 @@ public class BoerHeadItem extends Item {
             return super.getDescriptionId(stack);
         }
 
-        return super.getDescriptionId(stack) + "." + head.getKey().location().toString().replace(":", ".");
+        return super.getDescriptionId(stack) + "." + head.unwrapKey().get().location().toString().replace(":", ".");
     }
 }

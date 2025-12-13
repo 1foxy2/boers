@@ -10,10 +10,10 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredItem;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ModItemModelProvider extends ItemModelProvider {
     public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
@@ -41,17 +41,17 @@ public class ModItemModelProvider extends ItemModelProvider {
         }
     }
 
-    private ItemModelBuilder entity(DeferredItem<? extends ItemLike> item) {
+    private ItemModelBuilder entity(RegistryObject<? extends ItemLike> item) {
         return withExistingParent(item.getId().getPath(), Utils.rl("item/entity"));
     }
 
-    private ItemModelBuilder simpleItem(DeferredItem<? extends ItemLike> item) {
+    private ItemModelBuilder simpleItem(RegistryObject<? extends ItemLike> item) {
         return withExistingParent(item.getId().getPath(),
                 ResourceLocation.parse("item/generated")).texture("layer0",
                 Utils.rl("item/" + item.getId().getPath()));
     }
 
-    private ItemModelBuilder simpleItem(DeferredItem<? extends ItemLike> item, String string) {
+    private ItemModelBuilder simpleItem(RegistryObject<? extends ItemLike> item, String string) {
         return withExistingParent(item.getId().getPath(),
                 ResourceLocation.parse("item/generated"))
                 .texture("layer1", Utils.rl("item/" + item.getId().getPath()))
@@ -60,10 +60,10 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
 
-    private ItemModelBuilder tool(DeferredItem<? extends Item> item) {
+    private ItemModelBuilder tool(RegistryObject<? extends Item> item) {
         return tool(item, item.getId().getPath() + "_texture");
     }
-    private ItemModelBuilder tool(DeferredItem<? extends Item> item, String name) {
+    private ItemModelBuilder tool(RegistryObject<? extends Item> item, String name) {
         return tool(name, item.getId().getPath());
     }
 
@@ -78,7 +78,7 @@ public class ModItemModelProvider extends ItemModelProvider {
                         Utils.rl("item/" + texture)).renderType("cutout");
     }
 
-    private ItemModelBuilder tool(DeferredItem<? extends Item> item, int layers) {
+    private ItemModelBuilder tool(RegistryObject<? extends Item> item, int layers) {
         var model = withExistingParent(item.getId().getPath(),
                 ResourceLocation.parse("minecraft:item/handheld"))
                 .texture("layer0",
@@ -92,17 +92,17 @@ public class ModItemModelProvider extends ItemModelProvider {
         return model;
     }
 
-    private ItemModelBuilder blank(DeferredItem<? extends Item> item) {
+    private ItemModelBuilder blank(RegistryObject<? extends Item> item) {
         return withExistingParent(item.getId().getPath(),
                 ResourceLocation.parse("item/generated")).texture("layer0",
                 Utils.rl("item/blank"));
     }
-    private ItemModelBuilder customTexture(DeferredItem<? extends Item> item, String texture) {
+    private ItemModelBuilder customTexture(RegistryObject<? extends Item> item, String texture) {
         return withExistingParent(item.getId().getPath(),
                 ResourceLocation.parse("item/generated")).texture("layer0",
                 Utils.rl("item/" + texture));
     }
-    private ItemModelBuilder simpleBlockItem(DeferredItem<? extends ItemLike> item) {
+    private ItemModelBuilder simpleBlockItem(RegistryObject<? extends ItemLike> item) {
         return withExistingParent(item.getId().getPath(),
                 ResourceLocation.parse("item/generated")).texture("layer0",
                 Utils.rl("block/" + item.getId().getPath()));

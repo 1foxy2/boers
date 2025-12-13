@@ -1,7 +1,5 @@
 package net.foxy.boers.mixin;
 
-import net.foxy.boers.base.ModDataComponents;
-import net.foxy.boers.item.BoerContents;
 import net.foxy.boers.util.Utils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -19,8 +17,8 @@ public class LivingEntityMixin {
             ),
             index = 0
     )
-    private static ItemStack particles(ItemStack stack) {
-        ItemStack boer = Utils.getBoerContentsOrEmpty(stack).getItemUnsafe();
+    private ItemStack particles(ItemStack stack) {
+        ItemStack boer = Utils.getBoerContentsOrEmpty(stack);
         if (!boer.isEmpty()) {
             return boer;
         }

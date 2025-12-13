@@ -3,15 +3,15 @@ package net.foxy.boers.base;
 import net.foxy.boers.BoersMod;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
 
 public class ModParticles {
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
-            DeferredRegister.create(BuiltInRegistries.PARTICLE_TYPE, BoersMod.MODID);
+            DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, BoersMod.MODID);
 
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SPARK_PARTICLE = PARTICLE_TYPES.register(
+    public static final RegistryObject<SimpleParticleType> SPARK_PARTICLE = PARTICLE_TYPES.register(
             "spark_particle",
             () -> new SimpleParticleType(false)
     );

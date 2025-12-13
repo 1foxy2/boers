@@ -1,34 +1,29 @@
 package net.foxy.boers.network.c2s;
 
-import net.foxy.boers.base.ModDataComponents;
 import net.foxy.boers.item.BoerBaseItem;
 import net.foxy.boers.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
-public record SetUseBoerPacket(boolean used) implements CustomPacketPayload {
-    public static final StreamCodec<FriendlyByteBuf, SetUseBoerPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.BOOL,
-            SetUseBoerPacket::used,
-            SetUseBoerPacket::new
-    );
+import java.util.function.Supplier;
 
-    public static final Type<SetUseBoerPacket> TYPE = new Type<>(Utils.rl("use_boer"));
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+public record SetUseBoerPacket(boolean used) {
+    public static void encode(SetUseBoerPacket packet, FriendlyByteBuf buf) {
+        buf.writeBoolean(packet.used);
     }
 
+    public static SetUseBoerPacket decode(FriendlyByteBuf buf) {
+        return new SetUseBoerPacket(buf.readBoolean());
+    }
 
-    public static void handle(SetUseBoerPacket payLoad, IPayloadContext ctx) {
-        ItemStack mainHandItem = ctx.player().getMainHandItem();
-        if (mainHandItem.getItem() instanceof BoerBaseItem) {
-            Utils.setUsed(mainHandItem, payLoad.used);
-        }
+    public static void handle(SetUseBoerPacket payLoad, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            ItemStack mainHandItem = ctx.get().getSender().getMainHandItem();
+            if (mainHandItem.getItem() instanceof BoerBaseItem) {
+                Utils.setUsed(mainHandItem, payLoad.used);
+            }
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

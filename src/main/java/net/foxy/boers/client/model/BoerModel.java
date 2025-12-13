@@ -26,15 +26,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.NeoForgeRenderTypes;
-import net.neoforged.neoforge.client.model.ExtraFaceData;
-import net.neoforged.neoforge.client.model.IDynamicBakedModel;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
-import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
-import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
-import net.neoforged.neoforge.client.model.geometry.UnbakedGeometryHelper;
+import net.minecraftforge.client.ChunkRenderTypeSet;
+import net.minecraftforge.client.ForgeRenderTypes;
+import net.minecraftforge.client.model.ForgeFaceData;
+import net.minecraftforge.client.model.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -49,19 +49,18 @@ import java.util.function.Function;
  * - Support for per-layer render types
  */
 public class BoerModel implements IUnbakedGeometry<BoerModel> {
-    @Nullable
     private ImmutableList<Material> textures;
-    private final Int2ObjectMap<ExtraFaceData> layerData;
+    private final Int2ObjectMap<ForgeFaceData> layerData;
     private final Int2ObjectMap<ResourceLocation> renderTypeNames;
 
-    private BoerModel(@Nullable ImmutableList<Material> textures, Int2ObjectMap<ExtraFaceData> layerData, Int2ObjectMap<ResourceLocation> renderTypeNames) {
+    private BoerModel(ImmutableList<Material> textures, Int2ObjectMap<ForgeFaceData> layerData, Int2ObjectMap<ResourceLocation> renderTypeNames) {
         this.textures = textures;
         this.layerData = layerData;
         this.renderTypeNames = renderTypeNames;
     }
 
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides) {
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
         if (textures == null) {
             ImmutableList.Builder<Material> builder = ImmutableList.builder();
             for (int i = 0; context.hasMaterial("layer" + i); i++) {
@@ -96,7 +95,7 @@ public class BoerModel implements IUnbakedGeometry<BoerModel> {
                 }
             }
 
-            var emissiveLayers = new Int2ObjectArrayMap<ExtraFaceData>();
+            var emissiveLayers = new Int2ObjectArrayMap<ForgeFaceData>();
             if (jsonObject.has("forge_data")) throw new JsonParseException("forge_data should be replaced by neoforge_data"); // TODO 1.22: Remove
             if (jsonObject.has("neoforge_data")) {
                 JsonObject forgeData = jsonObject.get("neoforge_data").getAsJsonObject();
@@ -105,14 +104,14 @@ public class BoerModel implements IUnbakedGeometry<BoerModel> {
             return new BoerModel(null, emissiveLayers, renderTypeNames);
         }
 
-        protected void readLayerData(JsonObject jsonObject, String name, Int2ObjectOpenHashMap<ResourceLocation> renderTypeNames, Int2ObjectMap<ExtraFaceData> layerData, boolean logWarning) {
+        protected void readLayerData(JsonObject jsonObject, String name, Int2ObjectOpenHashMap<ResourceLocation> renderTypeNames, Int2ObjectMap<ForgeFaceData> layerData, boolean logWarning) {
             if (!jsonObject.has(name)) {
                 return;
             }
             var fullbrightLayers = jsonObject.getAsJsonObject(name);
             for (var entry : fullbrightLayers.entrySet()) {
                 int layer = Integer.parseInt(entry.getKey());
-                var data = ExtraFaceData.read(entry.getValue(), ExtraFaceData.DEFAULT);
+                var data = ForgeFaceData.read(entry.getValue(), ForgeFaceData.DEFAULT);
                 layerData.put(layer, data);
             }
         }
@@ -136,6 +135,7 @@ public class BoerModel implements IUnbakedGeometry<BoerModel> {
             this.overrides = new WrappedItemOverrides();
             this.transforms = transforms;
         }
+
 
         @Override
         public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data, @Nullable RenderType renderType) {
@@ -179,7 +179,7 @@ public class BoerModel implements IUnbakedGeometry<BoerModel> {
 
         @Override
         public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-            return ChunkRenderTypeSet.of(NeoForgeRenderTypes.ITEM_UNSORTED_TRANSLUCENT.get());
+            return ChunkRenderTypeSet.of(ForgeRenderTypes.ITEM_UNSORTED_TRANSLUCENT.get());
         }
 
         @Override

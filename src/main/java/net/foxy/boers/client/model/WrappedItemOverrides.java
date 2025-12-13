@@ -1,8 +1,6 @@
 package net.foxy.boers.client.model;
 
-import net.foxy.boers.base.ModDataComponents;
 import net.foxy.boers.data.BoerHead;
-import net.foxy.boers.item.BoerContents;
 import net.foxy.boers.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -18,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.model.geometry.UnbakedGeometryHelper;
+import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -41,7 +39,7 @@ public class WrappedItemOverrides extends ItemOverrides {
     @Override
     public @Nullable BakedModel resolve(BakedModel model, ItemStack bore, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
         if (model instanceof BoerModel.Baked boerModel) {
-            ItemStack stack = Utils.getBoerContentsOrEmpty(bore).itemsCopy();
+            ItemStack stack = Utils.getBoerContentsOrEmpty(bore);
             if (stack.isEmpty()) {
                 stack = bore;
             }
@@ -60,8 +58,8 @@ public class WrappedItemOverrides extends ItemOverrides {
                 }
                 TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(key);
 
-                var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(0, sprite, null);
-                var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> sprite, BlockModelRotation.X0_Y0);
+                var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(0, sprite.contents(), null);
+                var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> sprite, BlockModelRotation.X0_Y0, Utils.rl("boer"));
                 return new SimpleBakedModel(quads, quadsMap, boerModel.useAmbientOcclusion(), boerModel.usesBlockLight(), boerModel.isGui3d(), Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture), boerModel.getTransforms(), boerModel.getOverrides());
             });
         }

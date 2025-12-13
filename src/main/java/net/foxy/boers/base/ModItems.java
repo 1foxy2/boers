@@ -4,13 +4,14 @@ import net.foxy.boers.BoersMod;
 import net.foxy.boers.item.BoerBaseItem;
 import net.foxy.boers.item.BoerHeadItem;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ModItems {
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(BoersMod.MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, BoersMod.MODID);
 
-    public static final DeferredItem<BoerBaseItem> BOER_BASE = ITEMS.register("boer_base", BoerBaseItem::new);
-    public static final DeferredItem<Item> BOER_HEAD = ITEMS.register("boer_head", () ->
+    public static final RegistryObject<BoerBaseItem> BOER_BASE = ITEMS.register("boer_base", BoerBaseItem::new);
+    public static final RegistryObject<Item> BOER_HEAD = ITEMS.register("boer_head", () ->
             new BoerHeadItem(new Item.Properties().durability(1)));
 }
