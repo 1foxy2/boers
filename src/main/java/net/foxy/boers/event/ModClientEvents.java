@@ -44,7 +44,7 @@ public class ModClientEvents {
     public static BoerSoundInstance idleSoundInstance2 = null;
 
     @Mod.EventBusSubscriber(modid = BoersMod.MODID, value = Dist.CLIENT)
-    public class ForgeBus {
+    public static class ForgeBus {
 
         @SubscribeEvent
         public static void tickBoerProgress(TickEvent.ClientTickEvent event) {
@@ -96,7 +96,7 @@ public class ModClientEvents {
     }
 
     @Mod.EventBusSubscriber(modid = BoersMod.MODID, value = Dist.CLIENT, bus = net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD)
-    public class ModBus {
+    public static class ModBus {
 
         @SubscribeEvent
         public static void registerCustomModels(ModelEvent.RegisterGeometryLoaders event) {

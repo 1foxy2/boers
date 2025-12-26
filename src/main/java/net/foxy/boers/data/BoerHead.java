@@ -58,7 +58,10 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
     public boolean isCorrectForDrops(BlockState state) {
         for (Rule tool$rule : this.miningRules) {
             if (tool$rule.correctForDrops().isPresent() && state.is(tool$rule.blocks())) {
-                return tool$rule.correctForDrops().get() && (tool$rule.tier.isEmpty() || TierSortingRegistry.isCorrectTierForDrops(tool$rule.tier.get(), state));
+                return tool$rule.correctForDrops().get();
+            }
+            if (tool$rule.tier.isPresent() && state.is(tool$rule.blocks())) {
+                return TierSortingRegistry.isCorrectTierForDrops(tool$rule.tier.get(), state);
             }
         }
 
@@ -151,7 +154,7 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
         }
 
         public static Rule minesAndDrops(TagKey<Block> blocks, Tier tier, float speed, float maxSpeed, float speedPerTick) {
-            return forTag(blocks, Optional.of(tier), Optional.of(speed), Optional.of(maxSpeed), Optional.of(speedPerTick), Optional.of(true), Optional.empty());
+            return forTag(blocks, Optional.of(tier), Optional.of(speed), Optional.of(maxSpeed), Optional.of(speedPerTick), Optional.empty(), Optional.empty());
         }
 
         public static Rule deniesDrops(TagKey<Block> blocks) {
