@@ -28,8 +28,17 @@ public class Utils {
     }
 
     public static Holder<BoerHead> getBoerHolder(ItemStack stack) {
-
         return stack.get(ModDataComponents.BOER.get());
+    }
+
+    public static void setDouble(ItemStack stack, boolean value) {
+        if (getDouble(stack) != value) {
+            stack.set(ModDataComponents.DOUBLE.get(), value);
+        }
+    }
+
+    public static boolean getDouble(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.DOUBLE.get(), false);
     }
 
     public static int getUsedFor(ItemStack stack) {

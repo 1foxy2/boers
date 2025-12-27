@@ -124,7 +124,7 @@ public class ModClientEvents {
 
             @Override
             public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-                return ModEnums.BOER_STANDING_POS.getValue();
+                return Utils.getDouble(itemStack) ? ModEnums.BOER_STANDING_POS.getValue() : ModEnums.BOER_SINGLE_STANDING_POS.getValue();
             }
         }, ModItems.BOER_BASE);
     }

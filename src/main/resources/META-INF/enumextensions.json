@@ -8,6 +8,15 @@
         "class": "net/foxy/boers/base/ModEnums",
         "field": "BOER_STANDING_POS"
       }
+    },
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "BOERS_BOER_SINGLE_HOLDING",
+      "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "net/foxy/boers/base/ModEnums",
+        "field": "BOER_SINGLE_STANDING_POS"
+      }
     }
   ]
 }
