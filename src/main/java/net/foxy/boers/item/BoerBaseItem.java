@@ -1,24 +1,20 @@
 package net.foxy.boers.item;
 
-import com.mojang.logging.LogUtils;
 import net.foxy.boers.base.ModDataComponents;
 import net.foxy.boers.base.ModItems;
 import net.foxy.boers.base.ModParticles;
 import net.foxy.boers.base.ModSounds;
-import net.foxy.boers.client.BoerSoundInstance;
 import net.foxy.boers.client.BoersClientConfig;
 import net.foxy.boers.data.BoerHead;
 import net.foxy.boers.event.ModClientEvents;
 import net.foxy.boers.particle.spark.SparkParticle;
 import net.foxy.boers.util.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.*;
@@ -33,7 +29,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -213,36 +208,7 @@ public class BoerBaseItem extends Item {
             }
 
             if (level.isClientSide) {
-                BlockHitResult result = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-                if (result.getType() == HitResult.Type.BLOCK) {
-                    if (BoersClientConfig.CONFIG.BREAKING_SOUNDS.get()) {
-                        if (ModClientEvents.soundInstance == null || !Minecraft.getInstance().getSoundManager().isActive(ModClientEvents.soundInstance)) {
-                            if (ModClientEvents.idleSoundInstance != null) {
-                                ModClientEvents.idleSoundInstance.remove();
-                                ModClientEvents.idleSoundInstance2.remove();
-                            }
-                            ModClientEvents.soundInstance = new BoerSoundInstance(ModSounds.STONE.get(), SoundSource.PLAYERS, 0.25f, 1f, player, player.getRandom().nextLong());
-                            ModClientEvents.soundInstance2 = new BoerSoundInstance(ModSounds.STONE.get(), SoundSource.PLAYERS, 0.25f, 1f, player, player.getRandom().nextLong());
-                            Minecraft.getInstance().getSoundManager().play(ModClientEvents.soundInstance);
-                            Minecraft.getInstance().getSoundManager().playDelayed(ModClientEvents.soundInstance2, 4);
-                        }
-                    }
-                    Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
-                    spawnSparks(level, player, result);
-                } else {
-                    if (BoersClientConfig.CONFIG.BREAKING_SOUNDS.get()) {
-                        if (ModClientEvents.idleSoundInstance == null || !Minecraft.getInstance().getSoundManager().isActive(ModClientEvents.idleSoundInstance)) {
-                            if (ModClientEvents.soundInstance != null) {
-                                ModClientEvents.soundInstance.remove();
-                                ModClientEvents.soundInstance2.remove();
-                            }
-                            ModClientEvents.idleSoundInstance = new BoerSoundInstance(ModSounds.AIR.get(), SoundSource.PLAYERS, 0.25f, 1f, player, player.getRandom().nextLong());
-                            ModClientEvents.idleSoundInstance2 = new BoerSoundInstance(ModSounds.AIR.get(), SoundSource.PLAYERS, 0.25f, 1f, player, player.getRandom().nextLong());
-                            Minecraft.getInstance().getSoundManager().play(ModClientEvents.idleSoundInstance);
-                            Minecraft.getInstance().getSoundManager().playDelayed(ModClientEvents.idleSoundInstance2, 5);
-                        }
-                    }
-                }
+                ModClientEvents.handleTick(level, player, stack);
             } else {
                 Utils.increaseUseFor(stack);
             }
@@ -406,37 +372,5 @@ public class BoerBaseItem extends Item {
 
     private void playDropContentsSound(Entity entity) {
         entity.playSound(SoundEvents.BUNDLE_DROP_CONTENTS, 0.8F, 0.8F + entity.level().getRandom().nextFloat() * 0.4F);
-    }
-
-
-    private void spawnSparks(Level level, Player player, BlockHitResult hitResult) {
-        if (level.getBlockState(hitResult.getBlockPos()).getDestroySpeed(level, hitResult.getBlockPos()) < 1.1) return;
-
-        Vec3 hitPos = hitResult.getLocation();
-        Vec3 playerEye = player.getEyePosition();
-        Direction blockFace = hitResult.getDirection();
-
-        Vec3 offset = Vec3.atLowerCornerOf(blockFace.getNormal()).scale(0.05);
-        Vec3 spawnPos = hitPos.add(offset);
-
-        int sparkCount = BoersClientConfig.CONFIG.PARTICLE_COUNT.get() + level.random.nextInt(BoersClientConfig.CONFIG.PARTICLE_COUNT.get());
-
-        for (int i = 0; i < sparkCount; i++) {
-            double spreadX = (level.random.nextDouble() - 0.5) * 0.15;
-            double spreadY = (level.random.nextDouble() - 0.5) * 0.15;
-            double spreadZ = (level.random.nextDouble() - 0.5) * 0.15;
-
-            Vec3 sparkPos = spawnPos.add(spreadX, spreadY, spreadZ);
-
-            Vec3 velocity = SparkParticle.generateConeVelocity(
-                    hitPos, playerEye, 0.4F
-            );
-
-            level.addParticle(
-                    ModParticles.SPARK_PARTICLE.get(),
-                    sparkPos.x, sparkPos.y, sparkPos.z,
-                    velocity.x, velocity.y, velocity.z
-            );
-        }
     }
 }
