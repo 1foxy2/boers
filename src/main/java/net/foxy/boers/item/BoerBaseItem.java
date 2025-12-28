@@ -92,15 +92,6 @@ public class BoerBaseItem extends Item {
     }
 
     @Override
-    public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
-        super.onStopUsing(stack, entity, count);
-        if (entity instanceof ServerPlayer serverPlayer) {
-            serverPlayer.gameMode.handleBlockBreakAction(serverPlayer.gameMode.destroyPos,
-                    ServerboundPlayerActionPacket.Action.ABORT_DESTROY_BLOCK, Direction.UP, entity.level().getMaxBuildHeight(), 0);
-        }
-    }
-
-    @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return !oldStack.is(newStack.getItem());
     }
