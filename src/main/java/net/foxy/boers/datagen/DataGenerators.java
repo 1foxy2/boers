@@ -40,10 +40,6 @@ public class DataGenerators {
                         new RegistrySetBuilder().add(
                                 ModRegistries.BOER_HEAD, bootstrap -> {
                                     bootstrap.register(
-                                            ModRegistries.DEFAULT,
-                                            create("default", 1, 100, Tiers.IRON)
-                                    );
-                                    bootstrap.register(
                                             ModRegistries.COPPER,
                                             create("copper", 10, 95, Tiers.STONE)
                                     );

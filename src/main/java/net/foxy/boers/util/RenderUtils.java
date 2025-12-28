@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import java.util.List;
 
 public class RenderUtils {
-    public static void renderItemModel(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, ModelResourceLocation modelLoc) {
+    public static void renderItemModel(ItemStack stack, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, ModelResourceLocation modelLoc) {
         boolean flag1;
         if (displayContext != ItemDisplayContext.GUI && !displayContext.firstPerson() && stack.getItem() instanceof BlockItem blockitem) {
             Block block = blockitem.getBlock();
@@ -37,16 +37,16 @@ public class RenderUtils {
         for (var model : bakedModel.getRenderPasses(stack, flag1)) {
             VertexConsumer vertexconsumer;
             if (flag1) {
-                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, RenderType.cutout(), true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, renderType, true, stack.hasFoil());
             } else {
-                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, RenderType.cutout(), true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil());
             }
 
             renderer.renderModelLists(model, stack, packedLight, packedOverlay, poseStack, vertexconsumer);
         }
     }
 
-    public static void renderItemModel(ItemStack bore, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         boolean flag1;
         ItemStack stack = Utils.getBoerContentsOrEmpty(bore);
         if (stack.isEmpty()) {
@@ -65,16 +65,16 @@ public class RenderUtils {
         for (var model : bakedModel.getRenderPasses(stack, flag1)) {
             VertexConsumer vertexconsumer;
             if (flag1) {
-                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, RenderType.cutout(), true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, renderType, true, stack.hasFoil());
             } else {
-                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, RenderType.cutout(), true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil());
             }
 
             renderer.renderModelLists(model, stack, packedLight, packedOverlay, poseStack, vertexconsumer);
         }
     }
 
-    public static void renderItemModel(ItemStack bore, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, int red, int green, int blue, int alpha) {
+    public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, int red, int green, int blue, int alpha) {
         boolean flag1;
         ItemStack stack = Utils.getBoerContentsOrEmpty(bore);
         if (stack.isEmpty()) {
@@ -93,9 +93,9 @@ public class RenderUtils {
         for (var model : bakedModel.getRenderPasses(stack, flag1)) {
             VertexConsumer vertexconsumer;
             if (flag1) {
-                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, RenderType.cutout(), true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBufferDirect(buffer, renderType, true, stack.hasFoil());
             } else {
-                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, RenderType.cutout(), true, stack.hasFoil());
+                vertexconsumer = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil());
             }
 
             renderModelLists(model, stack, packedLight, packedOverlay, poseStack, vertexconsumer, red, green, blue, alpha);
