@@ -37,10 +37,6 @@ public class DataGenerators {
                 new RegistrySetBuilder().add(
                         ModRegistries.BOER_HEAD, bootstrap -> {
                             bootstrap.register(
-                                    ModRegistries.DEFAULT,
-                                    create("default", 1, 100, BlockTags.INCORRECT_FOR_IRON_TOOL)
-                            );
-                            bootstrap.register(
                                     ModRegistries.COPPER,
                                     create("copper", 10, 95, BlockTags.INCORRECT_FOR_STONE_TOOL)
                             );
