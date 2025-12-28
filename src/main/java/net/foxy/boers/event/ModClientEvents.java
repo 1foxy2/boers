@@ -2,6 +2,7 @@ package net.foxy.boers.event;
 
 import net.foxy.boers.BoersMod;
 import net.foxy.boers.base.ModParticles;
+import net.foxy.boers.base.ModSounds;
 import net.foxy.boers.client.BoersClientConfig;
 import net.foxy.boers.client.BoerSoundInstance;
 import net.foxy.boers.client.ClientBoersTooltip;
@@ -18,6 +19,7 @@ import net.foxy.boers.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -121,7 +123,7 @@ public class ModClientEvents {
     }
 
     public static void handleTick(Level level, Player player, ItemStack stack) {
-        BlockHitResult result = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
+        BlockHitResult result = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         if (result.getType() == HitResult.Type.BLOCK) {
             if (BoersClientConfig.CONFIG.BREAKING_SOUNDS.get()) {
                 if (ModClientEvents.soundInstance == null || !Minecraft.getInstance().getSoundManager().isActive(ModClientEvents.soundInstance)) {
@@ -182,5 +184,20 @@ public class ModClientEvents {
                     velocity.x, velocity.y, velocity.z
             );
         }
+    }
+
+    protected static BlockHitResult getPlayerPOVHitResult(Level level, Player player, ClipContext.Fluid fluidMode) {
+        float f = player.getXRot();
+        float f1 = player.getYRot();
+        Vec3 vec3 = player.getEyePosition();
+        float f2 = Mth.cos(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
+        float f3 = Mth.sin(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
+        float f4 = -Mth.cos(-f * ((float)Math.PI / 180F));
+        float f5 = Mth.sin(-f * ((float)Math.PI / 180F));
+        float f6 = f3 * f4;
+        float f7 = f2 * f4;
+        double d0 = player.getAttributeValue(net.minecraftforge.common.ForgeMod.BLOCK_REACH.get()) + 0.5; // Block reach is 4.5, vanilla uses 5.0 here, so add 0.5 padding
+        Vec3 vec31 = vec3.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
+        return level.clip(new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, fluidMode, player));
     }
 }
