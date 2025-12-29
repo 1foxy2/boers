@@ -1,9 +1,10 @@
 package net.foxy.boers.item;
 
-import net.foxy.boers.base.*;
+import net.foxy.boers.base.ModEnums;
+import net.foxy.boers.base.ModItems;
+import net.foxy.boers.base.ModParticles;
+import net.foxy.boers.base.ModSounds;
 import net.foxy.boers.client.BoerBaseRenderer;
-import net.foxy.boers.client.BoerSoundInstance;
-import net.foxy.boers.client.BoersClientConfig;
 import net.foxy.boers.data.BoerHead;
 import net.foxy.boers.event.ModClientEvents;
 import net.foxy.boers.particle.spark.SparkParticle;
@@ -13,9 +14,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -25,14 +24,15 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.tooltip.BundleTooltip;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
@@ -72,19 +72,9 @@ public class BoerBaseItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.NONE;
-    }
-
-    @Override
     public boolean isDamageable(ItemStack stack) {
         ItemStack boerItem = Utils.getBoerContents(stack);
         return !boerItem.isEmpty() && boerItem.isDamageableItem();
-    }
-
-    @Override
-    public int getUseDuration(ItemStack stack) {
-        return 72000;
     }
 
     @Override
@@ -181,7 +171,7 @@ public class BoerBaseItem extends Item {
                                     BlockPos target = startPos.offset(x, y, z);
                                     if (!target.equals(pos)) {
                                         BlockState block = level.getBlockState(target);
-                                        if (block.canHarvestBlock(level, target, player)) {
+                                        if (block.getDestroySpeed(level, target) >= 0 && block.canHarvestBlock(level, target, player)) {
                                             boolean removed = state.onDestroyedByPlayer(level, target, player, true, level.getFluidState(target));
                                             if (removed) {
                                                 state.getBlock().destroy(level, target, state);
