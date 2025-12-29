@@ -42,19 +42,9 @@ public class BoerBaseItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.NONE;
-    }
-
-    @Override
     public boolean isDamageable(ItemStack stack) {
         ItemStack boerItem = Utils.getBoerContents(stack).getItemUnsafe();
         return !boerItem.isEmpty() && boerItem.isDamageableItem();
-    }
-
-    @Override
-    public int getUseDuration(ItemStack stack, LivingEntity entity) {
-        return 72000;
     }
 
     @Override
@@ -86,15 +76,6 @@ public class BoerBaseItem extends Item {
     @Override
     public int getDamage(ItemStack stack) {
         return Utils.getBoerContentsOrEmpty(stack).items.getDamageValue();
-    }
-
-    @Override
-    public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
-        super.onStopUsing(stack, entity, count);
-        if (entity instanceof ServerPlayer serverPlayer) {
-            serverPlayer.gameMode.handleBlockBreakAction(serverPlayer.gameMode.destroyPos,
-                    ServerboundPlayerActionPacket.Action.ABORT_DESTROY_BLOCK, Direction.UP, entity.level().getMaxBuildHeight(), 0);
-        }
     }
 
     @Override
@@ -161,7 +142,7 @@ public class BoerBaseItem extends Item {
                                     BlockPos target = startPos.offset(x, y, z);
                                     if (!target.equals(pos)) {
                                         BlockState block = level.getBlockState(target);
-                                        if (block.canHarvestBlock(level, target, player)) {
+                                        if (block.getDestroySpeed(level, target) >= 0 && block.canHarvestBlock(level, target, player)) {
                                             boolean removed = state.onDestroyedByPlayer(level, target, player, true, level.getFluidState(target));
                                             if (removed) {
                                                 state.getBlock().destroy(level, target, state);
