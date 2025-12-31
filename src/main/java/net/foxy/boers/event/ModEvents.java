@@ -12,7 +12,7 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void registerBoerHeadRegistry(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(ModRegistries.BOER_HEAD, BoerHead.CODEC, BoerHead.CODEC);
+        event.dataPackRegistry(ModRegistries.BOER_HEAD, BoerHead.CODEC, BoerHead.NETWORK_CODEC);
     }
 
 }

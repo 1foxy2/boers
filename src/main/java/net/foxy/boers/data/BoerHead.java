@@ -38,9 +38,16 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
                     Vec3i.CODEC.optionalFieldOf("radius").forGetter(BoerHead::radius)
             ).apply(instance, BoerHead::new)
     );
+    public static final Codec<BoerHead> NETWORK_CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Texture.CODEC.fieldOf("texture").forGetter(BoerHead::texture),
+                    Codec.FLOAT.fieldOf("default_mining_speed").forGetter(BoerHead::defaultMiningSpeed),
+                    Codec.INT.fieldOf("durability").forGetter(BoerHead::durability),
+                    Rule.NETWORK_CODEC.listOf().fieldOf("mining_rules").forGetter(BoerHead::miningRules),
+                    Vec3i.CODEC.optionalFieldOf("radius").forGetter(BoerHead::radius)
+            ).apply(instance, BoerHead::new)
+    );
     public static final Codec<Holder<BoerHead>> ITEM_CODEC = RegistryFixedCodec.create(ModRegistries.BOER_HEAD);
-
-    //public static final StreamCodec<RegistryFriendlyByteBuf, Holder<BoerHead>> STREAM_CODEC = ByteBufCodecs.holderRegistry(ModRegistries.BOER_HEAD);
 
     public float getMiningSpeed(ItemStack stack, BlockState state) {
         for (Rule tool$rule : miningRules) {
@@ -135,6 +142,18 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
         public static final Codec<Rule> CODEC = RecordCodecBuilder.create(
                 p_337954_ -> p_337954_.group(
                                 RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(Rule::blocks),
+                                ResourceLocation.CODEC.xmap(TierSortingRegistry::byName, TierSortingRegistry::getName).optionalFieldOf("tier").forGetter(Rule::tier),
+                                ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("speed").forGetter(Rule::speed),
+                                ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("max_speed").forGetter(Rule::maxSpeed),
+                                ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("speed_per_tick").forGetter(Rule::speedPerTick),
+                                Codec.BOOL.optionalFieldOf("correct_for_drops").forGetter(Rule::correctForDrops),
+                                Codec.INT.optionalFieldOf("damage_per_block").forGetter(Rule::damagePerBlock)
+                        )
+                        .apply(p_337954_, Rule::new)
+        );
+        public static final Codec<Rule> NETWORK_CODEC = RecordCodecBuilder.create(
+                p_337954_ -> p_337954_.group(
+                                BuiltInRegistries.BLOCK.holderByNameCodec().listOf().<HolderSet<Block>>xmap(HolderSet::direct, set -> set.stream().toList()).fieldOf("blocks").forGetter(Rule::blocks),
                                 ResourceLocation.CODEC.xmap(TierSortingRegistry::byName, TierSortingRegistry::getName).optionalFieldOf("tier").forGetter(Rule::tier),
                                 ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("speed").forGetter(Rule::speed),
                                 ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("max_speed").forGetter(Rule::maxSpeed),
