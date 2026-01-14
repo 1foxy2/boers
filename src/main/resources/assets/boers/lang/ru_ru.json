@@ -1,0 +1,10 @@
+{
+  "item.boers.boers": "Буры",
+  "item.boers.boer_base": "Основа бура",
+  "item.boers.boer_head.boers.copper": "Медная буровая головка",
+  "item.boers.boer_head.boers.default": "Обычная буровая головка",
+  "item.boers.boer_head.boers.diamond": "Алмазная буровая головка",
+  "item.boers.boer_head.boers.golden": "Золотая буровая головка",
+  "item.boers.boer_head.boers.iron": "Железная буровая головка",
+  "item.boers.boer_head.boers.netherite": "Незеритовая буровая головка"
+}
