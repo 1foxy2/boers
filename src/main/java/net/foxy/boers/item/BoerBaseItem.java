@@ -1,5 +1,6 @@
 package net.foxy.boers.item;
 
+import com.mojang.logging.LogUtils;
 import net.foxy.boers.base.ModDataComponents;
 import net.foxy.boers.base.ModItems;
 import net.foxy.boers.base.ModParticles;
@@ -105,55 +106,14 @@ public class BoerBaseItem extends Item {
                 int damage = tool != null ? tool.getDamage(state) : 1;
                 boer.hurtAndBreak(damage, miningEntity, EquipmentSlot.MAINHAND);
                 Utils.setBoerContents(stack, new BoerContents(boer));
-                if (tool != null && miningEntity instanceof ServerPlayer player) {
-                    if (tool.radius().isPresent()) {
-                        Vec3i radius;
-                        BlockPos startPos;
-                        Direction direction = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE).getDirection();
-                        switch (direction) {
-                            case DOWN -> {
-                                radius = new Vec3i(tool.radius().get().getX(), tool.radius().get().getZ(), tool.radius().get().getY());
-                                startPos = pos.offset(-radius.getX(), 0, -radius.getZ());
-                            }
-                            case UP -> {
-                                radius = new Vec3i(tool.radius().get().getX(), tool.radius().get().getZ(), tool.radius().get().getY());
-                                startPos = pos.offset(-radius.getX(), -radius.getY() * 2, -radius.getZ());
-                            }
-                            case NORTH -> {
-                                radius = tool.radius().get();
-                                startPos = pos.offset(-radius.getX(), Math.max(-radius.getY(), -1), 0);
-                            }
-                            case SOUTH -> {
-                                radius = tool.radius().get();
-                                startPos = pos.offset(-radius.getX(), Math.max(-radius.getY(), -1), -radius.getZ() * 2);
-                            }
-                            case WEST -> {
-                                radius = new Vec3i(tool.radius().get().getZ(), tool.radius().get().getY(), tool.radius().get().getX());
-                                startPos = pos.offset(0, Math.max(-radius.getY(), -1), -radius.getZ());
-                            }
-                            default -> {
-                                radius = new Vec3i(tool.radius().get().getZ(), tool.radius().get().getY(), tool.radius().get().getX());
-                                startPos = pos.offset(-radius.getX() * 2, Math.max(-radius.getY(), -1), -radius.getZ());
-                            }
+                if (tool != null && tool.radius().isPresent() && miningEntity instanceof ServerPlayer player) {
+                    Utils.forEachBlock(level, player, pos, tool.radius().get(), (target, block) -> {
+                        boolean removed = block.onDestroyedByPlayer(level, target, player, true, level.getFluidState(target));
+                        if (removed) {
+                            block.getBlock().destroy(level, target, block);
+                            block.getBlock().playerDestroy(level, player, target, block, level.getBlockEntity(target), stack);
                         }
-                        for (int x = 0; x < radius.getX() * 2 + 1; x++) {
-                            for (int y = 0; y < radius.getY() * 2 + 1; y++) {
-                                for (int z = 0; z < radius.getZ() * 2 + 1; z++) {
-                                    BlockPos target = startPos.offset(x, y, z);
-                                    if (!target.equals(pos)) {
-                                        BlockState block = level.getBlockState(target);
-                                        if (block.getDestroySpeed(level, target) >= 0 && block.canHarvestBlock(level, target, player)) {
-                                            boolean removed = state.onDestroyedByPlayer(level, target, player, true, level.getFluidState(target));
-                                            if (removed) {
-                                                state.getBlock().destroy(level, target, state);
-                                                block.getBlock().playerDestroy(level, player, target, block, level.getBlockEntity(target), stack);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    });
                 }
             }
 

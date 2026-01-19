@@ -1,12 +1,19 @@
 package net.foxy.boers.event;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxy.boers.BoersMod;
-import net.foxy.boers.base.*;
-import net.foxy.boers.client.BoersClientConfig;
-import net.foxy.boers.client.ClientBoersTooltip;
+import net.foxy.boers.base.ModEnums;
+import net.foxy.boers.base.ModItems;
+import net.foxy.boers.base.ModParticles;
+import net.foxy.boers.base.ModSounds;
 import net.foxy.boers.client.BoerBaseRenderer;
 import net.foxy.boers.client.BoerSoundInstance;
+import net.foxy.boers.client.BoersClientConfig;
+import net.foxy.boers.client.ClientBoersTooltip;
 import net.foxy.boers.client.model.BoerModel;
+import net.foxy.boers.data.BoerHead;
 import net.foxy.boers.item.BoerBaseItem;
 import net.foxy.boers.item.BoerContents;
 import net.foxy.boers.network.c2s.SetUseBoerPacket;
@@ -15,10 +22,11 @@ import net.foxy.boers.particle.spark.SparkParticle;
 import net.foxy.boers.particle.spark.SparkParticleProvider;
 import net.foxy.boers.util.ModItemProperties;
 import net.foxy.boers.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -42,6 +50,8 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.SortedSet;
+
 @EventBusSubscriber(modid = BoersMod.MODID, value = Dist.CLIENT)
 public class ModClientEvents {
     private static final ResourceLocation BOER_MODEL_LOADER = Utils.rl("boer");
@@ -51,6 +61,49 @@ public class ModClientEvents {
     public static BoerSoundInstance soundInstance2 = null;
     public static BoerSoundInstance idleSoundInstance = null;
     public static BoerSoundInstance idleSoundInstance2 = null;
+
+    @SubscribeEvent
+    public static void renderOutline(RenderHighlightEvent.Block event) {
+        if (!(event.getCamera().getEntity() instanceof Player player)) {
+            return;
+        }
+
+        ItemStack stack = event.getCamera().getEntity().getWeaponItem();
+        if (stack == null) {
+            return;
+        }
+        BoerContents boerContents = Utils.getBoerContents(stack);
+        Level level = event.getCamera().getEntity().level();
+        if (boerContents == null) {
+            return;
+        }
+
+        BoerHead tool = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack).getItemUnsafe());
+        int k = Minecraft.getInstance().gameMode.getDestroyStage();
+        if (tool != null && tool.radius().isPresent()) {
+            Vec3 vec3 = event.getCamera().getPosition();
+            PoseStack posestack = event.getPoseStack();
+            VertexConsumer vertexconsumer2 = event.getMultiBufferSource().getBuffer(RenderType.lines());
+            Utils.forEachBlock(level, player, event.getTarget().getBlockPos(), tool.radius().get(), (target, block) -> {
+                event.getLevelRenderer().renderHitOutline(posestack,
+                        vertexconsumer2, player, vec3.x(), vec3.y(), vec3.z(), target, block);
+
+                if (k != -1 && event.getTarget().getBlockPos().equals(Minecraft.getInstance().gameMode.destroyBlockPos)) {
+                    posestack.pushPose();
+                    posestack.translate((double) target.getX() - vec3.x, (double) target.getY() - vec3.y, (double) target.getZ() - vec3.z);
+                    PoseStack.Pose posestack$pose1 = posestack.last();
+                    VertexConsumer vertexconsumer1 = new SheetedDecalTextureGenerator(
+                            Minecraft.getInstance().renderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(k)), posestack$pose1, 1.0F
+                    );
+                    net.neoforged.neoforge.client.model.data.ModelData modelData = level.getModelData(target);
+                    Minecraft.getInstance()
+                            .getBlockRenderer()
+                            .renderBreakingTexture(block, target, level, posestack, vertexconsumer1, modelData);
+                    posestack.popPose();
+                }
+            });
+        }
+    }
 
     @SubscribeEvent
     public static void registerCustomModels(ModelEvent.RegisterGeometryLoaders event) {
@@ -104,9 +157,9 @@ public class ModClientEvents {
         if (event.isAttack()) {
             Player player = Minecraft.getInstance().player;
             ItemStack stack = player.getMainHandItem();
-            if (stack.getItem() instanceof BoerBaseItem boer) {
+            if (stack.getItem() instanceof BoerBaseItem) {
                 event.setSwingHand(false);
-                if (usingProgress <= 9) {
+                if (usingProgress <= 9 || Utils.getBoerContents(stack).isEmpty()) {
                     event.setCanceled(true);
                 }
             }
