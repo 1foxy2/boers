@@ -10,9 +10,7 @@ import net.foxy.boers.data.BoerHead;
 import net.foxy.boers.event.ModClientEvents;
 import net.foxy.boers.particle.spark.SparkParticle;
 import net.foxy.boers.util.Utils;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
+import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,6 +23,8 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,14 +38,33 @@ import java.util.Optional;
 public class BoerBaseItem extends Item {
     public BoerBaseItem() {
         super(new Properties().stacksTo(1)
-                .component(ModDataComponents.BOER_CONTENTS, BoerContents.EMPTY).component(DataComponents.BASE_COLOR, DyeColor.BLUE).rarity(Rarity.EPIC)
+                .component(ModDataComponents.BOER_CONTENTS, BoerContents.EMPTY)
+                .component(DataComponents.BASE_COLOR, DyeColor.BLUE)
+                .component(DataComponents.DAMAGE, 0)
+                .component(DataComponents.MAX_DAMAGE, 0)
+                .rarity(Rarity.EPIC)
         );
+    }
+
+    @Override
+    public boolean isDamaged(ItemStack stack) {
+        ItemStack boerItem = Utils.getBoerContents(stack).getItemUnsafe();
+        return !boerItem.isEmpty() && boerItem.isDamaged();
     }
 
     @Override
     public boolean isDamageable(ItemStack stack) {
         ItemStack boerItem = Utils.getBoerContents(stack).getItemUnsafe();
         return !boerItem.isEmpty() && boerItem.isDamageableItem();
+    }
+
+    @Override
+    public void setDamage(ItemStack stack, int damage) {
+        ItemStack boerItem = Utils.getBoerContents(stack).itemsCopy();
+        if (!boerItem.isEmpty()) {
+            boerItem.setDamageValue(damage);
+            Utils.setBoerContents(stack, new BoerContents(boerItem));
+        }
     }
 
     @Override
@@ -119,6 +138,26 @@ public class BoerBaseItem extends Item {
 
             return true;
         }
+    }
+
+    @Override
+    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
+        ItemStack contents = Utils.getBoerContents(stack).items;
+        if (!contents.isEmpty()) {
+            return contents.getEnchantmentLevel(enchantment);
+        }
+
+        return super.getEnchantmentLevel(stack, enchantment);
+    }
+
+    @Override
+    public ItemEnchantments getAllEnchantments(ItemStack stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
+        ItemStack contents = Utils.getBoerContents(stack).items;
+        if (!contents.isEmpty()) {
+            return contents.getAllEnchantments(lookup);
+        }
+
+        return super.getAllEnchantments(stack, lookup);
     }
 
     public void onAttackTick(Level level, Player player, ItemStack stack, int used) {

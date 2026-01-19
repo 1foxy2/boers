@@ -1,10 +1,12 @@
 package net.foxy.boers;
 
 import net.foxy.boers.base.*;
+import net.foxy.boers.client.BoersClientConfig;
 import net.foxy.boers.data.BoerColoring;
 import net.foxy.boers.util.Utils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import org.slf4j.Logger;
@@ -27,7 +29,9 @@ public class BoersMod {
         ModSounds.SOUND_EVENTS.register(modEventBus);
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
         ModParticles.PARTICLE_TYPES.register(modEventBus);
+        ModConditions.CONDITION_CODECS.register(modEventBus);
         modEventBus.addListener(BoersMod::buildCreativeTabs);
+        modContainer.registerConfig(ModConfig.Type.COMMON, BoersConfig.CONFIG_SPEC);
     }
 
     public static void buildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
