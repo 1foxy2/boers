@@ -23,6 +23,9 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> USED_FOR =
             COMPONENTS.registerComponentType("used_for", builder -> builder
                     .networkSynchronized(ByteBufCodecs.INT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DOUBLE =
+            COMPONENTS.registerComponentType("double", builder -> builder
+                    .networkSynchronized(ByteBufCodecs.BOOL));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BoerContents>> BOER_CONTENTS = COMPONENTS.registerComponentType(
             "boer_contents", builder -> builder.persistent(BoerContents.CODEC).networkSynchronized(BoerContents.STREAM_CODEC)

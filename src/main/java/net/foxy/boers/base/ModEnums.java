@@ -11,6 +11,10 @@ public class ModEnums {
             HumanoidModel.ArmPose.class, true, (IArmPoseTransformer)
             ModEnums::applyPose
     );
+    public static final EnumProxy<HumanoidModel.ArmPose> BOER_SINGLE_STANDING_POS = new EnumProxy<>(
+            HumanoidModel.ArmPose.class, false, (IArmPoseTransformer)
+            ModEnums::applySinglePose
+    );
 
     public static void applyPose(HumanoidModel<?> model, LivingEntity entity, HumanoidArm arm) {
         if (arm == HumanoidArm.RIGHT) {
@@ -24,5 +28,17 @@ public class ModEnums {
         model.leftArm.yRot = 0;
         model.rightArm.zRot = 0;
         model.leftArm.zRot = 0;
+    }
+
+    public static void applySinglePose(HumanoidModel<?> model, LivingEntity entity, HumanoidArm arm) {
+        if (arm == HumanoidArm.RIGHT) {
+            model.rightArm.xRot = (float) (model.head.xRot - Math.toRadians(90));
+            model.rightArm.yRot = model.head.yRot;
+            model.rightArm.zRot = 0;
+        } else {
+            model.leftArm.xRot = (float) (model.head.xRot - Math.toRadians(90));
+            model.leftArm.yRot = model.head.yRot;
+            model.leftArm.zRot = 0;
+        }
     }
 }

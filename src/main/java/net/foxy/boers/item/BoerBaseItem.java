@@ -1,6 +1,5 @@
 package net.foxy.boers.item;
 
-import com.mojang.logging.LogUtils;
 import net.foxy.boers.base.ModDataComponents;
 import net.foxy.boers.base.ModItems;
 import net.foxy.boers.base.ModParticles;
@@ -18,6 +17,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -69,9 +69,14 @@ public class BoerBaseItem extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (isSelected) {
-            if (entity instanceof Player player) {
-                entity.setYBodyRot(entity.getYHeadRot() + (player.getMainArm() == HumanoidArm.LEFT ? -37 : 37));
+        if (entity instanceof Player player) {
+            if (isSelected) {
+                if (player.getOffhandItem().isEmpty()) {
+                    entity.setYBodyRot(entity.getYHeadRot() + (player.getMainArm() == HumanoidArm.LEFT ? -37 : 37));
+                    Utils.setDouble(stack, true);
+                } else {
+                    Utils.setDouble(stack, false);
+                }
                 if (Utils.isUsed(stack)) {
                     player.swinging = false;
                     player.attackAnim = 0;
@@ -79,10 +84,13 @@ public class BoerBaseItem extends Item {
                 } else {
                     Utils.decreaseUseFor(stack);
                 }
+            } else {
+                Utils.setUsed(stack, false);
+                Utils.decreaseUseFor(stack);
+                if (slotId == Inventory.SLOT_OFFHAND) {
+                    Utils.setDouble(stack, player.getMainHandItem().isEmpty());
+                }
             }
-        } else {
-            Utils.setUsed(stack, false);
-            Utils.decreaseUseFor(stack);
         }
 
         super.inventoryTick(stack, level, entity, slotId, isSelected);
