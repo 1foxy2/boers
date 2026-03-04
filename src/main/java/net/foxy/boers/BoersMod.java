@@ -29,7 +29,6 @@ public class BoersMod {
         ModSounds.SOUND_EVENTS.register(modEventBus);
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
         ModParticles.PARTICLE_TYPES.register(modEventBus);
-        ModConditions.CONDITION_CODECS.register(modEventBus);
         modEventBus.addListener(BoersMod::buildCreativeTabs);
         modContainer.registerConfig(ModConfig.Type.COMMON, BoersConfig.CONFIG_SPEC);
     }
