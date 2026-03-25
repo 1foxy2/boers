@@ -9,7 +9,7 @@ version="${mod_version}"
 displayName="${mod_name}"
 displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
 logoFile="icon.png" #optional
-issueTrackerURL="https://github.com/1foxy2/boers/issues"
+issueTrackerURL="https://github.com/1foxy2/bores/issues"
 authors="${mod_authors}"
 description='''${mod_description}'''
 enumExtensions="META-INF/enumextensions.json"
@@ -18,7 +18,7 @@ enumExtensions="META-INF/enumextensions.json"
 links=[
     "mod_menu.discord=https://discord.gg/GTYvTWfzxt"
 ]
-sources="https://github.com/1foxy2/boers"
+sources="https://github.com/1foxy2/bores"
 
 [[mixins]]
 config="${mod_id}.mixins.json"
