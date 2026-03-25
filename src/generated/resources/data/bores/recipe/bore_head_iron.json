@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "  X",
+    "XX ",
+    "XX "
+  ],
+  "result": {
+    "components": {
+      "bores:bore": "bores:iron"
+    },
+    "count": 1,
+    "id": "bores:bore_head"
+  }
+}

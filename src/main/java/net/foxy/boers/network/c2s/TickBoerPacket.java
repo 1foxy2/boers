@@ -16,7 +16,7 @@ public record TickBoerPacket(int progress) implements CustomPacketPayload {
             TickBoerPacket::new
     );
 
-    public static final Type<TickBoerPacket> TYPE = new Type<>(Utils.rl("tick_boer"));
+    public static final Type<TickBoerPacket> TYPE = new Type<>(Utils.rl("tick_bore"));
 
     @Override
     public Type<? extends CustomPacketPayload> type() {

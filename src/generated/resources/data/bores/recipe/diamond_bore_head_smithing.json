@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "base": {
+    "type": "neoforge:components",
+    "components": {
+      "bores:bore": "bores:diamond"
+    },
+    "items": "bores:bore_head"
+  },
+  "result": {
+    "count": 1,
+    "id": "bores:bore_head"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
+}

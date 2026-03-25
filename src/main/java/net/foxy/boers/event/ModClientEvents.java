@@ -54,7 +54,7 @@ import java.util.SortedSet;
 
 @EventBusSubscriber(modid = BoersMod.MODID, value = Dist.CLIENT)
 public class ModClientEvents {
-    private static final ResourceLocation BOER_MODEL_LOADER = Utils.rl("boer");
+    private static final ResourceLocation BOER_MODEL_LOADER = Utils.rl("bore");
     public static int lastProgress = 0;
     public static int usingProgress = 0;
     public static BoerSoundInstance soundInstance = null;

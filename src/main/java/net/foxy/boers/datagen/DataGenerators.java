@@ -79,10 +79,10 @@ public class DataGenerators {
     }
 
     private static BoerHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine) {
-        return new BoerHead(Utils.rl("item/boer/" + id + "_boer_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine);
+        return new BoerHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine);
     }
 
     private static BoerHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine, Vec3i radius) {
-        return new BoerHead(Utils.rl("item/boer/" + id + "_boer_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine, radius);
+        return new BoerHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine, radius);
     }
 }

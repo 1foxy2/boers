@@ -29,12 +29,12 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         // right 110 -16 153 left -70 16 27
         ItemModelBuilder.OverrideBuilder override = tool(ModItems.BOER_BASE).override();
-        ItemModelBuilder.OverrideBuilder overrideGui = tool("boer_base_gui", "boer_base_gui").override();
+        ItemModelBuilder.OverrideBuilder overrideGui = tool("bore_gui", "bore_gui").override();
 
         for (int j = 0; j < 7; j++) {
             DyeColor dyeColor = BoerColoring.ALLOWED_COLORS.get(j);
-            override.predicate(Utils.rl("color"), dyeColor.getId()).model(tool("boer_base_" + dyeColor.getName()));
-            overrideGui.predicate(Utils.rl("color"), dyeColor.getId()).model(tool("boer_base_gui_" + dyeColor.getName()));
+            override.predicate(Utils.rl("color"), dyeColor.getId()).model(tool("bore_" + dyeColor.getName()));
+            overrideGui.predicate(Utils.rl("color"), dyeColor.getId()).model(tool("bore_gui_" + dyeColor.getName()));
             if (j == 6) {
                 override.end();
                 overrideGui.end();

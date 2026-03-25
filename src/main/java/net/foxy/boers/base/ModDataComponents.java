@@ -15,7 +15,7 @@ public class ModDataComponents {
             DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, BoersMod.MODID);
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Holder<BoerHead>>> BOER =
-            COMPONENTS.registerComponentType("boer", builder -> builder.persistent(BoerHead.ITEM_CODEC)
+            COMPONENTS.registerComponentType("bore", builder -> builder.persistent(BoerHead.ITEM_CODEC)
                     .networkSynchronized(BoerHead.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> IS_USED =
             COMPONENTS.registerComponentType("used", builder -> builder
@@ -28,6 +28,6 @@ public class ModDataComponents {
                     .networkSynchronized(ByteBufCodecs.BOOL));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BoerContents>> BOER_CONTENTS = COMPONENTS.registerComponentType(
-            "boer_contents", builder -> builder.persistent(BoerContents.CODEC).networkSynchronized(BoerContents.STREAM_CODEC)
+            "bore_contents", builder -> builder.persistent(BoerContents.CODEC).networkSynchronized(BoerContents.STREAM_CODEC)
     );
 }

@@ -11,9 +11,9 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 @EventBusSubscriber(value = Dist.CLIENT, modid = BoersMod.MODID)
 public final class ModModels {
     public static final ModelResourceLocation BOER_BASE =
-            ModelResourceLocation.standalone(Utils.rl("item/boer_base_texture"));
+            ModelResourceLocation.standalone(Utils.rl("item/bore_texture"));
     public static final ModelResourceLocation BOER_BASE_GUI =
-            ModelResourceLocation.standalone(Utils.rl("item/boer_base_gui"));
+            ModelResourceLocation.standalone(Utils.rl("item/bore_gui"));
 
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {

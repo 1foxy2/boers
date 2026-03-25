@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bore_base": {
+      "conditions": {
+        "items": [
+          {
+            "items": "bores:bore"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "bores:bore_head_diamond"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bore_base"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "bores:bore_head_diamond"
+    ]
+  }
+}

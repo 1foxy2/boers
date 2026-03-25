@@ -5,6 +5,7 @@ import net.foxy.boers.client.BoersClientConfig;
 import net.foxy.boers.data.BoerColoring;
 import net.foxy.boers.util.Utils;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
@@ -20,7 +21,7 @@ import net.neoforged.fml.common.Mod;
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(BoersMod.MODID)
 public class BoersMod {
-    public static final String MODID = "boers";
+    public static final String MODID = "bores";
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public BoersMod(IEventBus modEventBus, ModContainer modContainer) {
@@ -31,6 +32,11 @@ public class BoersMod {
         ModParticles.PARTICLE_TYPES.register(modEventBus);
         modEventBus.addListener(BoersMod::buildCreativeTabs);
         modContainer.registerConfig(ModConfig.Type.COMMON, BoersConfig.CONFIG_SPEC);
+
+        ModItems.ITEMS.addAlias(ResourceLocation.fromNamespaceAndPath("boers", "boer_base"), Utils.rl("bore"));
+        ModItems.ITEMS.addAlias(ResourceLocation.fromNamespaceAndPath("boers", "boer_head"), Utils.rl("bore_head"));
+        ModDataComponents.COMPONENTS.addAlias(ResourceLocation.fromNamespaceAndPath("boers", "boer"), Utils.rl("bore"));
+        ModDataComponents.COMPONENTS.addAlias(ResourceLocation.fromNamespaceAndPath("boers", "boer_contents"), Utils.rl("bore_contents"));
     }
 
     public static void buildCreativeTabs(BuildCreativeModeTabContentsEvent event) {

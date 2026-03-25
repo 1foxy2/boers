@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.foxy.boers.base.ModDataComponents;
 import net.foxy.boers.base.ModRegistries;
 import net.foxy.boers.client.BoersClientConfig;
+import net.foxy.boers.util.FixerRegistryFixedCodec;
 import net.foxy.boers.util.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -39,7 +40,7 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
                     Vec3i.CODEC.optionalFieldOf("radius").forGetter(BoerHead::radius)
             ).apply(instance, BoerHead::new)
     );
-    public static final Codec<Holder<BoerHead>> ITEM_CODEC = RegistryFixedCodec.create(ModRegistries.BOER_HEAD);
+    public static final Codec<Holder<BoerHead>> ITEM_CODEC = FixerRegistryFixedCodec.create(ModRegistries.BOER_HEAD);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<BoerHead>> STREAM_CODEC = ByteBufCodecs.holderRegistry(ModRegistries.BOER_HEAD);
 

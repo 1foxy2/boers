@@ -26,7 +26,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes(RecipeOutput recipeOutput, HolderLookup.Provider lookup) {
-        SpecialRecipeBuilder.special(BoerColoring::new).save(recipeOutput, Utils.rl("boer_base_coloring"));
+        SpecialRecipeBuilder.special(BoerColoring::new).save(recipeOutput, Utils.rl("bore_base_coloring"));
 
         boerHead(recipeOutput,  lookup.holderOrThrow(ModRegistries.COPPER), Items.COPPER_INGOT);
         boerHead(recipeOutput, lookup.holderOrThrow(ModRegistries.DIAMOND), Items.DIAMOND);
@@ -37,12 +37,12 @@ public class ModRecipeProvider extends RecipeProvider {
         StackSmithingTransformRecipeBuilder.smithing(
                         Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), DataComponentIngredient.of(false, ModDataComponents.BOER.get(), lookup.holderOrThrow(ModRegistries.DIAMOND), ModItems.BOER_HEAD), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.TOOLS, result
                 )
-                .unlocks("has_boer_base", has(ModItems.BOER_BASE))
-                .save(recipeOutput, Utils.rl("diamond_boer_head_smithing"));
+                .unlocks("has_bore_base", has(ModItems.BOER_BASE))
+                .save(recipeOutput, Utils.rl("diamond_bore_head_smithing"));
     }
 
     public static void boerHead(RecipeOutput recipeOutput, Holder<BoerHead> boerHead, Item item) {
         ItemStack stack = Utils.boer(boerHead);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_boer_base", has(ModItems.BOER_BASE)).save(recipeOutput, Utils.rl("boer_head_" + boerHead.getKey().location().getPath()));
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore_base", has(ModItems.BOER_BASE)).save(recipeOutput, Utils.rl("bore_head_" + boerHead.getKey().location().getPath()));
     }
 }

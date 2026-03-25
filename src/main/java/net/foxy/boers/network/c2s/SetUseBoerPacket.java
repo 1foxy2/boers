@@ -17,7 +17,7 @@ public record SetUseBoerPacket(boolean used) implements CustomPacketPayload {
             SetUseBoerPacket::new
     );
 
-    public static final Type<SetUseBoerPacket> TYPE = new Type<>(Utils.rl("use_boer"));
+    public static final Type<SetUseBoerPacket> TYPE = new Type<>(Utils.rl("use_bore"));
 
     @Override
     public Type<? extends CustomPacketPayload> type() {

@@ -1,0 +1,10 @@
+{
+  "item.bores.bores": "Буры",
+  "item.bores.bore": "Бур",
+  "item.bores.bore_head.bores.copper": "Медная буровая головка",
+  "item.bores.bore_head.bores.default": "Обычная буровая головка",
+  "item.bores.bore_head.bores.diamond": "Алмазная буровая головка",
+  "item.bores.bore_head.bores.golden": "Золотая буровая головка",
+  "item.bores.bore_head.bores.iron": "Железная буровая головка",
+  "item.bores.bore_head.bores.netherite": "Незеритовая буровая головка"
+}

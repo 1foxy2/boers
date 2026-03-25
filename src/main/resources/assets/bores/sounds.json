@@ -1,0 +1,22 @@
+{
+  "head_equip": {
+    "sounds": [
+      {"name": "bores:head_equip"}
+    ]
+  },
+  "head_unequip": {
+    "sounds": [
+      {"name": "bores:head_unequip"}
+    ]
+  },
+  "air": {
+    "sounds": [
+      "bores:idle"
+    ]
+  },
+  "stone": {
+    "sounds": [
+      "bores:bore"
+    ]
+  }
+}

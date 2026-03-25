@@ -1,0 +1,51 @@
+{
+  "parent": "minecraft:item/handheld",
+  "overrides": [
+    {
+      "model": "bores:item/bore_white",
+      "predicate": {
+        "bores:color": 0.0
+      }
+    },
+    {
+      "model": "bores:item/bore_yellow",
+      "predicate": {
+        "bores:color": 4.0
+      }
+    },
+    {
+      "model": "bores:item/bore_lime",
+      "predicate": {
+        "bores:color": 5.0
+      }
+    },
+    {
+      "model": "bores:item/bore_gray",
+      "predicate": {
+        "bores:color": 7.0
+      }
+    },
+    {
+      "model": "bores:item/bore_green",
+      "predicate": {
+        "bores:color": 13.0
+      }
+    },
+    {
+      "model": "bores:item/bore_red",
+      "predicate": {
+        "bores:color": 14.0
+      }
+    },
+    {
+      "model": "bores:item/bore_black",
+      "predicate": {
+        "bores:color": 15.0
+      }
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "layer0": "bores:item/bore"
+  }
+}

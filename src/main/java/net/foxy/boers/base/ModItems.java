@@ -10,7 +10,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(BoersMod.MODID);
 
-    public static final DeferredItem<BoerBaseItem> BOER_BASE = ITEMS.register("boer_base", BoerBaseItem::new);
-    public static final DeferredItem<Item> BOER_HEAD = ITEMS.register("boer_head", () ->
+    public static final DeferredItem<BoerBaseItem> BOER_BASE = ITEMS.register("bore", BoerBaseItem::new);
+    public static final DeferredItem<Item> BOER_HEAD = ITEMS.register("bore_head", () ->
             new BoerHeadItem(new Item.Properties().durability(1)));
 }

@@ -1,0 +1,28 @@
+{
+  "default_mining_speed": 1.0,
+  "durability": 125,
+  "mining_rules": [
+    {
+      "blocks": "#minecraft:incorrect_for_iron_tool",
+      "correct_for_drops": false
+    },
+    {
+      "blocks": "#minecraft:mineable/pickaxe",
+      "correct_for_drops": true,
+      "max_speed": 36.0,
+      "speed": 12.0,
+      "speed_per_tick": 0.1
+    },
+    {
+      "blocks": "#minecraft:mineable/shovel",
+      "correct_for_drops": true,
+      "max_speed": 36.0,
+      "speed": 12.0,
+      "speed_per_tick": 0.1
+    }
+  ],
+  "texture": {
+    "active": "bores:item/bore/iron_bore_head",
+    "idle": "bores:item/bore/iron_bore_head_idle"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.foxy.boers.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "HumanoidModelMixin",
+    "LivingEntityMixin",
+    "MultiPlayerGameModeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "EnchantmentHelperMixin",
+    "MinecraftMixin",
+    "RegistryDataLoaderMixin"
+  ]
+}

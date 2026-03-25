@@ -2,7 +2,7 @@
   "entries": [
     {
       "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
-      "name": "BOERS_BOER_HOLDING",
+      "name": "BORES_BOER_HOLDING",
       "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
       "parameters": {
         "class": "net/foxy/boers/base/ModEnums",
@@ -11,7 +11,7 @@
     },
     {
       "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
-      "name": "BOERS_BOER_SINGLE_HOLDING",
+      "name": "BORES_BOER_SINGLE_HOLDING",
       "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
       "parameters": {
         "class": "net/foxy/boers/base/ModEnums",
