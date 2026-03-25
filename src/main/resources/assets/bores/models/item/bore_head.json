@@ -3,7 +3,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "minecraft:item/generated",
 	"textures": {
-		"layer0": "bores:item/boer/default_boer_head_idle"
+		"layer0": "bores:item/bore/default_bore_head_idle"
 	},
 	"display": {
 		"ground": {

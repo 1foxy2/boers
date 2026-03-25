@@ -2,7 +2,7 @@ package net.foxy.bores.datagen;
 
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.base.ModItems;
-import net.foxy.bores.data.BoerColoring;
+import net.foxy.bores.data.BoreColoring;
 import net.foxy.bores.util.Utils;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -22,17 +22,17 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        entity(ModItems.BOER_BASE).transforms()
+        entity(ModItems.BORE).transforms()
                 .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(-72.5f, -16, -27).translation(-5.325f, 5, -2.25f).scale(1, 1, 0.5f).end()
                 .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND).rotation(107.5f, 16, -153).translation(-5.325f, 5, -2.25f).scale(1, 1, 0.5f).end()
                 .end();
 
         // right 110 -16 153 left -70 16 27
-        ItemModelBuilder.OverrideBuilder override = tool(ModItems.BOER_BASE).override();
+        ItemModelBuilder.OverrideBuilder override = tool(ModItems.BORE).override();
         ItemModelBuilder.OverrideBuilder overrideGui = tool("bore_gui", "bore_gui").override();
 
         for (int j = 0; j < 7; j++) {
-            DyeColor dyeColor = BoerColoring.ALLOWED_COLORS.get(j);
+            DyeColor dyeColor = BoreColoring.ALLOWED_COLORS.get(j);
             override.predicate(Utils.rl("color"), dyeColor.getId()).model(tool("bore_" + dyeColor.getName()));
             overrideGui.predicate(Utils.rl("color"), dyeColor.getId()).model(tool("bore_gui_" + dyeColor.getName()));
             if (j == 6) {

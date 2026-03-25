@@ -3,9 +3,9 @@ package net.foxy.bores.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.foxy.bores.base.ModModels;
-import net.foxy.bores.data.BoerHead;
+import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.event.ModClientEvents;
-import net.foxy.bores.item.BoerContents;
+import net.foxy.bores.item.BoreContents;
 import net.foxy.bores.util.RenderUtils;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -20,9 +20,9 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.NeoForgeRenderTypes;
 
-public class BoerBaseRenderer extends BlockEntityWithoutLevelRenderer {
+public class BoreBaseRenderer extends BlockEntityWithoutLevelRenderer {
 
-    public BoerBaseRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelSet entityModelSet) {
+    public BoreBaseRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelSet entityModelSet) {
         super(blockEntityRenderDispatcher, entityModelSet);
     }
 
@@ -30,12 +30,12 @@ public class BoerBaseRenderer extends BlockEntityWithoutLevelRenderer {
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         poseStack.pushPose();
         if (displayContext == ItemDisplayContext.GUI || displayContext == ItemDisplayContext.FIXED || displayContext == ItemDisplayContext.GROUND) {
-            BoerContents itemStack = Utils.getBoerContents(stack);
+            BoreContents itemStack = Utils.getBoreContents(stack);
             boolean flag = itemStack != null && !itemStack.isEmpty();
             if (!flag) {
                 poseStack.translate(-1 * 0.0625, 3 * 0.0625, 0);
             }
-            RenderUtils.renderItemModel(stack, RenderType.CUTOUT, displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BOER_BASE_GUI);
+            RenderUtils.renderItemModel(stack, RenderType.CUTOUT, displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BORE_BASE_GUI);
             poseStack.translate(-1 * 0.0625, 1 * 0.0625, 0.002);
 
             if (flag) {
@@ -80,17 +80,17 @@ public class BoerBaseRenderer extends BlockEntityWithoutLevelRenderer {
                 }
             }
 
-            RenderUtils.renderItemModel(stack, NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get(), displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BOER_BASE);
+            RenderUtils.renderItemModel(stack, NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get(), displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BORE_BASE);
             poseStack.scale(0.5f, 0.5f, 1.01f);
             poseStack.translate(12 * 0.0625, 5 * 0.0625, -0.005f);
-            BoerContents itemStack = Utils.getBoerContents(stack);
+            BoreContents itemStack = Utils.getBoreContents(stack);
             if (itemStack != null && !itemStack.isEmpty()) {
-                BoerHead boerHead = Utils.getBoer(itemStack.getItemUnsafe());
+                BoreHead boreHead = Utils.getBore(itemStack.getItemUnsafe());
                 int usedFor = 0;
-                if (boerHead != null) {
-                    usedFor = boerHead.getMaxAcceleration(stack);
+                if (boreHead != null) {
+                    usedFor = boreHead.getMaxAcceleration(stack);
                 }
-                int color = Math.max(255 - usedFor, 255 - BoresClientConfig.CONFIG.MAX_BOER_HEATING.get());
+                int color = Math.max(255 - usedFor, 255 - BoresClientConfig.CONFIG.MAX_BORE_HEATING.get());
                 RenderUtils.renderItemModel(stack, NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get(), displayContext, poseStack, buffer, packedLight, packedOverlay, 255, color, color, 255);
             }
         }

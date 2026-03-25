@@ -2,7 +2,7 @@ package net.foxy.bores.datagen;
 
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.base.ModRegistries;
-import net.foxy.bores.data.BoerHead;
+import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.datagen.loot.ChestLootSubProvider;
 import net.foxy.bores.datagen.loot.ModGLM;
 import net.foxy.bores.datagen.loot.ModLootTablesProvider;
@@ -35,7 +35,7 @@ public class DataGenerators {
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         event.createDatapackRegistryObjects(
                 new RegistrySetBuilder().add(
-                        ModRegistries.BOER_HEAD, bootstrap -> {
+                        ModRegistries.BORE_HEAD, bootstrap -> {
                             bootstrap.register(
                                     ModRegistries.COPPER,
                                     create("copper", 10, 95, BlockTags.INCORRECT_FOR_STONE_TOOL)
@@ -78,11 +78,11 @@ public class DataGenerators {
         )), lookupProvider));
     }
 
-    private static BoerHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine) {
-        return new BoerHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine);
+    private static BoreHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine) {
+        return new BoreHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine);
     }
 
-    private static BoerHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine, Vec3i radius) {
-        return new BoerHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine, radius);
+    private static BoreHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine, Vec3i radius) {
+        return new BoreHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine, radius);
     }
 }

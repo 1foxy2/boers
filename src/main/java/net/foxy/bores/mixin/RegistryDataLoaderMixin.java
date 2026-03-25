@@ -35,7 +35,7 @@ public abstract class RegistryDataLoaderMixin {
             @Local(argsOnly = true) WritableRegistry<E> registry
     ) {
         Map<ResourceLocation, Resource> map = original.call(instance, resourceManager);
-        if (registry.key().equals(ModRegistries.BOER_HEAD)) {
+        if (registry.key().equals(ModRegistries.BORE_HEAD)) {
             String s = Registries.elementsDirPath(ModRegistries.OLD_BOER_HEAD);
             FileToIdConverter filetoidconverter = FileToIdConverter.json(s);
 

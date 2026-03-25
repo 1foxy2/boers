@@ -1,8 +1,8 @@
 package net.foxy.bores.network;
 
 import net.foxy.bores.BoresMod;
-import net.foxy.bores.network.c2s.SetUseBoerPacket;
-import net.foxy.bores.network.c2s.TickBoerPacket;
+import net.foxy.bores.network.c2s.SetUseBorePacket;
+import net.foxy.bores.network.c2s.TickBorePacket;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -17,12 +17,12 @@ public class NetworkHandler {
         PayloadRegistrar registrar = event.registrar(PROTOCOL_VERSION);
 
         registrar.playToServer(
-                TickBoerPacket.TYPE,
-                        TickBoerPacket.STREAM_CODEC,
-                        TickBoerPacket::handle)
+                TickBorePacket.TYPE,
+                        TickBorePacket.STREAM_CODEC,
+                        TickBorePacket::handle)
                 .playToServer(
-                        SetUseBoerPacket.TYPE,
-                        SetUseBoerPacket.STREAM_CODEC,
-                        SetUseBoerPacket::handle);
+                        SetUseBorePacket.TYPE,
+                        SetUseBorePacket.STREAM_CODEC,
+                        SetUseBorePacket::handle);
     }
 }

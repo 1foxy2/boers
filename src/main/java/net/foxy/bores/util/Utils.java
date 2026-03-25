@@ -3,8 +3,8 @@ package net.foxy.bores.util;
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.base.ModDataComponents;
 import net.foxy.bores.base.ModItems;
-import net.foxy.bores.data.BoerHead;
-import net.foxy.bores.item.BoerContents;
+import net.foxy.bores.data.BoreHead;
+import net.foxy.bores.item.BoreContents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -25,20 +25,20 @@ public class Utils {
     }
 
 
-    public static ItemStack boer(Holder<BoerHead> head) {
-        ItemStack boer = ModItems.BOER_HEAD.toStack();
-        boer.set(ModDataComponents.BOER, head);
-        return boer;
+    public static ItemStack bore(Holder<BoreHead> head) {
+        ItemStack bore = ModItems.BORE_HEAD.toStack();
+        bore.set(ModDataComponents.BORE, head);
+        return bore;
     }
 
-    public static BoerHead getBoer(ItemStack stack) {
-        Holder<BoerHead> boerHead = getBoerHolder(stack);
+    public static BoreHead getBore(ItemStack stack) {
+        Holder<BoreHead> boreHead = getBoreHolder(stack);
 
-        return boerHead == null ? null : boerHead.value();
+        return boreHead == null ? null : boreHead.value();
     }
 
-    public static Holder<BoerHead> getBoerHolder(ItemStack stack) {
-        return stack.get(ModDataComponents.BOER.get());
+    public static Holder<BoreHead> getBoreHolder(ItemStack stack) {
+        return stack.get(ModDataComponents.BORE.get());
     }
 
     public static void setDouble(ItemStack stack, boolean value) {
@@ -71,16 +71,16 @@ public class Utils {
         mainHandItem.set(ModDataComponents.IS_USED, used);
     }
 
-    public static BoerContents getBoerContents(ItemStack stack) {
-        return stack.get(ModDataComponents.BOER_CONTENTS);
+    public static BoreContents getBoreContents(ItemStack stack) {
+        return stack.get(ModDataComponents.BORE_CONTENTS);
     }
 
-    public static BoerContents getBoerContentsOrEmpty(ItemStack stack) {
-        return stack.getOrDefault(ModDataComponents.BOER_CONTENTS, BoerContents.EMPTY);
+    public static BoreContents getBoreContentsOrEmpty(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.BORE_CONTENTS, BoreContents.EMPTY);
     }
 
-    public static void setBoerContents(ItemStack itemStack, BoerContents boerContents) {
-        itemStack.set(ModDataComponents.BOER_CONTENTS, boerContents);
+    public static void setBoreContents(ItemStack itemStack, BoreContents boreContents) {
+        itemStack.set(ModDataComponents.BORE_CONTENTS, boreContents);
     }
 
     public static void forEachBlock(Level level, Player player, BlockPos pos,

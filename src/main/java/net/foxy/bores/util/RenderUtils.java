@@ -47,7 +47,7 @@ public class RenderUtils {
 
     public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         boolean flag1;
-        ItemStack stack = Utils.getBoerContentsOrEmpty(bore).getItemUnsafe();
+        ItemStack stack = Utils.getBoreContentsOrEmpty(bore).getItemUnsafe();
         if (stack.isEmpty()) {
             stack = bore;
         }
@@ -75,7 +75,7 @@ public class RenderUtils {
 
     public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, int red, int green, int blue, int alpha) {
         boolean flag1;
-        ItemStack stack = Utils.getBoerContentsOrEmpty(bore).getItemUnsafe();
+        ItemStack stack = Utils.getBoreContentsOrEmpty(bore).getItemUnsafe();
         if (stack.isEmpty()) {
             stack = bore;
         }

@@ -1,6 +1,6 @@
 package net.foxy.bores.client;
 
-import net.foxy.bores.item.BoerContents;
+import net.foxy.bores.item.BoreContents;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,9 +18,9 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
     private static final int BORDER_WIDTH = 1;
     private static final int SLOT_SIZE_X = 18;
     private static final int SLOT_SIZE_Y = 20;
-    private final BoerContents contents;
+    private final BoreContents contents;
 
-    public ClientBoresTooltip(BoerContents contents) {
+    public ClientBoresTooltip(BoreContents contents) {
         this.contents = contents;
     }
 
@@ -83,7 +83,7 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
     @OnlyIn(Dist.CLIENT)
     static enum Texture {
         BLOCKED_SLOT(ResourceLocation.withDefaultNamespace("container/bundle/blocked_slot"), 18, 20),
-        SLOT(Utils.rl("container/boer/slot"), 18, 20);
+        SLOT(Utils.rl("container/bore/slot"), 18, 20);
 
         public final ResourceLocation sprite;
         public final int w;

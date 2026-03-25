@@ -18,9 +18,9 @@ public class LivingEntityMixin {
             index = 0
     )
     private static ItemStack particles(ItemStack stack) {
-        ItemStack boer = Utils.getBoerContentsOrEmpty(stack).getItemUnsafe();
-        if (!boer.isEmpty()) {
-            return boer;
+        ItemStack bore = Utils.getBoreContentsOrEmpty(stack).getItemUnsafe();
+        if (!bore.isEmpty()) {
+            return bore;
         }
         return stack;
     }

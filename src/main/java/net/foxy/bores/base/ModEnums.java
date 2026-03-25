@@ -7,11 +7,11 @@ import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.client.IArmPoseTransformer;
 
 public class ModEnums {
-    public static final EnumProxy<HumanoidModel.ArmPose> BOER_STANDING_POS = new EnumProxy<>(
+    public static final EnumProxy<HumanoidModel.ArmPose> BORE_STANDING_POS = new EnumProxy<>(
             HumanoidModel.ArmPose.class, true, (IArmPoseTransformer)
             ModEnums::applyPose
     );
-    public static final EnumProxy<HumanoidModel.ArmPose> BOER_SINGLE_STANDING_POS = new EnumProxy<>(
+    public static final EnumProxy<HumanoidModel.ArmPose> BORE_SINGLE_STANDING_POS = new EnumProxy<>(
             HumanoidModel.ArmPose.class, false, (IArmPoseTransformer)
             ModEnums::applySinglePose
     );

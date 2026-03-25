@@ -11,7 +11,7 @@ public class BoresClientConfig {
     public final ModConfigSpec.IntValue PARTICLE_COUNT;
     public final ModConfigSpec.IntValue PARTICLE_DENSITY;
     public final ModConfigSpec.DoubleValue PARTICLE_SIZE;
-    public final ModConfigSpec.IntValue MAX_BOER_HEATING;
+    public final ModConfigSpec.IntValue MAX_BORE_HEATING;
     public final ModConfigSpec.BooleanValue BREAK_WITH_USE_KEY;
 
     private BoresClientConfig(ModConfigSpec.Builder builder) {
@@ -19,8 +19,8 @@ public class BoresClientConfig {
         PARTICLE_COUNT = builder.comment("How many particles to spawn").defineInRange("particle_count", 5, 0, Integer.MAX_VALUE);
         PARTICLE_DENSITY = builder.comment("How dense are particles").defineInRange("particle_density", 35, 0, Integer.MAX_VALUE);
         PARTICLE_SIZE = builder.comment("How big are particles").defineInRange("particle_size", 0.10D, 0, Integer.MAX_VALUE);
-        MAX_BOER_HEATING = builder.comment("How red can boer head become").defineInRange("max_boer_heating", 95, 0, 255);
-        BREAK_WITH_USE_KEY = builder.comment("With this boer will also mine if you hold use key").define("break_with_use_key", false);
+        MAX_BORE_HEATING = builder.comment("How red can bore head become").defineInRange("max_bore_heating", 95, 0, 255);
+        BREAK_WITH_USE_KEY = builder.comment("With this bore will also mine if you hold use key").define("break_with_use_key", false);
     }
 
     static {

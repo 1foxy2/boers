@@ -21,6 +21,6 @@ public record ChestLootSubProvider(HolderLookup.Provider registries) implements 
         output.accept(ModLootTables.ABANDONED_MINESHAFT, LootTable.lootTable().withPool(
                 LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(ModItems.BOER_BASE)).when(LootItemRandomChanceCondition.randomChance(0.33f))));
+                        .add(LootItem.lootTableItem(ModItems.BORE)).when(LootItemRandomChanceCondition.randomChance(0.33f))));
     }
 }

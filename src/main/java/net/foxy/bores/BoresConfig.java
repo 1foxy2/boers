@@ -7,10 +7,10 @@ public class BoresConfig {
     public static final BoresConfig CONFIG;
     public static final ModConfigSpec CONFIG_SPEC;
 
-    public final ModConfigSpec.BooleanValue ENCHANTABLE_BOER_HEAD;
+    public final ModConfigSpec.BooleanValue ENCHANTABLE_BORE_HEAD;
 
     private BoresConfig(ModConfigSpec.Builder builder) {
-        ENCHANTABLE_BOER_HEAD = builder.comment("if enabled you can now enchant boer heads").define("enchantable_boer_head", false);
+        ENCHANTABLE_BORE_HEAD = builder.comment("if enabled you can now enchant bore heads").define("enchantable_bore_head", false);
     }
 
     static {

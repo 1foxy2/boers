@@ -8,16 +8,16 @@ import net.foxy.bores.base.ModEnums;
 import net.foxy.bores.base.ModItems;
 import net.foxy.bores.base.ModParticles;
 import net.foxy.bores.base.ModSounds;
-import net.foxy.bores.client.BoerBaseRenderer;
+import net.foxy.bores.client.BoreBaseRenderer;
 import net.foxy.bores.client.BoreSoundInstance;
 import net.foxy.bores.client.BoresClientConfig;
 import net.foxy.bores.client.ClientBoresTooltip;
-import net.foxy.bores.client.model.BoerModel;
-import net.foxy.bores.data.BoerHead;
-import net.foxy.bores.item.BoerBaseItem;
-import net.foxy.bores.item.BoerContents;
-import net.foxy.bores.network.c2s.SetUseBoerPacket;
-import net.foxy.bores.network.c2s.TickBoerPacket;
+import net.foxy.bores.client.model.BoreModel;
+import net.foxy.bores.data.BoreHead;
+import net.foxy.bores.item.BoreItem;
+import net.foxy.bores.item.BoreContents;
+import net.foxy.bores.network.c2s.SetUseBorePacket;
+import net.foxy.bores.network.c2s.TickBorePacket;
 import net.foxy.bores.particle.spark.SparkParticle;
 import net.foxy.bores.particle.spark.SparkParticleProvider;
 import net.foxy.bores.util.ModItemProperties;
@@ -52,7 +52,7 @@ import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber(modid = BoresMod.MODID, value = Dist.CLIENT)
 public class ModClientEvents {
-    private static final ResourceLocation BOER_MODEL_LOADER = Utils.rl("bore");
+    private static final ResourceLocation BORE_MODEL_LOADER = Utils.rl("bore");
     public static int lastProgress = 0;
     public static int usingProgress = 0;
     public static BoreSoundInstance soundInstance = null;
@@ -70,13 +70,13 @@ public class ModClientEvents {
         if (stack == null) {
             return;
         }
-        BoerContents boerContents = Utils.getBoerContents(stack);
+        BoreContents boreContents = Utils.getBoreContents(stack);
         Level level = event.getCamera().getEntity().level();
-        if (boerContents == null) {
+        if (boreContents == null) {
             return;
         }
 
-        BoerHead tool = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack).getItemUnsafe());
+        BoreHead tool = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).getItemUnsafe());
         int k = Minecraft.getInstance().gameMode.getDestroyStage();
         if (tool != null && tool.radius().isPresent()) {
             Vec3 vec3 = event.getCamera().getPosition();
@@ -105,12 +105,12 @@ public class ModClientEvents {
 
     @SubscribeEvent
     public static void registerCustomModels(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(BOER_MODEL_LOADER, BoerModel.Loader.INSTANCE);
+        event.register(BORE_MODEL_LOADER, BoreModel.Loader.INSTANCE);
     }
 
     @SubscribeEvent
     public static void registerTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
-        event.register(BoerContents.class, ClientBoresTooltip::new);
+        event.register(BoreContents.class, ClientBoresTooltip::new);
     }
 
     @SubscribeEvent
@@ -120,14 +120,14 @@ public class ModClientEvents {
 
 
     @SubscribeEvent
-    public static void tickBoerProgress(ClientTickEvent.Post event) {
+    public static void tickBoreProgress(ClientTickEvent.Post event) {
         Player player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
 
         ItemStack stack = player.getMainHandItem();
-        if (stack.getItem() instanceof BoerBaseItem boer) {
+        if (stack.getItem() instanceof BoreItem bore) {
             lastProgress = usingProgress;
             if (Minecraft.getInstance().options.keyAttack.isDown() || BoresClientConfig.CONFIG.BREAK_WITH_USE_KEY.get() && Minecraft.getInstance().options.keyUse.isDown()) {
                 usingProgress = Math.min(usingProgress + 1, 10);
@@ -138,14 +138,14 @@ public class ModClientEvents {
             boolean isUsed = Utils.isUsed(stack);
             if (usingProgress < 9) {
                 if (isUsed) {
-                    PacketDistributor.sendToServer(new SetUseBoerPacket(false));
+                    PacketDistributor.sendToServer(new SetUseBorePacket(false));
                 }
             } else {
                 if (!isUsed) {
-                    PacketDistributor.sendToServer(new SetUseBoerPacket(true));
+                    PacketDistributor.sendToServer(new SetUseBorePacket(true));
                 }
-                boer.onAttackTick(player.level(), player, stack, usingProgress);
-                PacketDistributor.sendToServer(new TickBoerPacket(usingProgress));
+                bore.onAttackTick(player.level(), player, stack, usingProgress);
+                PacketDistributor.sendToServer(new TickBorePacket(usingProgress));
             }
         }
     }
@@ -155,9 +155,9 @@ public class ModClientEvents {
         if (event.isAttack()) {
             Player player = Minecraft.getInstance().player;
             ItemStack stack = player.getMainHandItem();
-            if (stack.getItem() instanceof BoerBaseItem) {
+            if (stack.getItem() instanceof BoreItem) {
                 event.setSwingHand(false);
-                if (usingProgress <= 9 || Utils.getBoerContents(stack).isEmpty()) {
+                if (usingProgress <= 9 || Utils.getBoreContents(stack).isEmpty()) {
                     event.setCanceled(true);
                 }
             }
@@ -167,12 +167,12 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void registerItemRenderers(RegisterClientExtensionsEvent event) {
         event.registerItem(new IClientItemExtensions() {
-            public static BoerBaseRenderer renderer = null;
+            public static BoreBaseRenderer renderer = null;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (renderer == null) {
-                    renderer = new BoerBaseRenderer(
+                    renderer = new BoreBaseRenderer(
                             Minecraft.getInstance().getBlockEntityRenderDispatcher(),
                             Minecraft.getInstance().getEntityModels());
                 }
@@ -182,9 +182,9 @@ public class ModClientEvents {
 
             @Override
             public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-                return Utils.getDouble(itemStack) ? ModEnums.BOER_STANDING_POS.getValue() : ModEnums.BOER_SINGLE_STANDING_POS.getValue();
+                return Utils.getDouble(itemStack) ? ModEnums.BORE_STANDING_POS.getValue() : ModEnums.BORE_SINGLE_STANDING_POS.getValue();
             }
-        }, ModItems.BOER_BASE);
+        }, ModItems.BORE);
     }
 
     @SubscribeEvent

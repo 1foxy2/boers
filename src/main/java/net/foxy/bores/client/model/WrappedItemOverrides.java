@@ -1,6 +1,6 @@
 package net.foxy.bores.client.model;
 
-import net.foxy.bores.data.BoerHead;
+import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -28,14 +28,14 @@ public class WrappedItemOverrides extends ItemOverrides {
 
     @Override
     public @Nullable BakedModel resolve(BakedModel model, ItemStack bore, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
-        ItemStack stack = Utils.getBoerContentsOrEmpty(bore).itemsCopy();
+        ItemStack stack = Utils.getBoreContentsOrEmpty(bore).itemsCopy();
         if (stack.isEmpty()) {
             stack = bore;
         }
-        BoerHead head = Utils.getBoer(stack);
+        BoreHead head = Utils.getBore(stack);
         final ResourceLocation texture;
         if (head == null) {
-            texture = Utils.rl("item/boer/default_boer_head_idle");
+            texture = Utils.rl("item/bore/default_bore_head_idle");
         } else if (!Utils.isUsed(bore)) {
             texture = head.texture().idle();
         } else {

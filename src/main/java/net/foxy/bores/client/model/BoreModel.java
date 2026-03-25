@@ -48,13 +48,13 @@ import java.util.function.Function;
  * - Not limited to an arbitrary number of layers (5)
  * - Support for per-layer render types
  */
-public class BoerModel implements IUnbakedGeometry<BoerModel> {
+public class BoreModel implements IUnbakedGeometry<BoreModel> {
     @Nullable
     private ImmutableList<Material> textures;
     private final Int2ObjectMap<ExtraFaceData> layerData;
     private final Int2ObjectMap<ResourceLocation> renderTypeNames;
 
-    private BoerModel(@Nullable ImmutableList<Material> textures, Int2ObjectMap<ExtraFaceData> layerData, Int2ObjectMap<ResourceLocation> renderTypeNames) {
+    private BoreModel(@Nullable ImmutableList<Material> textures, Int2ObjectMap<ExtraFaceData> layerData, Int2ObjectMap<ResourceLocation> renderTypeNames) {
         this.textures = textures;
         this.layerData = layerData;
         this.renderTypeNames = renderTypeNames;
@@ -80,11 +80,11 @@ public class BoerModel implements IUnbakedGeometry<BoerModel> {
         return builder.build();
     }
 
-    public static final class Loader implements IGeometryLoader<BoerModel> {
+    public static final class Loader implements IGeometryLoader<BoreModel> {
         public static final Loader INSTANCE = new Loader();
 
         @Override
-        public BoerModel read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) {
+        public BoreModel read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) {
             var renderTypeNames = new Int2ObjectOpenHashMap<ResourceLocation>();
             if (jsonObject.has("render_types")) {
                 var renderTypes = jsonObject.getAsJsonObject("render_types");
@@ -102,7 +102,7 @@ public class BoerModel implements IUnbakedGeometry<BoerModel> {
                 JsonObject forgeData = jsonObject.get("neoforge_data").getAsJsonObject();
                 readLayerData(forgeData, "layers", renderTypeNames, emissiveLayers, false);
             }
-            return new BoerModel(null, emissiveLayers, renderTypeNames);
+            return new BoreModel(null, emissiveLayers, renderTypeNames);
         }
 
         protected void readLayerData(JsonObject jsonObject, String name, Int2ObjectOpenHashMap<ResourceLocation> renderTypeNames, Int2ObjectMap<ExtraFaceData> layerData, boolean logWarning) {

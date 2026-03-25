@@ -25,7 +25,7 @@ public class EnchantmentHelperMixin {
     private static Object useNeoMethod(ItemStack instance, DataComponentType dataComponentType,
                                        Object o, Operation<Object> original,
                                        @Local(argsOnly = true) LivingEntity entity) {
-        if (instance.is(ModItems.BOER_BASE)) {
+        if (instance.is(ModItems.BORE)) {
             return instance.getAllEnchantments(entity.registryAccess().lookupOrThrow(Registries.ENCHANTMENT));
         }
 

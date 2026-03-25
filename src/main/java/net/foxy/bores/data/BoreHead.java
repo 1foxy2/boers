@@ -28,19 +28,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public record BoerHead(Texture texture, float defaultMiningSpeed, int durability, List<Rule> miningRules, Optional<Vec3i> radius) {
-    public static final Codec<BoerHead> CODEC = RecordCodecBuilder.create(instance ->
+public record BoreHead(Texture texture, float defaultMiningSpeed, int durability, List<Rule> miningRules, Optional<Vec3i> radius) {
+    public static final Codec<BoreHead> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    Texture.CODEC.fieldOf("texture").forGetter(BoerHead::texture),
-                    Codec.FLOAT.fieldOf("default_mining_speed").forGetter(BoerHead::defaultMiningSpeed),
-                    Codec.INT.fieldOf("durability").forGetter(BoerHead::durability),
-                    Rule.CODEC.listOf().fieldOf("mining_rules").forGetter(BoerHead::miningRules),
-                    Vec3i.CODEC.optionalFieldOf("radius").forGetter(BoerHead::radius)
-            ).apply(instance, BoerHead::new)
+                    Texture.CODEC.fieldOf("texture").forGetter(BoreHead::texture),
+                    Codec.FLOAT.fieldOf("default_mining_speed").forGetter(BoreHead::defaultMiningSpeed),
+                    Codec.INT.fieldOf("durability").forGetter(BoreHead::durability),
+                    Rule.CODEC.listOf().fieldOf("mining_rules").forGetter(BoreHead::miningRules),
+                    Vec3i.CODEC.optionalFieldOf("radius").forGetter(BoreHead::radius)
+            ).apply(instance, BoreHead::new)
     );
-    public static final Codec<Holder<BoerHead>> ITEM_CODEC = FixerRegistryFixedCodec.create(ModRegistries.BOER_HEAD);
+    public static final Codec<Holder<BoreHead>> ITEM_CODEC = FixerRegistryFixedCodec.create(ModRegistries.BORE_HEAD);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<BoerHead>> STREAM_CODEC = ByteBufCodecs.holderRegistry(ModRegistries.BOER_HEAD);
+    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<BoreHead>> STREAM_CODEC = ByteBufCodecs.holderRegistry(ModRegistries.BORE_HEAD);
 
     public float getMiningSpeed(ItemStack stack, BlockState state) {
         for (Rule tool$rule : miningRules) {
@@ -75,7 +75,7 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
         return 1;
     }
 
-    public BoerHead(ResourceLocation texture, float miningSpeed, int durability, TagKey<Block> miningLevel) {
+    public BoreHead(ResourceLocation texture, float miningSpeed, int durability, TagKey<Block> miningLevel) {
         this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
                 List.of(Rule.deniesDrops(miningLevel),
@@ -84,7 +84,7 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
                 ), Optional.empty());
     }
 
-    public BoerHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, TagKey<Block> miningLevel) {
+    public BoreHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, TagKey<Block> miningLevel) {
         this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
                 List.of(Rule.deniesDrops(miningLevel),
@@ -93,7 +93,7 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
                 ), Optional.empty());
     }
 
-    public BoerHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, TagKey<Block> miningLevel, Vec3i radius) {
+    public BoreHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, TagKey<Block> miningLevel, Vec3i radius) {
         this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
                 List.of(Rule.deniesDrops(miningLevel),
@@ -108,7 +108,7 @@ public record BoerHead(Texture texture, float defaultMiningSpeed, int durability
             if (tool$rule.speed().isPresent()) {
                 if (tool$rule.maxSpeed.isPresent() && tool$rule.speedPerTick.isPresent()) {
                     float maxSpeed = tool$rule.maxSpeed.get() - tool$rule.speed.get();
-                    int m = (int) Mth.lerp(Math.min(tool$rule.speedPerTick.get() * Utils.getUsedFor(stack), maxSpeed) / maxSpeed, 0, BoresClientConfig.CONFIG.MAX_BOER_HEATING.getAsInt());
+                    int m = (int) Mth.lerp(Math.min(tool$rule.speedPerTick.get() * Utils.getUsedFor(stack), maxSpeed) / maxSpeed, 0, BoresClientConfig.CONFIG.MAX_BORE_HEATING.getAsInt());
                     if (m > max) {
                         max = m;
                     }

@@ -11,16 +11,16 @@ import org.apache.commons.lang3.math.Fraction;
 
 import javax.annotation.Nullable;
 
-public final class BoerContents implements TooltipComponent {
-    public static final BoerContents EMPTY = new BoerContents(ItemStack.EMPTY);
-    public static final Codec<BoerContents> CODEC = ItemStack.CODEC.xmap(BoerContents::new, p_331551_ -> p_331551_.items);
-    public static final StreamCodec<RegistryFriendlyByteBuf, BoerContents> STREAM_CODEC = ItemStack.STREAM_CODEC
-        .map(BoerContents::new, p_331649_ -> p_331649_.items);
+public final class BoreContents implements TooltipComponent {
+    public static final BoreContents EMPTY = new BoreContents(ItemStack.EMPTY);
+    public static final Codec<BoreContents> CODEC = ItemStack.CODEC.xmap(BoreContents::new, p_331551_ -> p_331551_.items);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BoreContents> STREAM_CODEC = ItemStack.STREAM_CODEC
+        .map(BoreContents::new, p_331649_ -> p_331649_.items);
     private static final Fraction BUNDLE_IN_BUNDLE_WEIGHT = Fraction.getFraction(1, 16);
     private static final int NO_STACK_INDEX = -1;
     final ItemStack items;
 
-    public BoerContents(ItemStack items) {
+    public BoreContents(ItemStack items) {
         this.items = items;
     }
 
@@ -45,7 +45,7 @@ public final class BoerContents implements TooltipComponent {
         if (this == other) {
             return true;
         } else {
-            return !(other instanceof BoerContents bundlecontents)
+            return !(other instanceof BoreContents bundlecontents)
                 ? false
                 : ItemStack.matches(this.items, bundlecontents.items);
         }
@@ -69,7 +69,7 @@ public final class BoerContents implements TooltipComponent {
             return items;
         }
 
-        public Mutable(BoerContents contents) {
+        public Mutable(BoreContents contents) {
             this.items = contents.items;
         }
 
@@ -138,8 +138,8 @@ public final class BoerContents implements TooltipComponent {
             return this.weight;
         }
 
-        public BoerContents toImmutable() {
-            return new BoerContents(this.items);
+        public BoreContents toImmutable() {
+            return new BoreContents(this.items);
         }
     }
 }

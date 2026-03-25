@@ -29,7 +29,7 @@ public class MinecraftMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/KeyMapping;consumeClick()Z", ordinal = 13)
     )
     public boolean breakWithUseKey(boolean original) {
-        if (BoresClientConfig.CONFIG.BREAK_WITH_USE_KEY.get() && player.getMainHandItem().is(ModItems.BOER_BASE) && options.keyUse.consumeClick()) {
+        if (BoresClientConfig.CONFIG.BREAK_WITH_USE_KEY.get() && player.getMainHandItem().is(ModItems.BORE) && options.keyUse.consumeClick()) {
             return true;
         }
 
@@ -41,7 +41,7 @@ public class MinecraftMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/KeyMapping;isDown()Z", ordinal = 4)
     )
     public boolean continueBreakWithUseKey(boolean original) {
-        if (BoresClientConfig.CONFIG.BREAK_WITH_USE_KEY.get() && player.getMainHandItem().is(ModItems.BOER_BASE) && options.keyUse.isDown()) {
+        if (BoresClientConfig.CONFIG.BREAK_WITH_USE_KEY.get() && player.getMainHandItem().is(ModItems.BORE) && options.keyUse.isDown()) {
             return true;
         }
 

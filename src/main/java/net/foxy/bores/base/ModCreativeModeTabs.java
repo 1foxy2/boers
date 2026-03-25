@@ -1,7 +1,7 @@
 package net.foxy.bores.base;
 
 import net.foxy.bores.BoresMod;
-import net.foxy.bores.item.BoerContents;
+import net.foxy.bores.item.BoreContents;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -17,15 +17,15 @@ public class ModCreativeModeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TEXTURE =
             TABS.register("texture",
                     () -> CreativeModeTab.builder().icon(() -> {
-                        ItemStack itemStack = ModItems.BOER_BASE.toStack();
-                        Utils.setBoerContents(itemStack, new BoerContents(ModItems.BOER_HEAD.toStack()));
+                        ItemStack itemStack = ModItems.BORE.toStack();
+                        Utils.setBoreContents(itemStack, new BoreContents(ModItems.BORE_HEAD.toStack()));
                         return itemStack;
                             })
                             .title(Component.translatable("item.bores.bores"))
                             .displayItems((pParameters, pOutput) -> {
-                                pOutput.accept(ModItems.BOER_BASE);
-                                pParameters.holders().lookupOrThrow(ModRegistries.BOER_HEAD).listElements().forEach(boerHeadReference -> {
-                                    pOutput.accept(Utils.boer(boerHeadReference));
+                                pOutput.accept(ModItems.BORE);
+                                pParameters.holders().lookupOrThrow(ModRegistries.BORE_HEAD).listElements().forEach(boreHeadReference -> {
+                                    pOutput.accept(Utils.bore(boreHeadReference));
                                 });
                             })
                             .build());

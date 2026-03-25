@@ -3,8 +3,8 @@ package net.foxy.bores.datagen;
 import net.foxy.bores.base.ModDataComponents;
 import net.foxy.bores.base.ModItems;
 import net.foxy.bores.base.ModRegistries;
-import net.foxy.bores.data.BoerColoring;
-import net.foxy.bores.data.BoerHead;
+import net.foxy.bores.data.BoreColoring;
+import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.data.StackSmithingTransformRecipeBuilder;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.Holder;
@@ -26,23 +26,23 @@ public class ModRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes(RecipeOutput recipeOutput, HolderLookup.Provider lookup) {
-        SpecialRecipeBuilder.special(BoerColoring::new).save(recipeOutput, Utils.rl("bore_base_coloring"));
+        SpecialRecipeBuilder.special(BoreColoring::new).save(recipeOutput, Utils.rl("bore_base_coloring"));
 
-        boerHead(recipeOutput,  lookup.holderOrThrow(ModRegistries.COPPER), Items.COPPER_INGOT);
-        boerHead(recipeOutput, lookup.holderOrThrow(ModRegistries.DIAMOND), Items.DIAMOND);
-        boerHead(recipeOutput, lookup.holderOrThrow(ModRegistries.GOLDEN), Items.GOLD_INGOT);
-        boerHead(recipeOutput, lookup.holderOrThrow(ModRegistries.IRON), Items.IRON_INGOT);
-        ItemStack result = ModItems.BOER_HEAD.toStack();
-        Utils.boer(lookup.holderOrThrow(ModRegistries.NETHERITE));
+        boreHead(recipeOutput,  lookup.holderOrThrow(ModRegistries.COPPER), Items.COPPER_INGOT);
+        boreHead(recipeOutput, lookup.holderOrThrow(ModRegistries.DIAMOND), Items.DIAMOND);
+        boreHead(recipeOutput, lookup.holderOrThrow(ModRegistries.GOLDEN), Items.GOLD_INGOT);
+        boreHead(recipeOutput, lookup.holderOrThrow(ModRegistries.IRON), Items.IRON_INGOT);
+        ItemStack result = ModItems.BORE_HEAD.toStack();
+        Utils.bore(lookup.holderOrThrow(ModRegistries.NETHERITE));
         StackSmithingTransformRecipeBuilder.smithing(
-                        Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), DataComponentIngredient.of(false, ModDataComponents.BOER.get(), lookup.holderOrThrow(ModRegistries.DIAMOND), ModItems.BOER_HEAD), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.TOOLS, result
+                        Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), DataComponentIngredient.of(false, ModDataComponents.BORE.get(), lookup.holderOrThrow(ModRegistries.DIAMOND), ModItems.BORE_HEAD), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.TOOLS, result
                 )
-                .unlocks("has_bore_base", has(ModItems.BOER_BASE))
+                .unlocks("has_bore_base", has(ModItems.BORE))
                 .save(recipeOutput, Utils.rl("diamond_bore_head_smithing"));
     }
 
-    public static void boerHead(RecipeOutput recipeOutput, Holder<BoerHead> boerHead, Item item) {
-        ItemStack stack = Utils.boer(boerHead);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore_base", has(ModItems.BOER_BASE)).save(recipeOutput, Utils.rl("bore_head_" + boerHead.getKey().location().getPath()));
+    public static void boreHead(RecipeOutput recipeOutput, Holder<BoreHead> boreHead, Item item) {
+        ItemStack stack = Utils.bore(boreHead);
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore_base", has(ModItems.BORE)).save(recipeOutput, Utils.rl("bore_head_" + boreHead.getKey().location().getPath()));
     }
 }

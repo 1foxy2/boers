@@ -1,7 +1,7 @@
 package net.foxy.bores;
 
 import net.foxy.bores.base.*;
-import net.foxy.bores.data.BoerColoring;
+import net.foxy.bores.data.BoreColoring;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -39,11 +39,11 @@ public class BoresMod {
 
     public static void buildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.getParameters().holders().lookupOrThrow(ModRegistries.BOER_HEAD).listElements().forEach(boerHeadReference -> {
-                event.insertAfter(Items.NETHERITE_HOE.getDefaultInstance(), Utils.boer(boerHeadReference), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.getParameters().holders().lookupOrThrow(ModRegistries.BORE_HEAD).listElements().forEach(boreHeadReference -> {
+                event.insertAfter(Items.NETHERITE_HOE.getDefaultInstance(), Utils.bore(boreHeadReference), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             });
-            for (DyeColor color : BoerColoring.ALLOWED_COLORS) {
-                ItemStack stack = ModItems.BOER_BASE.toStack();
+            for (DyeColor color : BoreColoring.ALLOWED_COLORS) {
+                ItemStack stack = ModItems.BORE.toStack();
                 stack.set(DataComponents.BASE_COLOR, color);
                 event.insertAfter(Items.NETHERITE_HOE.getDefaultInstance(), stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             }

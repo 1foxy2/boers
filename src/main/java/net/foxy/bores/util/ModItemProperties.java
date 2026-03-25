@@ -7,7 +7,7 @@ import net.minecraft.world.item.DyeColor;
 
 public class ModItemProperties {
     public static void addModItemProperties() {
-        ItemProperties.register(ModItems.BOER_BASE.get(), Utils.rl("color"),
+        ItemProperties.register(ModItems.BORE.get(), Utils.rl("color"),
                 (stack, level, entity, seed) -> {
                     int color = stack.getOrDefault(DataComponents.BASE_COLOR, DyeColor.BLUE).getId();
                     if (color == 11) {

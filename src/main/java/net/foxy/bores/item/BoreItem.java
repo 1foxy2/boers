@@ -4,7 +4,7 @@ import net.foxy.bores.base.ModDataComponents;
 import net.foxy.bores.base.ModItems;
 import net.foxy.bores.base.ModParticles;
 import net.foxy.bores.base.ModSounds;
-import net.foxy.bores.data.BoerHead;
+import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.event.ModClientEvents;
 import net.foxy.bores.particle.spark.SparkParticle;
 import net.foxy.bores.util.Utils;
@@ -31,10 +31,10 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
-public class BoerBaseItem extends Item {
-    public BoerBaseItem() {
+public class BoreItem extends Item {
+    public BoreItem() {
         super(new Properties().stacksTo(1)
-                .component(ModDataComponents.BOER_CONTENTS, BoerContents.EMPTY)
+                .component(ModDataComponents.BORE_CONTENTS, BoreContents.EMPTY)
                 .component(DataComponents.BASE_COLOR, DyeColor.BLUE)
                 .component(DataComponents.DAMAGE, 0)
                 .component(DataComponents.MAX_DAMAGE, 0)
@@ -44,22 +44,22 @@ public class BoerBaseItem extends Item {
 
     @Override
     public boolean isDamaged(ItemStack stack) {
-        ItemStack boerItem = Utils.getBoerContents(stack).getItemUnsafe();
-        return !boerItem.isEmpty() && boerItem.isDamaged();
+        ItemStack boreItem = Utils.getBoreContents(stack).getItemUnsafe();
+        return !boreItem.isEmpty() && boreItem.isDamaged();
     }
 
     @Override
     public boolean isDamageable(ItemStack stack) {
-        ItemStack boerItem = Utils.getBoerContents(stack).getItemUnsafe();
-        return !boerItem.isEmpty() && boerItem.isDamageableItem();
+        ItemStack boreItem = Utils.getBoreContents(stack).getItemUnsafe();
+        return !boreItem.isEmpty() && boreItem.isDamageableItem();
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
-        ItemStack boerItem = Utils.getBoerContents(stack).itemsCopy();
-        if (!boerItem.isEmpty()) {
-            boerItem.setDamageValue(damage);
-            Utils.setBoerContents(stack, new BoerContents(boerItem));
+        ItemStack boreItem = Utils.getBoreContents(stack).itemsCopy();
+        if (!boreItem.isEmpty()) {
+            boreItem.setDamageValue(damage);
+            Utils.setBoreContents(stack, new BoreContents(boreItem));
         }
     }
 
@@ -94,12 +94,12 @@ public class BoerBaseItem extends Item {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return Utils.getBoerContentsOrEmpty(stack).items.getMaxDamage();
+        return Utils.getBoreContentsOrEmpty(stack).items.getMaxDamage();
     }
 
     @Override
     public int getDamage(ItemStack stack) {
-        return Utils.getBoerContentsOrEmpty(stack).items.getDamageValue();
+        return Utils.getBoreContentsOrEmpty(stack).items.getDamageValue();
     }
 
     @Override
@@ -108,7 +108,7 @@ public class BoerBaseItem extends Item {
     }
 
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        BoerHead tool = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack).items);
+        BoreHead tool = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).items);
         return tool != null ? tool.getMiningSpeed(stack, state) : 1.0F;
     }
 
@@ -119,16 +119,16 @@ public class BoerBaseItem extends Item {
 
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
-        BoerContents boerContents = Utils.getBoerContents(stack);
-        if (boerContents == null) {
+        BoreContents boreContents = Utils.getBoreContents(stack);
+        if (boreContents == null) {
             return false;
         } else {
             if (!level.isClientSide && state.getDestroySpeed(level, pos) != 0.0F) {
-                ItemStack boer = boerContents.getItemUnsafe();
-                BoerHead tool = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack).items);
+                ItemStack bore = boreContents.getItemUnsafe();
+                BoreHead tool = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).items);
                 int damage = tool != null ? tool.getDamage(state) : 1;
-                boer.hurtAndBreak(damage, miningEntity, EquipmentSlot.MAINHAND);
-                Utils.setBoerContents(stack, new BoerContents(boer));
+                bore.hurtAndBreak(damage, miningEntity, EquipmentSlot.MAINHAND);
+                Utils.setBoreContents(stack, new BoreContents(bore));
                 if (tool != null && tool.radius().isPresent() && miningEntity instanceof ServerPlayer player) {
                     Utils.forEachBlock(level, player, pos, tool.radius().get(), (target, block) -> {
                         boolean removed = block.onDestroyedByPlayer(level, target, player, true, level.getFluidState(target));
@@ -146,7 +146,7 @@ public class BoerBaseItem extends Item {
 
     @Override
     public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
-        ItemStack contents = Utils.getBoerContents(stack).items;
+        ItemStack contents = Utils.getBoreContents(stack).items;
         if (!contents.isEmpty()) {
             return contents.getEnchantmentLevel(enchantment);
         }
@@ -156,7 +156,7 @@ public class BoerBaseItem extends Item {
 
     @Override
     public ItemEnchantments getAllEnchantments(ItemStack stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
-        ItemStack contents = Utils.getBoerContents(stack).items;
+        ItemStack contents = Utils.getBoreContents(stack).items;
         if (!contents.isEmpty()) {
             return contents.getAllEnchantments(lookup);
         }
@@ -165,8 +165,8 @@ public class BoerBaseItem extends Item {
     }
 
     public void onAttackTick(Level level, Player player, ItemStack stack, int used) {
-        ItemStack boer = Utils.getBoerContentsOrEmpty(stack).items;
-        if (!boer.isEmpty()) {
+        ItemStack bore = Utils.getBoreContentsOrEmpty(stack).items;
+        if (!bore.isEmpty()) {
             List<LivingEntity> targetEntities = getTargetEntity(player, level);
 
             if (!targetEntities.isEmpty()) {
@@ -181,8 +181,8 @@ public class BoerBaseItem extends Item {
                     } else {
                         if (player.tickCount % 10 == 0) {
                             target.hurt(level.damageSources().playerAttack(player), 2.0F);
-                            boer.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
-                            Utils.setBoerContents(stack, new BoerContents(boer));
+                            bore.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+                            Utils.setBoreContents(stack, new BoreContents(bore));
 
                             level.playSound(null, target.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.3F, 1.8F);
                         }
@@ -237,7 +237,7 @@ public class BoerBaseItem extends Item {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        BoerHead head = Utils.getBoer(Utils.getBoerContentsOrEmpty(stack).items);
+        BoreHead head = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).items);
         if (head != null) {
             return head.isCorrectForDrops(state);
         }
@@ -249,13 +249,13 @@ public class BoerBaseItem extends Item {
         if (stack.getCount() != 1 || action != ClickAction.SECONDARY) {
             return false;
         } else {
-            BoerContents bundlecontents = Utils.getBoerContents(stack);
+            BoreContents bundlecontents = Utils.getBoreContents(stack);
             if (bundlecontents == null) {
                 return false;
             } else {
                 ItemStack itemstack = slot.getItem();
 
-                BoerContents.Mutable bundlecontents$mutable = new BoerContents.Mutable(bundlecontents);
+                BoreContents.Mutable bundlecontents$mutable = new BoreContents.Mutable(bundlecontents);
                 if (itemstack.isEmpty()) {
                     this.playRemoveOneSound(player);
                     ItemStack itemstack1 = bundlecontents$mutable.removeOne();
@@ -264,7 +264,7 @@ public class BoerBaseItem extends Item {
                         bundlecontents$mutable.tryInsert(itemstack2);
                     }
                 } else if (itemstack.canFitInsideContainerItems()) { // Neo: stack-aware placeability check
-                    if (!itemstack.is(ModItems.BOER_HEAD)) {
+                    if (!itemstack.is(ModItems.BORE_HEAD)) {
                         return false;
                     }
                     int i = bundlecontents$mutable.tryTransfer(slot, player);
@@ -273,7 +273,7 @@ public class BoerBaseItem extends Item {
                     }
                 }
 
-                Utils.setBoerContents(stack, bundlecontents$mutable.toImmutable());
+                Utils.setBoreContents(stack, bundlecontents$mutable.toImmutable());
                 return true;
             }
         }
@@ -285,11 +285,11 @@ public class BoerBaseItem extends Item {
     ) {
         if (stack.getCount() != 1) return false;
         if (action == ClickAction.SECONDARY && slot.allowModification(player)) {
-            BoerContents bundlecontents = Utils.getBoerContents(stack);
+            BoreContents bundlecontents = Utils.getBoreContents(stack);
             if (bundlecontents == null) {
                 return false;
             } else {
-                BoerContents.Mutable bundlecontents$mutable = new BoerContents.Mutable(bundlecontents);
+                BoreContents.Mutable bundlecontents$mutable = new BoreContents.Mutable(bundlecontents);
                 if (other.isEmpty()) {
                     ItemStack itemstack = bundlecontents$mutable.removeOne();
                     if (itemstack != null) {
@@ -297,7 +297,7 @@ public class BoerBaseItem extends Item {
                         access.set(itemstack);
                     }
                 } else {
-                    if (!other.is(ModItems.BOER_HEAD)) {
+                    if (!other.is(ModItems.BORE_HEAD)) {
                         return false;
                     }
                     ItemStack itemStack = bundlecontents$mutable.removeOne();
@@ -311,7 +311,7 @@ public class BoerBaseItem extends Item {
                     }
                 }
 
-                Utils.setBoerContents(stack,bundlecontents$mutable.toImmutable());
+                Utils.setBoreContents(stack,bundlecontents$mutable.toImmutable());
                 return true;
             }
         } else {
@@ -321,27 +321,27 @@ public class BoerBaseItem extends Item {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        ItemStack boer = Utils.getBoerContentsOrEmpty(stack).items;
-        return !boer.isEmpty() && boer.isDamaged();
+        ItemStack bore = Utils.getBoreContentsOrEmpty(stack).items;
+        return !bore.isEmpty() && bore.isDamaged();
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return Utils.getBoerContentsOrEmpty(stack).items.getBarWidth();
+        return Utils.getBoreContentsOrEmpty(stack).items.getBarWidth();
     }
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         return !stack.has(DataComponents.HIDE_TOOLTIP) && !stack.has(DataComponents.HIDE_ADDITIONAL_TOOLTIP)
-                ? Optional.ofNullable(Utils.getBoerContents(stack))
+                ? Optional.ofNullable(Utils.getBoreContents(stack))
                 : Optional.empty();
     }
 
     @Override
     public void onDestroyed(ItemEntity itemEntity) {
-        BoerContents bundlecontents = Utils.getBoerContents(itemEntity.getItem());
+        BoreContents bundlecontents = Utils.getBoreContents(itemEntity.getItem());
         if (bundlecontents != null) {
-            Utils.setBoerContents(itemEntity.getItem(), BoerContents.EMPTY);
+            Utils.setBoreContents(itemEntity.getItem(), BoreContents.EMPTY);
             ItemUtils.onContainerDestroyed(itemEntity, List.of(bundlecontents.itemsCopy()));
         }
     }

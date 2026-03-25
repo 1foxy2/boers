@@ -1,7 +1,7 @@
 package net.foxy.bores.data;
 
 import net.foxy.bores.base.ModRecipeSerializers;
-import net.foxy.bores.item.BoerBaseItem;
+import net.foxy.bores.item.BoreItem;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.DyeColor;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public class BoerColoring extends CustomRecipe {
+public class BoreColoring extends CustomRecipe {
     public static final List<DyeColor> ALLOWED_COLORS = List.of(
             DyeColor.WHITE,
             DyeColor.YELLOW,
@@ -28,7 +28,7 @@ public class BoerColoring extends CustomRecipe {
             DyeColor.BLUE
     );
 
-    public BoerColoring(CraftingBookCategory category) {
+    public BoreColoring(CraftingBookCategory category) {
         super(category);
     }
 
@@ -39,7 +39,7 @@ public class BoerColoring extends CustomRecipe {
         for (int k = 0; k < input.size(); k++) {
             ItemStack itemstack = input.getItem(k);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() instanceof BoerBaseItem) {
+                if (itemstack.getItem() instanceof BoreItem) {
                     i++;
                 } else {
                     if (!(itemstack.getItem() instanceof DyeItem dye) || !ALLOWED_COLORS.contains(dye.getDyeColor())) {
@@ -66,7 +66,7 @@ public class BoerColoring extends CustomRecipe {
             ItemStack itemstack1 = input.getItem(i);
             if (!itemstack1.isEmpty()) {
                 Item item = itemstack1.getItem();
-                if (item instanceof BoerBaseItem) {
+                if (item instanceof BoreItem) {
                     itemstack = itemstack1.copy();
                 } else {
                     net.minecraft.world.item.DyeColor tmp = net.minecraft.world.item.DyeColor.getColor(itemstack1);
@@ -89,6 +89,6 @@ public class BoerColoring extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return ModRecipeSerializers.BOER_COLORING.get();
+        return ModRecipeSerializers.BORE_COLORING.get();
     }
 }
