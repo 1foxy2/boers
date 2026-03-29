@@ -8,7 +8,7 @@ import net.foxy.bores.base.ModEnums;
 import net.foxy.bores.base.ModItems;
 import net.foxy.bores.base.ModParticles;
 import net.foxy.bores.base.ModSounds;
-import net.foxy.bores.client.BoreBaseRenderer;
+import net.foxy.bores.client.BoreRenderer;
 import net.foxy.bores.client.BoreSoundInstance;
 import net.foxy.bores.client.BoresClientConfig;
 import net.foxy.bores.client.ClientBoresTooltip;
@@ -167,12 +167,12 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void registerItemRenderers(RegisterClientExtensionsEvent event) {
         event.registerItem(new IClientItemExtensions() {
-            public static BoreBaseRenderer renderer = null;
+            public static BoreRenderer renderer = null;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (renderer == null) {
-                    renderer = new BoreBaseRenderer(
+                    renderer = new BoreRenderer(
                             Minecraft.getInstance().getBlockEntityRenderDispatcher(),
                             Minecraft.getInstance().getEntityModels());
                 }

@@ -42,12 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * Forge reimplementation of vanilla's {@link ItemModelGenerator}, i.e. builtin/generated models with some tweaks:
- * - Represented as {@link IUnbakedGeometry} so it can be baked as usual instead of being special-cased
- * - Not limited to an arbitrary number of layers (5)
- * - Support for per-layer render types
- */
 public class BoreModel implements IUnbakedGeometry<BoreModel> {
     @Nullable
     private ImmutableList<Material> textures;

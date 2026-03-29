@@ -20,9 +20,9 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.NeoForgeRenderTypes;
 
-public class BoreBaseRenderer extends BlockEntityWithoutLevelRenderer {
+public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
 
-    public BoreBaseRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelSet entityModelSet) {
+    public BoreRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelSet entityModelSet) {
         super(blockEntityRenderDispatcher, entityModelSet);
     }
 

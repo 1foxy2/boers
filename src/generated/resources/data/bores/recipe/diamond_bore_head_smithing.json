@@ -11,6 +11,9 @@
     "items": "bores:bore_head"
   },
   "result": {
+    "components": {
+      "bores:bore": "bores:netherite"
+    },
     "count": 1,
     "id": "bores:bore_head"
   },

@@ -32,8 +32,7 @@ public class ModRecipeProvider extends RecipeProvider {
         boreHead(recipeOutput, lookup.holderOrThrow(ModRegistries.DIAMOND), Items.DIAMOND);
         boreHead(recipeOutput, lookup.holderOrThrow(ModRegistries.GOLDEN), Items.GOLD_INGOT);
         boreHead(recipeOutput, lookup.holderOrThrow(ModRegistries.IRON), Items.IRON_INGOT);
-        ItemStack result = ModItems.BORE_HEAD.toStack();
-        Utils.bore(lookup.holderOrThrow(ModRegistries.NETHERITE));
+        ItemStack result = Utils.bore(lookup.holderOrThrow(ModRegistries.NETHERITE));
         StackSmithingTransformRecipeBuilder.smithing(
                         Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), DataComponentIngredient.of(false, ModDataComponents.BORE.get(), lookup.holderOrThrow(ModRegistries.DIAMOND), ModItems.BORE_HEAD), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.TOOLS, result
                 )
