@@ -1,5 +1,5 @@
 {
-  "type": "boers:example_codec",
+  "type": "bores:example_codec",
   "conditions": [
     {
       "condition": "forge:loot_table_id",

@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "boers:boer_base"
+              "bores:bore"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "boers:diamond_boer_head_smithing"
+        "recipe": "bores:boer_head_copper"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "boers:diamond_boer_head_smithing"
+      "bores:boer_head_copper"
     ]
   },
   "sends_telemetry_event": false

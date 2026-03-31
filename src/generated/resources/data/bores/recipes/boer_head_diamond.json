@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "X": {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:diamond"
     }
   },
   "pattern": [
@@ -12,8 +12,8 @@
     "XX "
   ],
   "result": {
-    "item": "boers:boer_head",
-    "nbt": "{Damage:0,boer:\"boers:iron\"}"
+    "item": "bores:bore_head",
+    "nbt": "{Damage:0,boer:\"bores:diamond\"}"
   },
   "show_notification": true
 }

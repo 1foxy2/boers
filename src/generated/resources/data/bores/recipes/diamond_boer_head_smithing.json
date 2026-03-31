@@ -5,12 +5,12 @@
   },
   "base": {
     "type": "forge:partial_nbt",
-    "item": "boers:boer_head",
-    "nbt": "{boer:\"boers:diamond\"}"
+    "item": "bores:bore_head",
+    "nbt": "{boer:\"bores:diamond\"}"
   },
   "result": {
-    "item": "boers:boer_head",
-    "nbt": "{Damage:0,boer:\"boers:netherite\"}"
+    "item": "bores:bore_head",
+    "nbt": "{Damage:0,boer:\"bores:netherite\"}"
   },
   "template": {
     "item": "minecraft:netherite_upgrade_smithing_template"
