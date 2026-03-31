@@ -48,30 +48,7 @@ public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
                 poseStack.translate(randomSource.nextFloat() / usedFor, randomSource.nextFloat() / usedFor, randomSource.nextFloat() / usedFor);
             }
 
-            if (displayContext == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND) {
-                if (Utils.getDouble(stack)) {
-                    poseStack.scale(3.75f, 3.75f, 1.875f);
-                    poseStack.translate(-0.8f, 0.1, -0.15f);
-                    poseStack.mulPose(Axis.ZN.rotationDegrees(10));
-                } else {
-                    poseStack.translate(1.42, -2.1, -0.3);
-                    poseStack.mulPose(Axis.YN.rotationDegrees(90));
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(45));
-                    poseStack.scale(3.75f, 3.75f, 1.875f);
-                }
-            } else if (displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
-                if (Utils.getDouble(stack)) {
-                    poseStack.scale(3.75f, 3.75f, 1.875f);
-                    poseStack.translate(-0.8f, -0.227, -0.15f);
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(10));
-                    poseStack.rotateAround(Axis.YP.rotationDegrees(180), 0.95f, 0, 0.5f);
-                } else {
-                    poseStack.translate(1.42, -2.1, -0.3);
-                    poseStack.mulPose(Axis.YN.rotationDegrees(90));
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(45));
-                    poseStack.scale(3.75f, 3.75f, 1.875f);
-                }
-            } else if (displayContext.firstPerson()) {
+            if (displayContext.firstPerson()) {
                 float angle = Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100);
                 if (displayContext == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) {
                     poseStack.mulPose(Axis.YN.rotationDegrees(angle));

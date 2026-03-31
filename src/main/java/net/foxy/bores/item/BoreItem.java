@@ -69,9 +69,6 @@ public class BoreItem extends Item {
             if (isSelected) {
                 if (player.getOffhandItem().isEmpty()) {
                     entity.setYBodyRot(entity.getYHeadRot() + (player.getMainArm() == HumanoidArm.LEFT ? -37 : 37));
-                    Utils.setDouble(stack, true);
-                } else {
-                    Utils.setDouble(stack, false);
                 }
                 if (Utils.isUsed(stack)) {
                     player.swinging = false;
@@ -83,9 +80,6 @@ public class BoreItem extends Item {
             } else {
                 Utils.setUsed(stack, false);
                 Utils.decreaseUseFor(stack);
-                if (slotId == Inventory.SLOT_OFFHAND) {
-                    Utils.setDouble(stack, player.getMainHandItem().isEmpty());
-                }
             }
         }
 

@@ -41,16 +41,6 @@ public class Utils {
         return stack.get(ModDataComponents.BORE.get());
     }
 
-    public static void setDouble(ItemStack stack, boolean value) {
-        if (getDouble(stack) != value) {
-            stack.set(ModDataComponents.DOUBLE.get(), value);
-        }
-    }
-
-    public static boolean getDouble(ItemStack stack) {
-        return stack.getOrDefault(ModDataComponents.DOUBLE.get(), false);
-    }
-
     public static int getUsedFor(ItemStack stack) {
         return stack.getOrDefault(ModDataComponents.USED_FOR, 0);
     }
