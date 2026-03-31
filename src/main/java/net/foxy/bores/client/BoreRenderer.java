@@ -35,7 +35,7 @@ public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
             if (!flag) {
                 poseStack.translate(-1 * 0.0625, 3 * 0.0625, 0);
             }
-            RenderUtils.renderItemModel(stack, RenderType.CUTOUT, displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BORE_BASE_GUI);
+            RenderUtils.renderItemModel(stack, RenderType.CUTOUT, displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BORE_GUI);
             poseStack.translate(-1 * 0.0625, 1 * 0.0625, 0.002);
 
             if (flag) {
@@ -80,7 +80,7 @@ public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
                 }
             }
 
-            RenderUtils.renderItemModel(stack, NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get(), displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BORE_BASE);
+            RenderUtils.renderItemModel(stack, NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get(), displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BORE);
             poseStack.scale(0.5f, 0.5f, 1.01f);
             poseStack.translate(12 * 0.0625, 5 * 0.0625, -0.005f);
             BoreContents itemStack = Utils.getBoreContents(stack);

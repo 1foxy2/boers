@@ -26,7 +26,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes(RecipeOutput recipeOutput, HolderLookup.Provider lookup) {
-        SpecialRecipeBuilder.special(BoreColoring::new).save(recipeOutput, Utils.rl("bore_base_coloring"));
+        SpecialRecipeBuilder.special(BoreColoring::new).save(recipeOutput, Utils.rl("bore_coloring"));
 
         boreHead(recipeOutput,  lookup.holderOrThrow(ModRegistries.COPPER), Items.COPPER_INGOT);
         boreHead(recipeOutput, lookup.holderOrThrow(ModRegistries.DIAMOND), Items.DIAMOND);
@@ -36,12 +36,12 @@ public class ModRecipeProvider extends RecipeProvider {
         StackSmithingTransformRecipeBuilder.smithing(
                         Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), DataComponentIngredient.of(false, ModDataComponents.BORE.get(), lookup.holderOrThrow(ModRegistries.DIAMOND), ModItems.BORE_HEAD), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.TOOLS, result
                 )
-                .unlocks("has_bore_base", has(ModItems.BORE))
+                .unlocks("has_bore", has(ModItems.BORE))
                 .save(recipeOutput, Utils.rl("diamond_bore_head_smithing"));
     }
 
     public static void boreHead(RecipeOutput recipeOutput, Holder<BoreHead> boreHead, Item item) {
         ItemStack stack = Utils.bore(boreHead);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore_base", has(ModItems.BORE)).save(recipeOutput, Utils.rl("bore_head_" + boreHead.getKey().location().getPath()));
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore", has(ModItems.BORE)).save(recipeOutput, Utils.rl("bore_head_" + boreHead.getKey().location().getPath()));
     }
 }

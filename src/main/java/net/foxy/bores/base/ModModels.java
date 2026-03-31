@@ -10,15 +10,15 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = BoresMod.MODID)
 public final class ModModels {
-    public static final ModelResourceLocation BORE_BASE =
+    public static final ModelResourceLocation BORE =
             ModelResourceLocation.standalone(Utils.rl("item/bore_texture"));
-    public static final ModelResourceLocation BORE_BASE_GUI =
+    public static final ModelResourceLocation BORE_GUI =
             ModelResourceLocation.standalone(Utils.rl("item/bore_gui"));
 
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(BORE_BASE);
-        event.register(BORE_BASE_GUI);
+        event.register(BORE);
+        event.register(BORE_GUI);
     }
 }
 

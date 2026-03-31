@@ -14,5 +14,5 @@ public class ModRecipeSerializers {
             .create(BuiltInRegistries.RECIPE_SERIALIZER, BoresMod.MODID);
 
     public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BoreColoring>> BORE_COLORING = SERIALIZERS.register(
-            "crafting_special_borecoloring", () -> new SimpleCraftingRecipeSerializer<>(BoreColoring::new));
+            "crafting_special_bore_coloring", () -> new SimpleCraftingRecipeSerializer<>(BoreColoring::new));
 }
