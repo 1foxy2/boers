@@ -61,7 +61,7 @@ public class BoreItem extends Item {
 
             @Override
             public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-                return ModEnums.BORE_STANDING_POS;
+                return Utils.getDouble(itemStack) ? ModEnums.BORE_STANDING_POS : ModEnums.BORE_SINGLE_STANDING_POS;
             }
         });
     }

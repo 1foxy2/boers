@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_boer_base": {
+    "has_bore": {
       "conditions": {
         "items": [
           {
@@ -15,20 +15,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "bores:diamond_boer_head_smithing"
+        "recipe": "bores:diamond_bore_head_smithing"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_boer_base",
+      "has_bore",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "bores:diamond_boer_head_smithing"
+      "bores:diamond_bore_head_smithing"
     ]
   },
   "sends_telemetry_event": false

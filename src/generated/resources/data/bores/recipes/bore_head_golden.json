@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "X": {
-      "item": "minecraft:copper_ingot"
+      "item": "minecraft:gold_ingot"
     }
   },
   "pattern": [
@@ -13,7 +13,7 @@
   ],
   "result": {
     "item": "bores:bore_head",
-    "nbt": "{Damage:0,boer:\"bores:copper\"}"
+    "nbt": "{Damage:0,bore:\"bores:golden\"}"
   },
   "show_notification": true
 }
