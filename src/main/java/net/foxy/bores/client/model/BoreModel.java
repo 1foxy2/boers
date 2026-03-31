@@ -98,7 +98,7 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
             return new BoreModel(null, emissiveLayers, renderTypeNames);
         }
 
-        protected void readLayerData(JsonObject jsonObject, String name, Int2ObjectOpenHashMap<ResourceLocation> renderTypeNames, Int2ObjectMap<ExtraFaceData> layerData, boolean logWarning) {
+        private void readLayerData(JsonObject jsonObject, String name, Int2ObjectOpenHashMap<ResourceLocation> renderTypeNames, Int2ObjectMap<ExtraFaceData> layerData, boolean logWarning) {
             if (!jsonObject.has(name)) {
                 return;
             }

@@ -1,4 +1,4 @@
-package net.foxy.bores.jei;
+package net.foxy.bores.compat.jei;
 
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
