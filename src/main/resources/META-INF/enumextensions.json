@@ -1,6 +1,24 @@
 {
   "entries": [
     {
+      "enum": "net/minecraft/world/item/ItemDisplayContext",
+      "name": "BORES_THIRDPERSON_LEFTHAND_SINGLE",
+      "constructor": "(ILjava/lang/String;Ljava/lang/String;)V",
+      "parameters": {
+        "class": "net/foxy/bores/base/ModEnums",
+        "field": "THIRDPERSON_LEFTHAND_SINGLE"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/item/ItemDisplayContext",
+      "name": "BORES_THIRDPERSON_RIGHTHAND_SINGLE",
+      "constructor": "(ILjava/lang/String;Ljava/lang/String;)V",
+      "parameters": {
+        "class": "net/foxy/bores/base/ModEnums",
+        "field": "THIRDPERSON_RIGHTHAND_SINGLE"
+      }
+    },
+    {
       "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
       "name": "BORES_BORE_HOLDING",
       "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",

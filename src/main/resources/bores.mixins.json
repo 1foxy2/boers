@@ -6,6 +6,7 @@
   "refmap": "bores.refmap.json",
   "client": [
     "HumanoidModelMixin",
+    "ItemInHandLayerMixin",
     "LivingEntityMixin",
     "MultiPlayerGameModeMixin"
   ],

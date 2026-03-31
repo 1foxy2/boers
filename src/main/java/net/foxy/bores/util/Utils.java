@@ -84,20 +84,6 @@ public class Utils {
         return stack.getTag().getString(ModDataComponents.BORE);
     }
 
-    public static void setDouble(ItemStack stack, boolean value) {
-        if (getDouble(stack) != value) {
-            stack.getOrCreateTag().putBoolean(ModDataComponents.DOUBLE, value);
-        }
-    }
-
-    public static boolean getDouble(ItemStack stack) {
-        if (!stack.hasTag()) {
-            return false;
-        }
-
-        return stack.getTag().getBoolean(ModDataComponents.DOUBLE);
-    }
-
     public static int getUsedFor(ItemStack stack) {
         if (!stack.hasTag()) {
             return 0;

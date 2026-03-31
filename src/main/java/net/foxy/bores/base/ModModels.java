@@ -10,15 +10,15 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = BoresMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ModModels {
-    public static final ModelResourceLocation BORE_BASE =
+    public static final ModelResourceLocation BORE =
             new ModelResourceLocation(Utils.rl("bore_texture"), "inventory");
-    public static final ModelResourceLocation BORE_BASE_GUI =
+    public static final ModelResourceLocation BORE_GUI =
             new ModelResourceLocation(Utils.rl("bore_gui"), "inventory");
 
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(BORE_BASE);
-        event.register(BORE_BASE_GUI);
+        event.register(BORE);
+        event.register(BORE_GUI);
     }
 }
 

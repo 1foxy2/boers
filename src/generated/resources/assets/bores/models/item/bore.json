@@ -1,6 +1,40 @@
 {
   "parent": "bores:item/entity",
   "display": {
+    "bores:thirdperson_lefthand_single": {
+      "rotation": [
+        0,
+        90,
+        -45
+      ],
+      "scale": [
+        2,
+        2,
+        1
+      ],
+      "translation": [
+        0,
+        3,
+        -7.25
+      ]
+    },
+    "bores:thirdperson_righthand_single": {
+      "rotation": [
+        0,
+        -90,
+        45
+      ],
+      "scale": [
+        2,
+        2,
+        1
+      ],
+      "translation": [
+        0,
+        3,
+        -7.25
+      ]
+    },
     "firstperson_lefthand": {
       "rotation": [
         107.5,
@@ -33,6 +67,40 @@
         -5.325,
         5,
         -2.25
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        180,
+        10
+      ],
+      "scale": [
+        2,
+        2,
+        1
+      ],
+      "translation": [
+        -11.25,
+        14.6,
+        2.35
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        -10
+      ],
+      "scale": [
+        2,
+        2,
+        1
+      ],
+      "translation": [
+        -11.25,
+        14.6,
+        2.35
       ]
     }
   }

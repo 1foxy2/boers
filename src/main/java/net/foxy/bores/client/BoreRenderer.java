@@ -34,7 +34,7 @@ public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
             if (!flag) {
                 poseStack.translate(-1 * 0.0625, 3 * 0.0625, 0);
             }
-            RenderUtils.renderItemModel(stack, RenderType.cutout(), displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BORE_BASE_GUI);
+            RenderUtils.renderItemModel(stack, RenderType.cutout(), displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BORE_GUI);
             poseStack.translate(-1 * 0.0625, 1 * 0.0625, 0.002);
 
             if (flag) {
@@ -47,31 +47,8 @@ public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
                 poseStack.translate(randomSource.nextFloat() / usedFor, randomSource.nextFloat() / usedFor, randomSource.nextFloat() / usedFor);
             }
 
-            if (displayContext == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND) {
-                if (Utils.getDouble(stack)) {
-                    poseStack.scale(3.75f, 3.75f, 1.875f);
-                    poseStack.translate(-0.8f, 0.1, -0.15f);
-                    poseStack.mulPose(Axis.ZN.rotationDegrees(10));
-                } else {
-                    poseStack.translate(1.42, -2.1, -0.3);
-                    poseStack.mulPose(Axis.YN.rotationDegrees(90));
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(45));
-                    poseStack.scale(3.75f, 3.75f, 1.875f);
-                }
-            } else if (displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
-                if (Utils.getDouble(stack)) {
-                    poseStack.scale(3.75f, 3.75f, 1.875f);
-                    poseStack.translate(-0.8f, -0.227, -0.15f);
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(10));
-                    poseStack.rotateAround(Axis.YP.rotationDegrees(180), 0.95f, 0, 0.5f);
-                } else {
-                    poseStack.translate(1.42, -2.1, -0.3);
-                    poseStack.mulPose(Axis.YN.rotationDegrees(90));
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(45));
-                    poseStack.scale(3.75f, 3.75f, 1.875f);
-                }
-            } else if (displayContext.firstPerson()) {
-                float angle = Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getPartialTick(), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100);
+            if (displayContext.firstPerson()) {
+                float angle = Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100);
                 if (displayContext == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) {
                     poseStack.mulPose(Axis.YN.rotationDegrees(angle));
                 } else {
@@ -79,7 +56,7 @@ public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
                 }
             }
 
-            RenderUtils.renderItemModel(stack, ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get(), displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BORE_BASE);
+            RenderUtils.renderItemModel(stack, ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get(), displayContext, poseStack, buffer, packedLight, packedOverlay, ModModels.BORE);
             poseStack.scale(0.5f, 0.5f, 1.01f);
             poseStack.translate(12 * 0.0625, 5 * 0.0625, -0.005f);
             ItemStack itemStack = Utils.getBoreContents(stack);
