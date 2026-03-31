@@ -1,4 +1,4 @@
-package net.foxy.boers.jei;
+package net.foxy.bores.compat.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
