@@ -1,8 +1,8 @@
 package net.foxy.boers.datagen;
 
-import net.foxy.boers.BoersMod;
+import net.foxy.boers.BoresMod;
 import net.foxy.boers.base.ModRegistries;
-import net.foxy.boers.data.BoerHead;
+import net.foxy.boers.data.BoreHead;
 import net.foxy.boers.datagen.loot.ModGLM;
 import net.foxy.boers.util.Utils;
 import net.minecraft.core.HolderLookup;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(modid = BoersMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = BoresMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
@@ -38,7 +38,7 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(),
                 new DatapackBuiltinEntriesProvider(packOutput, lookupProvider,
                         new RegistrySetBuilder().add(
-                                ModRegistries.BOER_HEAD, bootstrap -> {
+                                ModRegistries.BORE_HEAD, bootstrap -> {
                                     bootstrap.register(
                                             ModRegistries.COPPER,
                                             create("copper", 10, 95, Tiers.STONE)
@@ -61,7 +61,7 @@ public class DataGenerators {
                                     );
                                 }
                         ) ,
-                        Set.of(BoersMod.MODID)
+                        Set.of(BoresMod.MODID)
                 )
         );
 
@@ -76,11 +76,11 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new ModGLM(packOutput));
     }
 
-    private static BoerHead create(String id, float miningSpeed, int durability, Tier canMine) {
-        return new BoerHead(Utils.rl("item/boer/" + id + "_boer_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine);
+    private static BoreHead create(String id, float miningSpeed, int durability, Tier canMine) {
+        return new BoreHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine);
     }
 
-    private static BoerHead create(String id, float miningSpeed, int durability, Tier canMine, Vec3i radius) {
-        return new BoerHead(Utils.rl("item/boer/" + id + "_boer_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine, radius);
+    private static BoreHead create(String id, float miningSpeed, int durability, Tier canMine, Vec3i radius) {
+        return new BoreHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine, radius);
     }
 }

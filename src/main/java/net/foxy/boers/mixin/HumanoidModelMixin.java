@@ -17,12 +17,17 @@ public class HumanoidModelMixin {
     @Shadow
     public HumanoidModel.ArmPose leftArmPose;
 
-    @ModifyExpressionValue(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V",
-            at = @At(value = "FIELD",
-                    target = "Lnet/minecraft/client/model/HumanoidModel;leftArmPose:Lnet/minecraft/client/model/HumanoidModel$ArmPose;", ordinal = 1, opcode = Opcodes.GETFIELD))
+    @ModifyExpressionValue(
+            method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/model/HumanoidModel;leftArmPose:Lnet/minecraft/client/model/HumanoidModel$ArmPose;",
+                    ordinal = 1,
+                    opcode = Opcodes.GETFIELD
+            )
+    )
     public HumanoidModel.ArmPose removeBob(HumanoidModel.ArmPose original) {
-
-        return original == ModEnums.BOER_STANDING_POS || rightArmPose == ModEnums.BOER_STANDING_POS ? HumanoidModel.ArmPose.SPYGLASS : original;
+        return original == ModEnums.BORE_SINGLE_STANDING_POS || original == ModEnums.BORE_STANDING_POS || rightArmPose == ModEnums.BORE_STANDING_POS ? HumanoidModel.ArmPose.SPYGLASS : original;
     }
 
     @ModifyExpressionValue(
@@ -31,9 +36,10 @@ public class HumanoidModelMixin {
                     value = "FIELD",
                     target = "Lnet/minecraft/client/model/HumanoidModel;rightArmPose:Lnet/minecraft/client/model/HumanoidModel$ArmPose;",
                     ordinal = 1,
-                    opcode = Opcodes.GETFIELD)
+                    opcode = Opcodes.GETFIELD
+            )
     )
     public HumanoidModel.ArmPose removeBobRight(HumanoidModel.ArmPose original) {
-        return original == ModEnums.BOER_STANDING_POS || leftArmPose == ModEnums.BOER_STANDING_POS ? HumanoidModel.ArmPose.SPYGLASS : original;
+        return original == ModEnums.BORE_SINGLE_STANDING_POS || original == ModEnums.BORE_STANDING_POS || leftArmPose == ModEnums.BORE_STANDING_POS ? HumanoidModel.ArmPose.SPYGLASS : original;
     }
 }

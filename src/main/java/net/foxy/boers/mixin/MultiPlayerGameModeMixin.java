@@ -17,7 +17,7 @@ public class MultiPlayerGameModeMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;resetAttackStrengthTicker()V")
     )
     private static boolean dontReset(LocalPlayer instance) {
-        return !instance.getMainHandItem().is(ModItems.BOER_BASE.get());
+        return !instance.getMainHandItem().is(ModItems.BORE.get());
     }
 
     @WrapOperation(

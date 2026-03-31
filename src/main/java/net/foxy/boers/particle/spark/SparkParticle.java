@@ -1,7 +1,7 @@
 package net.foxy.boers.particle.spark;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.foxy.boers.client.BoersClientConfig;
+import net.foxy.boers.client.BoresClientConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
@@ -31,7 +31,7 @@ public class SparkParticle extends TextureSheetParticle {
         this.friction = 0.96F;
         this.lifetime = 15 + random.nextInt(10);
 
-        this.initialSize = (float) (BoersClientConfig.CONFIG.PARTICLE_SIZE.get() * (0.3F + random.nextFloat()));
+        this.initialSize = (float) (BoresClientConfig.CONFIG.PARTICLE_SIZE.get() * (0.3F + random.nextFloat()));
         this.quadSize = initialSize;
 
         float colorVar = random.nextFloat() * 0.2F;
@@ -188,7 +188,7 @@ public class SparkParticle extends TextureSheetParticle {
     public static Vec3 generateConeVelocity(Vec3 contactPoint, Vec3 playerEye, float speed) {
         Vec3 toPlayer = playerEye.subtract(contactPoint).normalize();
 
-        double coneAngleRad = Math.toRadians(BoersClientConfig.CONFIG.PARTICLE_DENSITY.get());
+        double coneAngleRad = Math.toRadians(BoresClientConfig.CONFIG.PARTICLE_DENSITY.get());
         double randomAngle = Math.random() * 2 * Math.PI;
         double randomRadius = Math.random() * Math.tan(coneAngleRad);
 

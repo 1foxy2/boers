@@ -1,0 +1,198 @@
+package net.foxy.boers.data;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.foxy.boers.base.ModRegistries;
+import net.foxy.boers.client.BoresClientConfig;
+import net.foxy.boers.util.Utils;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryFixedCodec;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.TierSortingRegistry;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+public record BoreHead(Texture texture, float defaultMiningSpeed, int durability, List<Rule> miningRules, Optional<Vec3i> radius) {
+    public static final Codec<BoreHead> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Texture.CODEC.fieldOf("texture").forGetter(BoreHead::texture),
+                    Codec.FLOAT.fieldOf("default_mining_speed").forGetter(BoreHead::defaultMiningSpeed),
+                    Codec.INT.fieldOf("durability").forGetter(BoreHead::durability),
+                    Rule.CODEC.listOf().fieldOf("mining_rules").forGetter(BoreHead::miningRules),
+                    Vec3i.CODEC.optionalFieldOf("radius").forGetter(BoreHead::radius)
+            ).apply(instance, BoreHead::new)
+    );
+    public static final Codec<BoreHead> NETWORK_CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Texture.CODEC.fieldOf("texture").forGetter(BoreHead::texture),
+                    Codec.FLOAT.fieldOf("default_mining_speed").forGetter(BoreHead::defaultMiningSpeed),
+                    Codec.INT.fieldOf("durability").forGetter(BoreHead::durability),
+                    Rule.NETWORK_CODEC.listOf().fieldOf("mining_rules").forGetter(BoreHead::miningRules),
+                    Vec3i.CODEC.optionalFieldOf("radius").forGetter(BoreHead::radius)
+            ).apply(instance, BoreHead::new)
+    );
+    public static final Codec<Holder<BoreHead>> ITEM_CODEC = RegistryFixedCodec.create(ModRegistries.BORE_HEAD);
+
+    public float getMiningSpeed(ItemStack stack, BlockState state) {
+        for (Rule tool$rule : miningRules) {
+            if (tool$rule.speed().isPresent() && state.is(tool$rule.blocks())) {
+                if (tool$rule.maxSpeed.isPresent() && tool$rule.speedPerTick.isPresent()) {
+                    return (Math.min(tool$rule.speed.get() + tool$rule.speedPerTick.get() * Utils.getUsedFor(stack), tool$rule.maxSpeed.get()));
+                }
+                return tool$rule.speed().get();
+            }
+        }
+
+        return this.defaultMiningSpeed;
+    }
+
+    public boolean isCorrectForDrops(BlockState state) {
+        for (Rule tool$rule : this.miningRules) {
+            if (tool$rule.correctForDrops().isPresent() && state.is(tool$rule.blocks())) {
+                return tool$rule.correctForDrops().get();
+            }
+            if (tool$rule.tier.isPresent() && state.is(tool$rule.blocks())) {
+                return TierSortingRegistry.isCorrectTierForDrops(tool$rule.tier.get(), state);
+            }
+        }
+
+        return false;
+    }
+
+    public int getDamage(BlockState state) {
+        for (Rule tool$rule : this.miningRules) {
+            if (tool$rule.damagePerBlock().isPresent() && state.is(tool$rule.blocks())) {
+                return tool$rule.damagePerBlock().get();
+            }
+        }
+
+        return 1;
+    }
+
+    public BoreHead(ResourceLocation texture, float miningSpeed, int durability, Tier tier) {
+        this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
+                        texture.getPath() + "_idle"), texture), 1.0f, durability,
+                List.of(
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, tier, miningSpeed),
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, tier, miningSpeed)
+                ), Optional.empty());
+    }
+
+    public BoreHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, Tier tier) {
+        this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
+                        texture.getPath() + "_idle"), texture), 1.0f, durability,
+                List.of(
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, tier, miningSpeed, maxSpeed, speedPerTick),
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, tier, miningSpeed, maxSpeed, speedPerTick)
+                ), Optional.empty());
+    }
+
+    public BoreHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, Tier tier, Vec3i radius) {
+        this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
+                        texture.getPath() + "_idle"), texture), 1.0f, durability,
+                List.of(
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, tier, miningSpeed, maxSpeed, speedPerTick),
+                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, tier, miningSpeed, maxSpeed, speedPerTick)
+                ), Optional.of(radius));
+    }
+
+    public int getMaxAcceleration(ItemStack stack) {
+        int max = 0;
+        for (Rule tool$rule : miningRules) {
+            if (tool$rule.speed().isPresent()) {
+                if (tool$rule.maxSpeed.isPresent() && tool$rule.speedPerTick.isPresent()) {
+                    float maxSpeed = tool$rule.maxSpeed.get() - tool$rule.speed.get();
+                    int m = (int) Mth.lerp(Math.min(tool$rule.speedPerTick.get() * Utils.getUsedFor(stack), maxSpeed) / maxSpeed, 0, BoresClientConfig.CONFIG.MAX_BORE_HEATING.get());
+                    if (m > max) {
+                        max = m;
+                    }
+                }
+            }
+        }
+
+        return max;
+    }
+
+    public record Texture(ResourceLocation idle, ResourceLocation active) {
+        public static final Codec<Texture> CODEC = RecordCodecBuilder.create(instance ->
+                instance.group(
+                        ResourceLocation.CODEC.fieldOf("idle").forGetter(Texture::idle),
+                        ResourceLocation.CODEC.fieldOf("active").forGetter(Texture::active)
+                ).apply(instance, Texture::new));
+    }
+
+
+    public record Rule(HolderSet<Block> blocks, Optional<Tier> tier, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> speedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
+        public static final Codec<Rule> CODEC = RecordCodecBuilder.create(
+                p_337954_ -> p_337954_.group(
+                                RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(Rule::blocks),
+                                ResourceLocation.CODEC.xmap(TierSortingRegistry::byName, TierSortingRegistry::getName).optionalFieldOf("tier").forGetter(Rule::tier),
+                                ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("speed").forGetter(Rule::speed),
+                                ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("max_speed").forGetter(Rule::maxSpeed),
+                                ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("speed_per_tick").forGetter(Rule::speedPerTick),
+                                Codec.BOOL.optionalFieldOf("correct_for_drops").forGetter(Rule::correctForDrops),
+                                Codec.INT.optionalFieldOf("damage_per_block").forGetter(Rule::damagePerBlock)
+                        )
+                        .apply(p_337954_, Rule::new)
+        );
+        public static final Codec<Rule> NETWORK_CODEC = RecordCodecBuilder.create(
+                p_337954_ -> p_337954_.group(
+                                BuiltInRegistries.BLOCK.holderByNameCodec().listOf().<HolderSet<Block>>xmap(HolderSet::direct, set -> set.stream().toList()).fieldOf("blocks").forGetter(Rule::blocks),
+                                ResourceLocation.CODEC.xmap(TierSortingRegistry::byName, TierSortingRegistry::getName).optionalFieldOf("tier").forGetter(Rule::tier),
+                                ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("speed").forGetter(Rule::speed),
+                                ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("max_speed").forGetter(Rule::maxSpeed),
+                                ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("speed_per_tick").forGetter(Rule::speedPerTick),
+                                Codec.BOOL.optionalFieldOf("correct_for_drops").forGetter(Rule::correctForDrops),
+                                Codec.INT.optionalFieldOf("damage_per_block").forGetter(Rule::damagePerBlock)
+                        )
+                        .apply(p_337954_, Rule::new)
+        );
+
+        public static Rule minesAndDrops(List<Block> blocks, float speed) {
+            return forBlocks(blocks, Optional.empty(), Optional.of(speed), Optional.empty(), Optional.empty(), Optional.of(true), Optional.empty());
+        }
+
+        public static Rule minesAndDrops(TagKey<Block> blocks, Tier tier, float speed) {
+            return forTag(blocks, Optional.of(tier), Optional.of(speed), Optional.empty(), Optional.empty(), Optional.of(true), Optional.empty());
+        }
+
+        public static Rule minesAndDrops(TagKey<Block> blocks, Tier tier, float speed, float maxSpeed, float speedPerTick) {
+            return forTag(blocks, Optional.of(tier), Optional.of(speed), Optional.of(maxSpeed), Optional.of(speedPerTick), Optional.empty(), Optional.empty());
+        }
+
+        public static Rule deniesDrops(TagKey<Block> blocks) {
+            return forTag(blocks, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(false), Optional.empty());
+        }
+
+        public static Rule overrideSpeed(TagKey<Block> blocks, float speed) {
+            return forTag(blocks, Optional.empty(), Optional.of(speed), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+        }
+
+        public static Rule overrideSpeed(List<Block> blocks, float speed) {
+            return forBlocks(blocks, Optional.empty(), Optional.of(speed), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+        }
+
+        private static Rule forTag(TagKey<Block> tag, Optional<Tier> tier, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> maxSpeedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
+            return new Rule(BuiltInRegistries.BLOCK.getOrCreateTag(tag), tier, speed, maxSpeed, maxSpeedPerTick, correctForDrops, damagePerBlock);
+        }
+
+        private static Rule forBlocks(List<Block> blocks, Optional<Tier> tier, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> maxSpeedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
+            return new Rule(HolderSet.direct(blocks.stream().map(Block::builtInRegistryHolder).collect(Collectors.toList())), tier, speed, maxSpeed, maxSpeedPerTick, correctForDrops, damagePerBlock);
+        }
+    }
+}

@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -48,7 +47,7 @@ public class RenderUtils {
 
     public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         boolean flag1;
-        ItemStack stack = Utils.getBoerContentsOrEmpty(bore);
+        ItemStack stack = Utils.getBoreContentsOrEmpty(bore);
         if (stack.isEmpty()) {
             stack = bore;
         }
@@ -76,7 +75,7 @@ public class RenderUtils {
 
     public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, int red, int green, int blue, int alpha) {
         boolean flag1;
-        ItemStack stack = Utils.getBoerContentsOrEmpty(bore);
+        ItemStack stack = Utils.getBoreContentsOrEmpty(bore);
         if (stack.isEmpty()) {
             stack = bore;
         }

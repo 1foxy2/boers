@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "  X",
+    "XX ",
+    "XX "
+  ],
+  "result": {
+<<<<<<<< HEAD:src/generated/resources/data/boers/recipes/boer_head_diamond.json
+    "item": "boers:boer_head",
+    "nbt": "{Damage:0,boer:\"boers:diamond\"}"
+  },
+  "show_notification": true
+========
+    "components": {
+      "bores:bore": "bores:diamond"
+    },
+    "count": 1,
+    "id": "bores:bore_head"
+  }
+>>>>>>>> github/main:src/generated/resources/data/bores/recipe/bore_head_diamond.json
+}

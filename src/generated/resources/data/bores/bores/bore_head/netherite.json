@@ -1,0 +1,24 @@
+{
+  "default_mining_speed": 1.0,
+  "durability": 1000,
+  "mining_rules": [
+    {
+      "blocks": "#minecraft:mineable/pickaxe",
+      "max_speed": 54.0,
+      "speed": 18.0,
+      "speed_per_tick": 0.1,
+      "tier": "minecraft:netherite"
+    },
+    {
+      "blocks": "#minecraft:mineable/shovel",
+      "max_speed": 54.0,
+      "speed": 18.0,
+      "speed_per_tick": 0.1,
+      "tier": "minecraft:netherite"
+    }
+  ],
+  "texture": {
+    "active": "bores:item/bore/netherite_bore_head",
+    "idle": "bores:item/bore/netherite_bore_head_idle"
+  }
+}

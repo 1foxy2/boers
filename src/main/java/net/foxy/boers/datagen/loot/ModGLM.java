@@ -1,6 +1,6 @@
 package net.foxy.boers.datagen.loot;
 
-import net.foxy.boers.BoersMod;
+import net.foxy.boers.BoresMod;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -9,7 +9,7 @@ import net.minecraftforge.common.loot.LootTableIdCondition;
 
 public class ModGLM extends GlobalLootModifierProvider {
     public ModGLM(PackOutput output) {
-        super(output, BoersMod.MODID);
+        super(output, BoresMod.MODID);
     }
 
     @Override

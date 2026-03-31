@@ -6,7 +6,7 @@ import net.minecraft.nbt.Tag;
 
 public class ModItemProperties {
     public static void addModItemProperties() {
-        ItemProperties.register(ModItems.BOER_BASE.get(), Utils.rl("color"),
+        ItemProperties.register(ModItems.BORE.get(), Utils.rl("color"),
                 (stack, level, entity, seed) -> {
             int color;
                     if (stack.hasTag() && stack.getTag().contains("color", Tag.TAG_INT)) {

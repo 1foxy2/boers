@@ -1,8 +1,8 @@
 package net.foxy.boers.network;
 
-import net.foxy.boers.BoersMod;
-import net.foxy.boers.network.c2s.SetUseBoerPacket;
-import net.foxy.boers.network.c2s.TickBoerPacket;
+import net.foxy.boers.BoresMod;
+import net.foxy.boers.network.c2s.SetUseBorePacket;
+import net.foxy.boers.network.c2s.TickBorePacket;
 import net.foxy.boers.util.Utils;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-@Mod.EventBusSubscriber(modid = BoersMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = BoresMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class NetworkHandler {
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
@@ -25,17 +25,17 @@ public class NetworkHandler {
         int id = 0;
         INSTANCE.registerMessage(
                 id++,
-                SetUseBoerPacket.class,
-                SetUseBoerPacket::encode,
-                SetUseBoerPacket::decode,
-                SetUseBoerPacket::handle
+                SetUseBorePacket.class,
+                SetUseBorePacket::encode,
+                SetUseBorePacket::decode,
+                SetUseBorePacket::handle
                 );
         INSTANCE.registerMessage(
                 id,
-                TickBoerPacket.class,
-                TickBoerPacket::encode,
-                TickBoerPacket::decode,
-                TickBoerPacket::handle
+                TickBorePacket.class,
+                TickBorePacket::encode,
+                TickBorePacket::decode,
+                TickBorePacket::handle
                 );
     }
 }

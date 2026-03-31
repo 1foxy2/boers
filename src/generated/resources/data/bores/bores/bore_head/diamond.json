@@ -1,0 +1,24 @@
+{
+  "default_mining_speed": 1.0,
+  "durability": 800,
+  "mining_rules": [
+    {
+      "blocks": "#minecraft:mineable/pickaxe",
+      "max_speed": 48.0,
+      "speed": 16.0,
+      "speed_per_tick": 0.1,
+      "tier": "minecraft:diamond"
+    },
+    {
+      "blocks": "#minecraft:mineable/shovel",
+      "max_speed": 48.0,
+      "speed": 16.0,
+      "speed_per_tick": 0.1,
+      "tier": "minecraft:diamond"
+    }
+  ],
+  "texture": {
+    "active": "bores:item/bore/diamond_bore_head",
+    "idle": "bores:item/bore/diamond_bore_head_idle"
+  }
+}

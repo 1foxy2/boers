@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "pattern": [
+    "  X",
+    "XX ",
+    "XX "
+  ],
+  "result": {
+<<<<<<<< HEAD:src/generated/resources/data/boers/recipes/boer_head_golden.json
+    "item": "boers:boer_head",
+    "nbt": "{Damage:0,boer:\"boers:golden\"}"
+  },
+  "show_notification": true
+========
+    "components": {
+      "bores:bore": "bores:golden"
+    },
+    "count": 1,
+    "id": "bores:bore_head"
+  }
+>>>>>>>> github/main:src/generated/resources/data/bores/recipe/bore_head_golden.json
+}

@@ -22,7 +22,7 @@ public class BoerLootModifier extends LootModifier {
     @Override
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         if (RandomSource.create().nextFloat() < 0.34) {
-            generatedLoot.add(ModItems.BOER_BASE.get().getDefaultInstance());
+            generatedLoot.add(ModItems.BORE.get().getDefaultInstance());
         }
 
         return generatedLoot;
