@@ -76,6 +76,14 @@ public class Utils {
         return access.lookupOrThrow(ModRegistries.BORE_HEAD).get(ResourceKey.create(ModRegistries.BORE_HEAD, ResourceLocation.parse(stack.getTag().getString(ModDataComponents.BORE)))).orElse(null);
     }
 
+    public static String getBoreString(ItemStack stack) {
+        if (!stack.hasTag()) {
+            return "";
+        }
+
+        return stack.getTag().getString(ModDataComponents.BORE);
+    }
+
     public static void setDouble(ItemStack stack, boolean value) {
         if (getDouble(stack) != value) {
             stack.getOrCreateTag().putBoolean(ModDataComponents.DOUBLE, value);
