@@ -11,7 +11,7 @@ import net.minecraftforge.registries.DataPackRegistryEvent;
 public class ModEvents {
 
     @SubscribeEvent
-    public static void registerBoerHeadRegistry(DataPackRegistryEvent.NewRegistry event) {
+    public static void registerBoreHeadRegistry(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(ModRegistries.BORE_HEAD, BoreHead.CODEC, BoreHead.NETWORK_CODEC);
     }
 

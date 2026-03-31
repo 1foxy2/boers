@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "net.foxy.bores.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "boers.refmap.json",
+  "refmap": "bores.refmap.json",
   "client": [
     "HumanoidModelMixin",
     "LivingEntityMixin",

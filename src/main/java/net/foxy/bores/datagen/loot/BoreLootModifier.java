@@ -11,11 +11,11 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
 
-public class BoerLootModifier extends LootModifier {
-    public static final Codec<BoerLootModifier> CODEC = RecordCodecBuilder.create(inst ->
-            codecStart(inst).apply(inst, BoerLootModifier::new));
+public class BoreLootModifier extends LootModifier {
+    public static final Codec<BoreLootModifier> CODEC = RecordCodecBuilder.create(inst ->
+            codecStart(inst).apply(inst, BoreLootModifier::new));
 
-    public BoerLootModifier(LootItemCondition[] conditionsIn) {
+    public BoreLootModifier(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
     }
 

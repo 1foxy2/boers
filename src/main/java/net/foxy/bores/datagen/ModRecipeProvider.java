@@ -26,20 +26,20 @@ public class ModRecipeProvider extends RecipeProvider {
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> recipeOutput) {
         SpecialRecipeBuilder.special(ModRecipeSerializers.BORE_COLORING.get()).save(recipeOutput, "bore_base_coloring");
-        boerHead(recipeOutput, ModRegistries.COPPER, Items.COPPER_INGOT);
-        boerHead(recipeOutput, ModRegistries.DIAMOND, Items.DIAMOND);
-        boerHead(recipeOutput, ModRegistries.GOLDEN, Items.GOLD_INGOT);
-        boerHead(recipeOutput, ModRegistries.IRON, Items.IRON_INGOT);
+        boreHead(recipeOutput, ModRegistries.COPPER, Items.COPPER_INGOT);
+        boreHead(recipeOutput, ModRegistries.DIAMOND, Items.DIAMOND);
+        boreHead(recipeOutput, ModRegistries.GOLDEN, Items.GOLD_INGOT);
+        boreHead(recipeOutput, ModRegistries.IRON, Items.IRON_INGOT);
         ItemStack result = Utils.bore(ModRegistries.NETHERITE);
         StackSmithingTransformRecipeBuilder.smithing(
                         Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), PartialNBTIngredient.of(ModItems.BORE_HEAD.get(), Utils.boreTag(ModRegistries.DIAMOND)), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.TOOLS, result
                 )
-                .unlocks("has_boer_base", has(ModItems.BORE.get()))
-                .save(recipeOutput, Utils.rl("diamond_boer_head_smithing"));
+                .unlocks("has_bore", has(ModItems.BORE.get()))
+                .save(recipeOutput, Utils.rl("diamond_bore_head_smithing"));
     }
 
-    public static void boerHead(Consumer<FinishedRecipe> recipeOutput, ResourceKey<BoreHead> boerHead, Item item) {
-        ItemStack stack = Utils.bore(boerHead);
-        NbtShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_boer_base", has(ModItems.BORE.get())).save(recipeOutput, Utils.rl("boer_head_" + boerHead.location().getPath()));
+    public static void boreHead(Consumer<FinishedRecipe> recipeOutput, ResourceKey<BoreHead> boreHead, Item item) {
+        ItemStack stack = Utils.bore(boreHead);
+        NbtShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore", has(ModItems.BORE.get())).save(recipeOutput, Utils.rl("bore_head_" + boreHead.location().getPath()));
     }
 }

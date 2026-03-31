@@ -48,7 +48,7 @@ public class WrappedItemOverrides extends ItemOverrides {
             }
 
             var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(0, sprite.contents(), null);
-            var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> sprite, BlockModelRotation.X0_Y0, Utils.rl("boer"));
+            var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> sprite, BlockModelRotation.X0_Y0, Utils.rl("bore"));
             return new SimpleModel(quads, sprite, model.getTransforms());
         });
     }

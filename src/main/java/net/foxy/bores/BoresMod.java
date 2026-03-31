@@ -41,8 +41,8 @@ public class BoresMod {
 
     public static void buildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.getParameters().holders().lookupOrThrow(ModRegistries.BORE_HEAD).listElements().forEach(boerHeadReference -> {
-                event.getEntries().putAfter(Items.NETHERITE_HOE.getDefaultInstance(), Utils.bore(boerHeadReference), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.getParameters().holders().lookupOrThrow(ModRegistries.BORE_HEAD).listElements().forEach(bore -> {
+                event.getEntries().putAfter(Items.NETHERITE_HOE.getDefaultInstance(), Utils.bore(bore), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             });
             for (DyeColor color : BoreColoring.ALLOWED_COLORS) {
                 ItemStack stack = ModItems.BORE.get().getDefaultInstance();

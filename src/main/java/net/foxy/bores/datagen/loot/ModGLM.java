@@ -15,8 +15,8 @@ public class ModGLM extends GlobalLootModifierProvider {
     @Override
     protected void start() {
         add(
-                "boers_loot_modifier",
-                new BoerLootModifier(new LootItemCondition[] {new LootTableIdCondition.Builder(BuiltInLootTables.ABANDONED_MINESHAFT).build()})
+                "bores_loot_modifier",
+                new BoreLootModifier(new LootItemCondition[] {new LootTableIdCondition.Builder(BuiltInLootTables.ABANDONED_MINESHAFT).build()})
         );
     }
 }

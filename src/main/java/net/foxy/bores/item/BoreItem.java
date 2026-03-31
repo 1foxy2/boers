@@ -189,8 +189,8 @@ public class BoreItem extends Item {
     }
 
     public void onAttackTick(Level level, Player player, ItemStack stack, int used) {
-        ItemStack boer = Utils.getBoreContentsOrEmpty(stack);
-        if (!boer.isEmpty()) {
+        ItemStack bore = Utils.getBoreContentsOrEmpty(stack);
+        if (!bore.isEmpty()) {
             List<LivingEntity> targetEntities = getTargetEntity(player, level);
 
             if (!targetEntities.isEmpty()) {
@@ -205,8 +205,8 @@ public class BoreItem extends Item {
                     } else {
                         if (player.tickCount % 10 == 0) {
                             target.hurt(level.damageSources().playerAttack(player), 2.0F);
-                            boer.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
-                            Utils.setBoreContents(stack, boer);
+                            bore.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+                            Utils.setBoreContents(stack, bore);
 
                             level.playSound(null, target.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.3F, 1.8F);
                         }
@@ -350,7 +350,7 @@ public class BoreItem extends Item {
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        return Optional.of(new BoerTooltip(Utils.getBoreContents(stack)));
+        return Optional.of(new BoreTooltip(Utils.getBoreContents(stack)));
     }
 
     @Override

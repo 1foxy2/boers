@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.foxy.bores.base.ModRegistries;
 import net.foxy.bores.client.BoresClientConfig;
+import net.foxy.bores.util.FixerRegistryFixedCodec;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -46,7 +47,7 @@ public record BoreHead(Texture texture, float defaultMiningSpeed, int durability
                     Vec3i.CODEC.optionalFieldOf("radius").forGetter(BoreHead::radius)
             ).apply(instance, BoreHead::new)
     );
-    public static final Codec<Holder<BoreHead>> ITEM_CODEC = RegistryFixedCodec.create(ModRegistries.BORE_HEAD);
+    public static final Codec<Holder<BoreHead>> ITEM_CODEC = FixerRegistryFixedCodec.create(ModRegistries.BORE_HEAD);
 
     public float getMiningSpeed(ItemStack stack, BlockState state) {
         for (Rule tool$rule : miningRules) {

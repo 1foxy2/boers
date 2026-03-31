@@ -1,6 +1,6 @@
 package net.foxy.bores.client;
 
-import net.foxy.bores.item.BoerTooltip;
+import net.foxy.bores.item.BoreTooltip;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,7 +19,7 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
     private static final int SLOT_SIZE_Y = 20;
     private final ItemStack stack;
 
-    public ClientBoresTooltip(BoerTooltip contents) {
+    public ClientBoresTooltip(BoreTooltip contents) {
         this.stack = contents.getItems();
     }
 

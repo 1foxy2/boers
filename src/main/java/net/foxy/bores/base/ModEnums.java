@@ -6,10 +6,10 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class ModEnums {
     public static final HumanoidModel.ArmPose BORE_STANDING_POS = HumanoidModel.ArmPose.create(
-            "BOERS_BOER_HOLDING",true, ModEnums::applyPose
+            "BORES_BORE_HOLDING",true, ModEnums::applyPose
     );
     public static final HumanoidModel.ArmPose BORE_SINGLE_STANDING_POS = HumanoidModel.ArmPose.create(
-            "BOERS_BOER_HOLDING_SINGLE",true, ModEnums::applySinglePose
+            "BORES_BORE_HOLDING_SINGLE",true, ModEnums::applySinglePose
     );
 
     public static void init() {

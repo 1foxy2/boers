@@ -11,7 +11,7 @@ import net.foxy.bores.client.BoresClientConfig;
 import net.foxy.bores.client.ClientBoresTooltip;
 import net.foxy.bores.client.model.BoreModel;
 import net.foxy.bores.data.BoreHead;
-import net.foxy.bores.item.BoerTooltip;
+import net.foxy.bores.item.BoreTooltip;
 import net.foxy.bores.item.BoreItem;
 import net.foxy.bores.network.NetworkHandler;
 import net.foxy.bores.network.c2s.SetUseBorePacket;
@@ -47,49 +47,6 @@ public class ModClientEvents {
     public static BoreSoundInstance soundInstance2 = null;
     public static BoreSoundInstance idleSoundInstance = null;
     public static BoreSoundInstance idleSoundInstance2 = null;
-
-    @SubscribeEvent
-    public static void renderOutline(RenderHighlightEvent.Block event) {
-        if (!(event.getCamera().getEntity() instanceof Player player)) {
-            return;
-        }
-
-        ItemStack stack = player.getMainHandItem();
-        if (stack.isEmpty()) {
-            return;
-        }
-        ItemStack boreContents = Utils.getBoreContents(stack);
-        if (boreContents.isEmpty()) {
-            return;
-        }
-        Level level = event.getCamera().getEntity().level();
-
-        BoreHead tool = Utils.getBore(Utils.getBoreContentsOrEmpty(stack));
-        int k = Minecraft.getInstance().gameMode.getDestroyStage();
-        if (tool != null && tool.radius().isPresent()) {
-            Vec3 vec3 = event.getCamera().getPosition();
-            PoseStack posestack = event.getPoseStack();
-            VertexConsumer vertexconsumer2 = event.getMultiBufferSource().getBuffer(RenderType.lines());
-            Utils.forEachBlock(level, player, event.getTarget().getBlockPos(), tool.radius().get(), (target, block) -> {
-                event.getLevelRenderer().renderHitOutline(posestack,
-                        vertexconsumer2, player, vec3.x(), vec3.y(), vec3.z(), target, block);
-
-                if (k != -1 && event.getTarget().getBlockPos().equals(Minecraft.getInstance().gameMode.destroyBlockPos)) {
-                    posestack.pushPose();
-                    posestack.translate((double) target.getX() - vec3.x, (double) target.getY() - vec3.y, (double) target.getZ() - vec3.z);
-                    PoseStack.Pose posestack$pose1 = posestack.last();
-                    VertexConsumer vertexconsumer1 = new SheetedDecalTextureGenerator(
-                            Minecraft.getInstance().renderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(k)), posestack$pose1.pose(), posestack$pose1.normal(), 1.0F
-                    );
-                    ModelData modelData = level.getModelDataManager().getAt(target);
-                    Minecraft.getInstance()
-                            .getBlockRenderer()
-                            .renderBreakingTexture(block, target, level, posestack, vertexconsumer1, modelData == null ? net.minecraftforge.client.model.data.ModelData.EMPTY : modelData);
-                    posestack.popPose();
-                }
-            });
-        }
-    }
 
     @Mod.EventBusSubscriber(modid = BoresMod.MODID, value = Dist.CLIENT)
     public static class ForgeBus {
@@ -141,6 +98,50 @@ public class ModClientEvents {
                 }
             }
         }
+
+
+        @SubscribeEvent
+        public static void renderOutline(RenderHighlightEvent.Block event) {
+            if (!(event.getCamera().getEntity() instanceof Player player)) {
+                return;
+            }
+
+            ItemStack stack = player.getMainHandItem();
+            if (stack.isEmpty()) {
+                return;
+            }
+            ItemStack boreContents = Utils.getBoreContents(stack);
+            if (boreContents.isEmpty()) {
+                return;
+            }
+            Level level = event.getCamera().getEntity().level();
+
+            BoreHead tool = Utils.getBore(Utils.getBoreContentsOrEmpty(stack));
+            int k = Minecraft.getInstance().gameMode.getDestroyStage();
+            if (tool != null && tool.radius().isPresent()) {
+                Vec3 vec3 = event.getCamera().getPosition();
+                PoseStack posestack = event.getPoseStack();
+                VertexConsumer vertexconsumer2 = event.getMultiBufferSource().getBuffer(RenderType.lines());
+                Utils.forEachBlock(level, player, event.getTarget().getBlockPos(), tool.radius().get(), (target, block) -> {
+                    event.getLevelRenderer().renderHitOutline(posestack,
+                            vertexconsumer2, player, vec3.x(), vec3.y(), vec3.z(), target, block);
+
+                    if (k != -1 && event.getTarget().getBlockPos().equals(Minecraft.getInstance().gameMode.destroyBlockPos)) {
+                        posestack.pushPose();
+                        posestack.translate((double) target.getX() - vec3.x, (double) target.getY() - vec3.y, (double) target.getZ() - vec3.z);
+                        PoseStack.Pose posestack$pose1 = posestack.last();
+                        VertexConsumer vertexconsumer1 = new SheetedDecalTextureGenerator(
+                                Minecraft.getInstance().renderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(k)), posestack$pose1.pose(), posestack$pose1.normal(), 1.0F
+                        );
+                        ModelData modelData = level.getModelDataManager().getAt(target);
+                        Minecraft.getInstance()
+                                .getBlockRenderer()
+                                .renderBreakingTexture(block, target, level, posestack, vertexconsumer1, modelData == null ? net.minecraftforge.client.model.data.ModelData.EMPTY : modelData);
+                        posestack.popPose();
+                    }
+                });
+            }
+        }
     }
 
     @Mod.EventBusSubscriber(modid = BoresMod.MODID, value = Dist.CLIENT, bus = net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD)
@@ -153,7 +154,7 @@ public class ModClientEvents {
 
         @SubscribeEvent
         public static void registerTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
-             event.register(BoerTooltip.class, ClientBoresTooltip::new);
+             event.register(BoreTooltip.class, ClientBoresTooltip::new);
         }
 
         @SubscribeEvent

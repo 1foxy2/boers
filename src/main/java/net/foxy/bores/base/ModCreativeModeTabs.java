@@ -23,8 +23,8 @@ public class ModCreativeModeTabs {
                             .title(Component.translatable("item.bores.bores"))
                             .displayItems((pParameters, pOutput) -> {
                                 pOutput.accept(ModItems.BORE.get());
-                                pParameters.holders().lookupOrThrow(ModRegistries.BORE_HEAD).listElements().forEach(boerHeadReference -> {
-                                    pOutput.accept(Utils.bore(boerHeadReference));
+                                pParameters.holders().lookupOrThrow(ModRegistries.BORE_HEAD).listElements().forEach(bore -> {
+                                    pOutput.accept(Utils.bore(bore));
                                 });
                             })
                             .build());
