@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:smithing_transform",
+  "type": "bores:smithing_transform",
   "addition": {
     "item": "minecraft:netherite_ingot"
   },

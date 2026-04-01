@@ -25,7 +25,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> recipeOutput) {
-        SpecialRecipeBuilder.special(ModRecipeSerializers.BORE_COLORING.get()).save(recipeOutput, "bore_base_coloring");
+        SpecialRecipeBuilder.special(ModRecipeSerializers.BORE_COLORING.get()).save(recipeOutput, "bores:bore_coloring");
         boreHead(recipeOutput, ModRegistries.COPPER, Items.COPPER_INGOT);
         boreHead(recipeOutput, ModRegistries.DIAMOND, Items.DIAMOND);
         boreHead(recipeOutput, ModRegistries.GOLDEN, Items.GOLD_INGOT);

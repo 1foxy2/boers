@@ -1,6 +1,7 @@
 package net.foxy.bores.data;
 
 import com.google.gson.JsonObject;
+import net.foxy.bores.base.ModRecipeSerializers;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,7 +35,7 @@ public class StackSmithingTransformRecipeBuilder {
     }
 
     public static StackSmithingTransformRecipeBuilder smithing(Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, ItemStack result) {
-        return new StackSmithingTransformRecipeBuilder(RecipeSerializer.SMITHING_TRANSFORM, template, base, addition, category, result);
+        return new StackSmithingTransformRecipeBuilder(ModRecipeSerializers.BORE_SMITHING.get(), template, base, addition, category, result);
     }
 
     public StackSmithingTransformRecipeBuilder unlocks(String key, CriterionTriggerInstance criterion) {
