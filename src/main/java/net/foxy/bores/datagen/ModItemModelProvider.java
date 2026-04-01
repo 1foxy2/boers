@@ -28,8 +28,8 @@ public class ModItemModelProvider extends ItemModelProvider {
                 .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND).rotation(107.5f, 16, -153).translation(-5.325f, 5, -2.25f).scale(1, 1, 0.5f).end()
                 .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).rotation(0, 0, -10).translation(-11.25f, 14.6f, 2.35f).scale(2, 2, 1).end()
                 .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).rotation(0, 180, 10).translation(-11.25f, 14.6f, 2.35f).scale(2, 2, 1).end()
-                .transform(ModEnums.THIRDPERSON_RIGHTHAND_SINGLE.getValue()).rotation(0, -90, 45).translation(0, 3, -7.25f).scale(2, 2, 1).end()
-                .transform(ModEnums.THIRDPERSON_LEFTHAND_SINGLE.getValue()).rotation(0, 90, -45).translation(0, 3, -7.25f).scale(2, 2, 1).end()
+                .transform(ModEnums.THIRDPERSON_RIGHTHAND_SINGLE).rotation(0, -90, 45).translation(0, 3, -7.25f).scale(2, 2, 1).end()
+                .transform(ModEnums.THIRDPERSON_LEFTHAND_SINGLE).rotation(0, 90, -45).translation(0, 3, -7.25f).scale(2, 2, 1).end()
                 .end();
 
         // right 110 -16 153 left -70 16 27

@@ -1,10 +1,18 @@
 package net.foxy.bores.base;
 
+import net.foxy.bores.util.Utils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 
 public class ModEnums {
+    public static final ItemDisplayContext THIRDPERSON_LEFTHAND_SINGLE = ItemDisplayContext.create(
+            "BORES_THIRDPERSON_LEFTHAND_SINGLE", Utils.rl("thirdperson_lefthand_single"), null
+    );
+    public static final ItemDisplayContext THIRDPERSON_RIGHTHAND_SINGLE = ItemDisplayContext.create(
+            "THIRDPERSON_RIGHTHAND_SINGLE", Utils.rl("thirdperson_righthand_single"), null
+    );
     public static final HumanoidModel.ArmPose BORE_STANDING_POS = HumanoidModel.ArmPose.create(
             "BORES_BORE_HOLDING",true, ModEnums::applyPose
     );

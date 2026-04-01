@@ -28,8 +28,8 @@ public class ItemInHandLayerMixin {
     private ItemDisplayContext useSingleDisplay(ItemDisplayContext displayContext,
                                                       @Local(ordinal = 0) ItemStack offStack,
                                                       @Local(ordinal = 1) ItemStack mainStack) {
-        return mainStack.is(ModItems.BORE) && !offStack.isEmpty() ?
-                ModEnums.THIRDPERSON_RIGHTHAND_SINGLE.getValue() : displayContext;
+        return mainStack.is(ModItems.BORE.get()) && !offStack.isEmpty() ?
+                ModEnums.THIRDPERSON_RIGHTHAND_SINGLE : displayContext;
     }
     @ModifyArg(
             method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;" +
@@ -47,7 +47,7 @@ public class ItemInHandLayerMixin {
     private ItemDisplayContext useSingleDisplayOffHand(ItemDisplayContext displayContext,
                                                       @Local(ordinal = 0) ItemStack offStack,
                                                       @Local(ordinal = 1) ItemStack mainStack) {
-        return offStack.is(ModItems.BORE) && !mainStack.isEmpty() ?
-                ModEnums.THIRDPERSON_LEFTHAND_SINGLE.getValue() : displayContext;
+        return offStack.is(ModItems.BORE.get()) && !mainStack.isEmpty() ?
+                ModEnums.THIRDPERSON_LEFTHAND_SINGLE : displayContext;
     }
 }

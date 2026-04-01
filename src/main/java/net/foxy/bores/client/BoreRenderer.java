@@ -48,7 +48,7 @@ public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
             }
 
             if (displayContext.firstPerson()) {
-                float angle = Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100);
+                float angle = Mth.catmullrom(Mth.lerp(Minecraft.getInstance().getPartialTick(), ModClientEvents.lastProgress, ModClientEvents.usingProgress) / 10f, 0, 0, 14, 100);
                 if (displayContext == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) {
                     poseStack.mulPose(Axis.YN.rotationDegrees(angle));
                 } else {
