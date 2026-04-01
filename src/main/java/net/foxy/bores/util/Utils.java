@@ -61,19 +61,32 @@ public class Utils {
     }
 
     public static Holder<BoreHead> getBoreHolder(ItemStack stack) {
-        if (!stack.hasTag() || !stack.getTag().contains(ModDataComponents.BORE, Tag.TAG_STRING)) {
+        if (!stack.hasTag()) {
             return null;
+        }
+
+        CompoundTag tag = stack.getTag();
+        if (!tag.contains(ModDataComponents.BORE, Tag.TAG_STRING)) {
+            if (tag.contains(ModDataComponents.OLD_BORE, Tag.TAG_STRING)) {
+                tag.putString(ModDataComponents.BORE, tag.getString(ModDataComponents.OLD_BORE).replaceFirst("boers:", "bores:"));
+                tag.remove(ModDataComponents.OLD_BORE);
+            } else {
+                return null;
+            }
         }
 
         RegistryAccess access;
         if (FMLEnvironment.dist.isClient()) {
+            if (Minecraft.getInstance().level == null) {
+                return null;
+            }
             access = Minecraft.getInstance().level.registryAccess();
         } else {
             access = ServerLifecycleHooks.getCurrentServer().registryAccess();
         }
 
 
-        return access.lookupOrThrow(ModRegistries.BORE_HEAD).get(ResourceKey.create(ModRegistries.BORE_HEAD, ResourceLocation.parse(stack.getTag().getString(ModDataComponents.BORE)))).orElse(null);
+        return access.lookupOrThrow(ModRegistries.BORE_HEAD).get(ResourceKey.create(ModRegistries.BORE_HEAD, ResourceLocation.parse(tag.getString(ModDataComponents.BORE)))).orElse(null);
     }
 
     public static String getBoreString(ItemStack stack) {
@@ -116,15 +129,21 @@ public class Utils {
     }
 
     public static ItemStack getBoreContentsOrEmpty(ItemStack stack) {
-        if (stack.getTag() == null) {
+        CompoundTag tag = stack.getTag();
+        if (tag == null) {
             return ItemStack.EMPTY;
         }
 
-        if (!stack.getTag().contains(ModDataComponents.BORE_CONTENTS, Tag.TAG_COMPOUND)) {
-            return ItemStack.EMPTY;
+        if (!tag.contains(ModDataComponents.BORE_CONTENTS, Tag.TAG_COMPOUND)) {
+            if (tag.contains(ModDataComponents.OLD_BORE_CONTENTS, Tag.TAG_COMPOUND)) {
+                tag.put(ModDataComponents.BORE_CONTENTS, tag.getCompound(ModDataComponents.OLD_BORE_CONTENTS));
+                tag.remove(ModDataComponents.OLD_BORE_CONTENTS);
+            } else {
+                return ItemStack.EMPTY;
+            }
         }
 
-        return ItemStack.of(stack.getTag().getCompound(ModDataComponents.BORE_CONTENTS));
+        return ItemStack.of(tag.getCompound(ModDataComponents.BORE_CONTENTS));
     }
 
     public static void setBoreContents(ItemStack itemStack, ItemStack boreContents) {
