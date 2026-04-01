@@ -6,6 +6,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +48,7 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
     public void renderImage(Font font, int x, int y, int height, int width, GuiGraphics guiGraphics) {
         int i = this.gridSizeX();
         int j = this.gridSizeY();
-        guiGraphics.blitSprite(RenderType::guiTextured, BACKGROUND_SPRITE, x, y, this.backgroundWidth(), this.backgroundHeight());
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_SPRITE, x, y, this.backgroundWidth(), this.backgroundHeight());
         int k = 0;
 
         int j1 = x + 1;
@@ -70,7 +71,7 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
     }
 
     private void blit(GuiGraphics guiGraphics, int x, int y, Texture texture) {
-        guiGraphics.blitSprite(RenderType::guiTextured, texture.sprite, x, y, 0, texture.w, texture.h);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture.sprite, x, y, 0, texture.w, texture.h);
     }
 
     private int gridSizeX() {

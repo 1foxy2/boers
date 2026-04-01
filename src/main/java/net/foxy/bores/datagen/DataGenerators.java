@@ -68,8 +68,6 @@ public class DataGenerators {
         //event.addProvider(new ModItemModelProvider(packOutput));
 
         ModBlockTagsProvider blockTagsProvider = event.addProvider(new ModBlockTagsProvider(packOutput, lookupProvider));
-        event.addProvider(new ModItemTagsProvider(packOutput,
-                lookupProvider, blockTagsProvider.contentsGetter()));
         event.addProvider(new ModRecipeProvider.Runner(packOutput, lookupProvider));
         event.addProvider(new ModGLM(packOutput, lookupProvider));
         event.addProvider(new ModLootTablesProvider(packOutput, List.of(new LootTableProvider.SubProviderEntry(

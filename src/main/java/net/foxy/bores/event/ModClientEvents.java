@@ -44,6 +44,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
@@ -135,14 +136,14 @@ public class ModClientEvents {
             boolean isUsed = Utils.isUsed(stack);
             if (usingProgress < 9) {
                 if (isUsed) {
-                    PacketDistributor.sendToServer(new SetUseBorePacket(false));
+                    ClientPacketDistributor.sendToServer(new SetUseBorePacket(false));
                 }
             } else {
                 if (!isUsed) {
-                    PacketDistributor.sendToServer(new SetUseBorePacket(true));
+                    ClientPacketDistributor.sendToServer(new SetUseBorePacket(true));
                 }
                 bore.onAttackTick(player.level(), player, stack, usingProgress);
-                PacketDistributor.sendToServer(new TickBorePacket(usingProgress));
+                ClientPacketDistributor.sendToServer(new TickBorePacket(usingProgress));
             }
         }
     }
