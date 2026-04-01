@@ -17,7 +17,7 @@ public class ModEnums {
             "BORES_BORE_HOLDING",true, ModEnums::applyPose
     );
     public static final HumanoidModel.ArmPose BORE_SINGLE_STANDING_POS = HumanoidModel.ArmPose.create(
-            "BORES_BORE_HOLDING_SINGLE",true, ModEnums::applySinglePose
+            "BORES_BORE_HOLDING_SINGLE",false, ModEnums::applySinglePose
     );
 
     public static void init() {
