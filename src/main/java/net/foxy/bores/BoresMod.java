@@ -10,6 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -34,6 +35,7 @@ public class BoresMod {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             BoresModClient.init(context);
         }
+        context.registerConfig(ModConfig.Type.COMMON, BoresConfig.CONFIG_SPEC);
 
         ((ForgeRegistry<Item>) ForgeRegistries.ITEMS).addAlias(ResourceLocation.fromNamespaceAndPath("boers", "boer_base"), Utils.rl("bore"));
         ((ForgeRegistry<Item>) ForgeRegistries.ITEMS).addAlias(ResourceLocation.fromNamespaceAndPath("boers", "boer_head"), Utils.rl("bore_head"));

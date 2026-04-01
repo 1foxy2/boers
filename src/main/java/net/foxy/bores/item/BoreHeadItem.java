@@ -1,5 +1,6 @@
 package net.foxy.bores.item;
 
+import net.foxy.bores.BoresConfig;
 import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.Holder;
@@ -33,12 +34,8 @@ public class BoreHeadItem extends Item {
         return super.getDescriptionId(stack) + "." + head.unwrapKey().get().location().toString().replace(":", ".");
     }
 
-
-    /*@Override TODO
-    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
-        if (BoresConfig.CONFIG.ENCHANTABLE_BORE_HEAD.get()) {
-            return super.supportsEnchantment(Items.NETHERITE_PICKAXE.getDefaultInstance(), enchantment);
-        }
-        return super.supportsEnchantment(stack, enchantment);
-    }*/
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return super.isEnchantable(stack) && BoresConfig.CONFIG.ENCHANTABLE_BORE_HEAD.get();
+    }
 }

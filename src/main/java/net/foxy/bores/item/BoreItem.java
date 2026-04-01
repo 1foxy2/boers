@@ -68,6 +68,11 @@ public class BoreItem extends Item {
     }
 
     @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return false;
+    }
+
+    @Override
     public boolean isDamaged(ItemStack stack) {
         ItemStack boreItem = Utils.getBoreContents(stack);
         return !boreItem.isEmpty() && boreItem.isDamaged();
