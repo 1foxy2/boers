@@ -1,6 +1,6 @@
 {
   "default_mining_speed": 1.0,
-  "durability": 95,
+  "durability": 190,
   "mining_rules": [
     {
       "blocks": "#minecraft:incorrect_for_stone_tool",

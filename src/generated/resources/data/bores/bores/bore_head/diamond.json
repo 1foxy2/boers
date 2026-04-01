@@ -1,6 +1,6 @@
 {
   "default_mining_speed": 1.0,
-  "durability": 800,
+  "durability": 1561,
   "mining_rules": [
     {
       "blocks": "#minecraft:incorrect_for_diamond_tool",

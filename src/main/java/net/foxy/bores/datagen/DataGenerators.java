@@ -38,23 +38,23 @@ public class DataGenerators {
                         ModRegistries.BORE_HEAD, bootstrap -> {
                             bootstrap.register(
                                     ModRegistries.COPPER,
-                                    create("copper", 10, 95, BlockTags.INCORRECT_FOR_STONE_TOOL)
+                                    create("copper", 10, 190, BlockTags.INCORRECT_FOR_STONE_TOOL)
                             );
                             bootstrap.register(
                                     ModRegistries.IRON,
-                                    create("iron", 12, 125, BlockTags.INCORRECT_FOR_IRON_TOOL)
+                                    create("iron", 12, 250, BlockTags.INCORRECT_FOR_IRON_TOOL)
                             );
                             bootstrap.register(
                                     ModRegistries.DIAMOND,
-                                    create("diamond", 16, 800, BlockTags.INCORRECT_FOR_DIAMOND_TOOL)
+                                    create("diamond", 16, 1561, BlockTags.INCORRECT_FOR_DIAMOND_TOOL)
                             );
                             bootstrap.register(
                                     ModRegistries.GOLDEN,
-                                    create("golden", 24, 16, BlockTags.INCORRECT_FOR_GOLD_TOOL)
+                                    create("golden", 24, 32, BlockTags.INCORRECT_FOR_GOLD_TOOL)
                             );
                             bootstrap.register(
                                     ModRegistries.NETHERITE,
-                                    create("netherite", 18, 1000, BlockTags.INCORRECT_FOR_NETHERITE_TOOL)
+                                    create("netherite", 18, 2031, BlockTags.INCORRECT_FOR_NETHERITE_TOOL)
                             );
                         }
                 ),
