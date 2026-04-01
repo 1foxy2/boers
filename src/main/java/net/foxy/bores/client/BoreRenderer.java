@@ -10,17 +10,18 @@ import net.foxy.bores.util.RenderUtils;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+//import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.NeoForgeRenderTypes;
 
-public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
+/*public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
 
     public BoreRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelSet entityModelSet) {
         super(blockEntityRenderDispatcher, entityModelSet);
@@ -73,4 +74,4 @@ public class BoreRenderer extends BlockEntityWithoutLevelRenderer {
         }
         poseStack.popPose();
     }
-}
+}*/

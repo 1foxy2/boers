@@ -8,11 +8,9 @@ import net.foxy.bores.base.ModEnums;
 import net.foxy.bores.base.ModItems;
 import net.foxy.bores.base.ModParticles;
 import net.foxy.bores.base.ModSounds;
-import net.foxy.bores.client.BoreRenderer;
 import net.foxy.bores.client.BoreSoundInstance;
 import net.foxy.bores.client.BoresClientConfig;
 import net.foxy.bores.client.ClientBoresTooltip;
-import net.foxy.bores.client.model.BoreModel;
 import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.item.BoreItem;
 import net.foxy.bores.item.BoreContents;
@@ -24,7 +22,6 @@ import net.foxy.bores.util.ModItemProperties;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.Direction;
@@ -103,10 +100,10 @@ public class ModClientEvents {
         }
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void registerCustomModels(ModelEvent.RegisterGeometryLoaders event) {
         event.register(BORE_MODEL_LOADER, BoreModel.Loader.INSTANCE);
-    }
+    }*/
 
     @SubscribeEvent
     public static void registerTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
@@ -167,7 +164,7 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void registerItemRenderers(RegisterClientExtensionsEvent event) {
         event.registerItem(new IClientItemExtensions() {
-            public static BoreRenderer renderer = null;
+            /*public static BoreRenderer renderer = null;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
@@ -178,7 +175,7 @@ public class ModClientEvents {
                 }
 
                 return renderer;
-            }
+            }*/
 
             @Override
             public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {

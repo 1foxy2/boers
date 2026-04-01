@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.List;
@@ -31,10 +30,9 @@ import java.util.concurrent.CompletableFuture;
 @EventBusSubscriber(modid = BoresMod.MODID)
 public class DataGenerators {
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         event.createDatapackRegistryObjects(
                 new RegistrySetBuilder().add(
                         ModRegistries.BORE_HEAD, bootstrap -> {
@@ -67,15 +65,14 @@ public class DataGenerators {
 
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
+        //event.addProvider(new ModItemModelProvider(packOutput));
 
-        ModBlockTagsProvider blockTagsProvider = generator.addProvider(event.includeServer(),
-                new ModBlockTagsProvider(packOutput, lookupProvider, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModItemTagsProvider(packOutput,
-                lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModRecipeProvider.Runner(packOutput, lookupProvider));
-        generator.addProvider(event.includeServer(), new ModGLM(packOutput, lookupProvider));
-        generator.addProvider(event.includeServer(), new ModLootTablesProvider(packOutput, List.of(new LootTableProvider.SubProviderEntry(
+        ModBlockTagsProvider blockTagsProvider = event.addProvider(new ModBlockTagsProvider(packOutput, lookupProvider));
+        event.addProvider(new ModItemTagsProvider(packOutput,
+                lookupProvider, blockTagsProvider.contentsGetter()));
+        event.addProvider(new ModRecipeProvider.Runner(packOutput, lookupProvider));
+        event.addProvider(new ModGLM(packOutput, lookupProvider));
+        event.addProvider(new ModLootTablesProvider(packOutput, List.of(new LootTableProvider.SubProviderEntry(
                 ChestLootSubProvider::new,
                 LootContextParamSets.CHEST
         )), lookupProvider));

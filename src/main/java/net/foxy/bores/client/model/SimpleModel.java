@@ -56,11 +56,6 @@ public class SimpleModel implements BakedModel {
     }
 
     @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
-
-    @Override
     public TextureAtlasSprite getParticleIcon() {
         return sprite;
     }

@@ -5,7 +5,7 @@
 
 package net.foxy.bores.client.model;
 
-import com.google.common.collect.ImmutableList;
+/*import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -148,11 +148,6 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
         }
 
         @Override
-        public boolean isCustomRenderer() {
-            return false;
-        }
-
-        @Override
         public TextureAtlasSprite getParticleIcon() {
             return particle;
         }
@@ -212,4 +207,4 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
             }
         }
     }
-}
+}*/

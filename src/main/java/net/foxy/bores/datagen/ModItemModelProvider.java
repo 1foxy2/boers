@@ -10,14 +10,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.ItemLike;/*
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 public class ModItemModelProvider extends ItemModelProvider {
-    public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+    public ModItemModelProvider(PackOutput output) {
         super(output, BoresMod.MODID, existingFileHelper);
     }
 
@@ -116,4 +116,4 @@ public class ModItemModelProvider extends ItemModelProvider {
                 ResourceLocation.parse("item/generated")).texture("layer0",
                 Utils.rl("block/" + item.getId().getPath()));
     }
-}
+}*/
