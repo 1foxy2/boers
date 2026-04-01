@@ -32,10 +32,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class BoreItem extends Item {
-    public BoreItem() {
-        super(new Properties().stacksTo(1)
+    public BoreItem(Item.Properties properties) {
+        super(properties.stacksTo(1)
                 .component(ModDataComponents.BORE_CONTENTS, BoreContents.EMPTY)
                 .component(DataComponents.BASE_COLOR, DyeColor.BLUE)
                 .component(DataComponents.DAMAGE, 0)
@@ -141,7 +142,7 @@ public class BoreItem extends Item {
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
+    public int getEnchantmentLevel(ItemInstance stack, Holder<Enchantment> enchantment) {
         ItemStack contents = Utils.getBoreContents(stack).items;
         if (!contents.isEmpty()) {
             return contents.getEnchantmentLevel(enchantment);
@@ -205,12 +206,12 @@ public class BoreItem extends Item {
     }
 
     private void spawnEntitySparks(Level level, Vec3 hitPos, Vec3 playerEye, LivingEntity target) {
-        int sparkCount = 5 + level.random.nextInt(6);
+        int sparkCount = 5 + level.getRandom().nextInt(6);
 
         for (int i = 0; i < sparkCount; i++) {
-            double spreadX = (level.random.nextDouble() - 0.5) * target.getBbWidth() * 0.8;
-            double spreadY = (level.random.nextDouble() - 0.5) * target.getBbHeight() * 0.5;
-            double spreadZ = (level.random.nextDouble() - 0.5) * target.getBbWidth() * 0.8;
+            double spreadX = (level.getRandom().nextDouble() - 0.5) * target.getBbWidth() * 0.8;
+            double spreadY = (level.getRandom().nextDouble() - 0.5) * target.getBbHeight() * 0.5;
+            double spreadZ = (level.getRandom().nextDouble() - 0.5) * target.getBbWidth() * 0.8;
 
             Vec3 sparkPos = hitPos.add(spreadX, spreadY, spreadZ);
 
@@ -339,7 +340,7 @@ public class BoreItem extends Item {
         BoreContents bundlecontents = Utils.getBoreContents(itemEntity.getItem());
         if (bundlecontents != null) {
             Utils.setBoreContents(itemEntity.getItem(), BoreContents.EMPTY);
-            ItemUtils.onContainerDestroyed(itemEntity, List.of(bundlecontents.itemsCopy()));
+            ItemUtils.onContainerDestroyed(itemEntity, Stream.of(bundlecontents.itemsCopy()));
         }
     }
 

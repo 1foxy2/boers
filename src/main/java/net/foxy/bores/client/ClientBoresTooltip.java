@@ -3,15 +3,12 @@ package net.foxy.bores.client;
 import net.foxy.bores.item.BoreContents;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class ClientBoresTooltip implements ClientTooltipComponent {
     private static final Identifier BACKGROUND_SPRITE = Identifier.withDefaultNamespace("container/bundle/background");
     private static final int MARGIN_Y = 4;
@@ -43,7 +40,7 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, int height, int width, GuiGraphics guiGraphics) {
+    public void extractImage(Font font, int x, int y, int height, int width, GuiGraphicsExtractor guiGraphics) {
         int i = this.gridSizeX();
         int j = this.gridSizeY();
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_SPRITE, x, y, this.backgroundWidth(), this.backgroundHeight());
@@ -54,21 +51,21 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
         this.renderSlot(j1, k1, k++, guiGraphics, font);
     }
 
-    private void renderSlot(int x, int y, int itemIndex, GuiGraphics guiGraphics, Font font) {
+    private void renderSlot(int x, int y, int itemIndex, GuiGraphicsExtractor guiGraphics, Font font) {
         if (itemIndex >= this.contents.size()) {
             this.blit(guiGraphics, x, y, Texture.SLOT);
         } else {
             ItemStack itemstack = this.contents.getItemUnsafe();
             this.blit(guiGraphics, x, y, Texture.SLOT);
-            guiGraphics.renderItem(itemstack, x + 1, y + 1, itemIndex);
-            guiGraphics.renderItemDecorations(font, itemstack, x + 1, y + 1);
+            guiGraphics.item(itemstack, x + 1, y + 1, itemIndex);
+            guiGraphics.itemDecorations(font, itemstack, x + 1, y + 1);
             if (itemIndex == 0) {
                 //AbstractContainerScreen.renderSlotHighlight(guiGraphics, x + 1, y + 1, 0);
             }
         }
     }
 
-    private void blit(GuiGraphics guiGraphics, int x, int y, Texture texture) {
+    private void blit(GuiGraphicsExtractor guiGraphics, int x, int y, Texture texture) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture.sprite, x, y, 0, texture.w, texture.h);
     }
 
@@ -80,7 +77,6 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
         return 1;
     }
 
-    @OnlyIn(Dist.CLIENT)
     static enum Texture {
         BLOCKED_SLOT(Identifier.withDefaultNamespace("container/bundle/blocked_slot"), 18, 20),
         SLOT(Utils.rl("container/bore/slot"), 18, 20);

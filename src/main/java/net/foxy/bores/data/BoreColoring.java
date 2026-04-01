@@ -1,22 +1,24 @@
 package net.foxy.bores.data;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.foxy.bores.base.ModRecipeSerializers;
 import net.foxy.bores.item.BoreItem;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
 
 public class BoreColoring extends CustomRecipe {
+    public static final MapCodec<BoreColoring> MAP_CODEC = MapCodec.unit(new BoreColoring());
+    public static final StreamCodec<RegistryFriendlyByteBuf, BoreColoring> STREAM_CODEC =
+            StreamCodec.unit(new BoreColoring());
+    public static final RecipeSerializer<BoreColoring> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
     public static final List<DyeColor> ALLOWED_COLORS = List.of(
             DyeColor.WHITE,
             DyeColor.YELLOW,
@@ -28,9 +30,7 @@ public class BoreColoring extends CustomRecipe {
             DyeColor.BLUE
     );
 
-    public BoreColoring(CraftingBookCategory category) {
-        super(category);
-    }
+    public BoreColoring() {}
 
     public boolean matches(CraftingInput input, Level level) {
         int i = 0;
@@ -42,7 +42,7 @@ public class BoreColoring extends CustomRecipe {
                 if (itemstack.getItem() instanceof BoreItem) {
                     i++;
                 } else {
-                    if (!(itemstack.getItem() instanceof DyeItem dye) || !ALLOWED_COLORS.contains(dye.getDyeColor())) {
+                    if (!ALLOWED_COLORS.contains(itemstack.get(DataComponents.DYE))) {
                         return false;
                     }
 
@@ -58,7 +58,7 @@ public class BoreColoring extends CustomRecipe {
         return i == 1 && j == 1;
     }
 
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput input) {
         ItemStack itemstack = ItemStack.EMPTY;
         net.minecraft.world.item.DyeColor dyecolor = net.minecraft.world.item.DyeColor.WHITE;
 

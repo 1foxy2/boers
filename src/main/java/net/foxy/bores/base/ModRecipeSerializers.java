@@ -3,7 +3,6 @@ package net.foxy.bores.base;
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.data.BoreColoring;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -14,5 +13,5 @@ public class ModRecipeSerializers {
             .create(BuiltInRegistries.RECIPE_SERIALIZER, BoresMod.MODID);
 
     public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BoreColoring>> BORE_COLORING = SERIALIZERS.register(
-            "crafting_special_bore_coloring", () -> new CustomRecipe.Serializer<>(BoreColoring::new));
+            "crafting_special_bore_coloring", () -> BoreColoring.SERIALIZER);
 }

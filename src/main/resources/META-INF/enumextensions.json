@@ -21,7 +21,7 @@
     {
       "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
       "name": "BORES_BORE_HOLDING",
-      "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
       "parameters": {
         "class": "net/foxy/bores/base/ModEnums",
         "field": "BORE_STANDING_POS"
@@ -30,7 +30,7 @@
     {
       "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
       "name": "BORES_BORE_SINGLE_HOLDING",
-      "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
       "parameters": {
         "class": "net/foxy/bores/base/ModEnums",
         "field": "BORE_SINGLE_STANDING_POS"

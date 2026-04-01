@@ -16,11 +16,11 @@ public class ModEnums {
             ItemDisplayContext.class, -1, "bores:thirdperson_righthand_single", null
     );
     public static final EnumProxy<HumanoidModel.ArmPose> BORE_STANDING_POS = new EnumProxy<>(
-            HumanoidModel.ArmPose.class, true, (IArmPoseTransformer)
+            HumanoidModel.ArmPose.class, true, true, (IArmPoseTransformer)
             ModEnums::applyPose
     );
     public static final EnumProxy<HumanoidModel.ArmPose> BORE_SINGLE_STANDING_POS = new EnumProxy<>(
-            HumanoidModel.ArmPose.class, false, (IArmPoseTransformer)
+            HumanoidModel.ArmPose.class, false, false, (IArmPoseTransformer)
             ModEnums::applySinglePose
     );
 

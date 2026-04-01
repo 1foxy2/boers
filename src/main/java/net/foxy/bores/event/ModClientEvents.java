@@ -225,12 +225,12 @@ public class ModClientEvents {
         Vec3 offset = Vec3.atLowerCornerOf(blockFace.getUnitVec3i()).scale(0.05);
         Vec3 spawnPos = hitPos.add(offset);
 
-        int sparkCount = BoresClientConfig.CONFIG.PARTICLE_COUNT.get() + level.random.nextInt(BoresClientConfig.CONFIG.PARTICLE_COUNT.get());
+        int sparkCount = BoresClientConfig.CONFIG.PARTICLE_COUNT.get() + level.getRandom().nextInt(BoresClientConfig.CONFIG.PARTICLE_COUNT.get());
 
         for (int i = 0; i < sparkCount; i++) {
-            double spreadX = (level.random.nextDouble() - 0.5) * 0.15;
-            double spreadY = (level.random.nextDouble() - 0.5) * 0.15;
-            double spreadZ = (level.random.nextDouble() - 0.5) * 0.15;
+            double spreadX = (level.getRandom().nextDouble() - 0.5) * 0.15;
+            double spreadY = (level.getRandom().nextDouble() - 0.5) * 0.15;
+            double spreadZ = (level.getRandom().nextDouble() - 0.5) * 0.15;
 
             Vec3 sparkPos = spawnPos.add(spreadX, spreadY, spreadZ);
 

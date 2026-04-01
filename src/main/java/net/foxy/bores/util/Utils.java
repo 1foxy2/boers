@@ -12,6 +12,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -61,7 +62,7 @@ public class Utils {
         mainHandItem.set(ModDataComponents.IS_USED, used);
     }
 
-    public static BoreContents getBoreContents(ItemStack stack) {
+    public static BoreContents getBoreContents(ItemInstance stack) {
         return stack.get(ModDataComponents.BORE_CONTENTS);
     }
 
