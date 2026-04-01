@@ -257,7 +257,7 @@ public class BoreItem extends Item {
                         ItemStack itemstack2 = slot.safeInsert(itemstack1);
                         bundlecontents$mutable.tryInsert(itemstack2);
                     }
-                } else if (itemstack.canFitInsideContainerItems()) { // Neo: stack-aware placeability check
+                } else if (itemstack.getItem().canFitInsideContainerItems()) { // Neo: stack-aware placeability check
                     if (!itemstack.is(ModItems.BORE_HEAD)) {
                         return false;
                     }

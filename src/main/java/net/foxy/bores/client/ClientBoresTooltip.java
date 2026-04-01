@@ -6,6 +6,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -25,7 +26,7 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(Font font) {
         return this.backgroundHeight() + 4;
     }
 
@@ -43,10 +44,10 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
+    public void renderImage(Font font, int x, int y, int height, int width, GuiGraphics guiGraphics) {
         int i = this.gridSizeX();
         int j = this.gridSizeY();
-        guiGraphics.blitSprite(BACKGROUND_SPRITE, x, y, this.backgroundWidth(), this.backgroundHeight());
+        guiGraphics.blitSprite(RenderType::guiTextured, BACKGROUND_SPRITE, x, y, this.backgroundWidth(), this.backgroundHeight());
         int k = 0;
 
         int j1 = x + 1;
@@ -63,13 +64,13 @@ public class ClientBoresTooltip implements ClientTooltipComponent {
             guiGraphics.renderItem(itemstack, x + 1, y + 1, itemIndex);
             guiGraphics.renderItemDecorations(font, itemstack, x + 1, y + 1);
             if (itemIndex == 0) {
-                AbstractContainerScreen.renderSlotHighlight(guiGraphics, x + 1, y + 1, 0);
+                //AbstractContainerScreen.renderSlotHighlight(guiGraphics, x + 1, y + 1, 0);
             }
         }
     }
 
     private void blit(GuiGraphics guiGraphics, int x, int y, Texture texture) {
-        guiGraphics.blitSprite(texture.sprite, x, y, 0, texture.w, texture.h);
+        guiGraphics.blitSprite(RenderType::guiTextured, texture.sprite, x, y, 0, texture.w, texture.h);
     }
 
     private int gridSizeX() {

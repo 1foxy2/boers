@@ -16,7 +16,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemOverride;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -54,7 +54,7 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
     }
 
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides) {
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, List<ItemOverride> overrides) {
         if (textures == null) {
             ImmutableList.Builder<Material> builder = ImmutableList.builder();
             for (int i = 0; context.hasMaterial("layer" + i); i++) {
@@ -69,7 +69,7 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
         if (!rootTransform.isIdentity())
             modelState = UnbakedGeometryHelper.composeRootTransformIntoModelState(modelState, rootTransform);
 
-        Baked.Builder builder = Baked.builder(context, particle, overrides, context.getTransforms());
+        Baked.Builder builder = Baked.builder(context, particle, context.getTransforms());
         return builder.build();
     }
 
@@ -117,15 +117,13 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
         private final boolean isGui3d;
         private final boolean isSideLit;
         private final TextureAtlasSprite particle;
-        private final ItemOverrides overrides;
         private final ItemTransforms transforms;
 
-        public Baked(boolean isGui3d, boolean isSideLit, boolean isAmbientOcclusion, TextureAtlasSprite particle, ItemTransforms transforms, ItemOverrides overrides, ImmutableMap<String, List<BakedQuad>> children) {
+        public Baked(boolean isGui3d, boolean isSideLit, boolean isAmbientOcclusion, TextureAtlasSprite particle, ItemTransforms transforms, ImmutableMap<String, List<BakedQuad>> children) {
             this.isAmbientOcclusion = isAmbientOcclusion;
             this.isGui3d = isGui3d;
             this.isSideLit = isSideLit;
             this.particle = particle;
-            this.overrides = new WrappedItemOverrides();
             this.transforms = transforms;
         }
 
@@ -160,11 +158,6 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
         }
 
         @Override
-        public ItemOverrides getOverrides() {
-            return overrides;
-        }
-
-        @Override
         public ItemTransforms getTransforms() {
             return transforms;
         }
@@ -174,17 +167,12 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
             return ChunkRenderTypeSet.of(NeoForgeRenderTypes.ITEM_UNSORTED_TRANSLUCENT.get());
         }
 
-        @Override
-        public List<BakedModel> getRenderPasses(ItemStack itemStack, boolean fabulous) {
-            return List.of(this) ;
+        public static Builder builder(IGeometryBakingContext owner, TextureAtlasSprite particle, ItemTransforms cameraTransforms) {
+            return builder(owner.useAmbientOcclusion(), owner.isGui3d(), owner.useBlockLight(), particle, cameraTransforms);
         }
 
-        public static Builder builder(IGeometryBakingContext owner, TextureAtlasSprite particle, ItemOverrides overrides, ItemTransforms cameraTransforms) {
-            return builder(owner.useAmbientOcclusion(), owner.isGui3d(), owner.useBlockLight(), particle, overrides, cameraTransforms);
-        }
-
-        public static Builder builder(boolean isAmbientOcclusion, boolean isGui3d, boolean isSideLit, TextureAtlasSprite particle, ItemOverrides overrides, ItemTransforms cameraTransforms) {
-            return new Builder(isAmbientOcclusion, isGui3d, isSideLit, particle, overrides, cameraTransforms);
+        public static Builder builder(boolean isAmbientOcclusion, boolean isGui3d, boolean isSideLit, TextureAtlasSprite particle, ItemTransforms cameraTransforms) {
+            return new Builder(isAmbientOcclusion, isGui3d, isSideLit, particle, cameraTransforms);
         }
 
         public static class Builder {
@@ -192,16 +180,14 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
             private final boolean isGui3d;
             private final boolean isSideLit;
             private final Map<String, List<BakedQuad>> children = new HashMap<>();
-            private final ItemOverrides overrides;
             private final ItemTransforms transforms;
             private TextureAtlasSprite particle;
 
-            private Builder(boolean isAmbientOcclusion, boolean isGui3d, boolean isSideLit, TextureAtlasSprite particle, ItemOverrides overrides, ItemTransforms transforms) {
+            private Builder(boolean isAmbientOcclusion, boolean isGui3d, boolean isSideLit, TextureAtlasSprite particle, ItemTransforms transforms) {
                 this.isAmbientOcclusion = isAmbientOcclusion;
                 this.isGui3d = isGui3d;
                 this.isSideLit = isSideLit;
                 this.particle = particle;
-                this.overrides = overrides;
                 this.transforms = transforms;
             }
 
@@ -222,7 +208,7 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
                 for (var model : this.children.entrySet()) {
                     childrenBuilder.put(model.getKey(), model.getValue());
                 }
-                return new Baked(isGui3d, isSideLit, isAmbientOcclusion, particle, transforms, overrides, childrenBuilder.build());
+                return new Baked(isGui3d, isSideLit, isAmbientOcclusion, particle, transforms, childrenBuilder.build());
             }
         }
     }

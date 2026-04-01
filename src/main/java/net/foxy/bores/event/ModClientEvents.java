@@ -84,7 +84,7 @@ public class ModClientEvents {
             VertexConsumer vertexconsumer2 = event.getMultiBufferSource().getBuffer(RenderType.lines());
             Utils.forEachBlock(level, player, event.getTarget().getBlockPos(), tool.radius().get(), (target, block) -> {
                 event.getLevelRenderer().renderHitOutline(posestack,
-                        vertexconsumer2, player, vec3.x(), vec3.y(), vec3.z(), target, block);
+                        vertexconsumer2, player, vec3.x(), vec3.y(), vec3.z(), target, block, -16777216);
 
                 if (k != -1 && event.getTarget().getBlockPos().equals(Minecraft.getInstance().gameMode.destroyBlockPos)) {
                     posestack.pushPose();
@@ -233,7 +233,7 @@ public class ModClientEvents {
         Vec3 playerEye = player.getEyePosition();
         Direction blockFace = hitResult.getDirection();
 
-        Vec3 offset = Vec3.atLowerCornerOf(blockFace.getNormal()).scale(0.05);
+        Vec3 offset = Vec3.atLowerCornerOf(blockFace.getUnitVec3i()).scale(0.05);
         Vec3 spawnPos = hitPos.add(offset);
 
         int sparkCount = BoresClientConfig.CONFIG.PARTICLE_COUNT.get() + level.random.nextInt(BoresClientConfig.CONFIG.PARTICLE_COUNT.get());

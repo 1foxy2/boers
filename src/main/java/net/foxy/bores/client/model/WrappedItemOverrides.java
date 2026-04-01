@@ -4,7 +4,6 @@ import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
-public class WrappedItemOverrides extends ItemOverrides {
+/*public class WrappedItemOverrides extends ItemOverrides {
 
     public final HashMap<ResourceLocation, BakedModel> children = new HashMap<>();
 
@@ -52,4 +51,4 @@ public class WrappedItemOverrides extends ItemOverrides {
             return new SimpleModel(quads, sprite, model.getTransforms());
         });
     }
-}
+}*/

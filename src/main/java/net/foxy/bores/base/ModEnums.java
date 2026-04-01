@@ -1,6 +1,7 @@
 package net.foxy.bores.base;
 
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -23,7 +24,7 @@ public class ModEnums {
             ModEnums::applySinglePose
     );
 
-    public static void applyPose(HumanoidModel<?> model, LivingEntity entity, HumanoidArm arm) {
+    public static void applyPose(HumanoidModel<?> model, HumanoidRenderState entity, HumanoidArm arm) {
         if (arm == HumanoidArm.RIGHT) {
             model.leftArm.xRot = (float) -Math.toRadians(35);
             model.rightArm.xRot = 0;
@@ -37,7 +38,7 @@ public class ModEnums {
         model.leftArm.zRot = 0;
     }
 
-    public static void applySinglePose(HumanoidModel<?> model, LivingEntity entity, HumanoidArm arm) {
+    public static void applySinglePose(HumanoidModel<?> model, HumanoidRenderState entity, HumanoidArm arm) {
         if (arm == HumanoidArm.RIGHT) {
             model.rightArm.xRot = (float) (model.head.xRot - Math.toRadians(90));
             model.rightArm.yRot = model.head.yRot;

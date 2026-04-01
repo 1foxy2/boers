@@ -7,9 +7,11 @@ import net.foxy.bores.datagen.loot.ChestLootSubProvider;
 import net.foxy.bores.datagen.loot.ModGLM;
 import net.foxy.bores.datagen.loot.ModLootTablesProvider;
 import net.foxy.bores.util.Utils;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
@@ -36,25 +38,26 @@ public class DataGenerators {
         event.createDatapackRegistryObjects(
                 new RegistrySetBuilder().add(
                         ModRegistries.BORE_HEAD, bootstrap -> {
+                            HolderGetter<Block> blocks = bootstrap.lookup(Registries.BLOCK);
                             bootstrap.register(
                                     ModRegistries.COPPER,
-                                    create("copper", 10, 190, BlockTags.INCORRECT_FOR_STONE_TOOL)
+                                    create("copper", 10, 190, blocks, BlockTags.INCORRECT_FOR_STONE_TOOL)
                             );
                             bootstrap.register(
                                     ModRegistries.IRON,
-                                    create("iron", 12, 250, BlockTags.INCORRECT_FOR_IRON_TOOL)
+                                    create("iron", 12, 250, blocks, BlockTags.INCORRECT_FOR_IRON_TOOL)
                             );
                             bootstrap.register(
                                     ModRegistries.DIAMOND,
-                                    create("diamond", 16, 1561, BlockTags.INCORRECT_FOR_DIAMOND_TOOL)
+                                    create("diamond", 16, 1561, blocks, BlockTags.INCORRECT_FOR_DIAMOND_TOOL)
                             );
                             bootstrap.register(
                                     ModRegistries.GOLDEN,
-                                    create("golden", 24, 32, BlockTags.INCORRECT_FOR_GOLD_TOOL)
+                                    create("golden", 24, 32, blocks, BlockTags.INCORRECT_FOR_GOLD_TOOL)
                             );
                             bootstrap.register(
                                     ModRegistries.NETHERITE,
-                                    create("netherite", 18, 2031, BlockTags.INCORRECT_FOR_NETHERITE_TOOL)
+                                    create("netherite", 18, 2031, blocks, BlockTags.INCORRECT_FOR_NETHERITE_TOOL)
                             );
                         }
                 ),
@@ -70,7 +73,7 @@ public class DataGenerators {
                 new ModBlockTagsProvider(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new ModItemTagsProvider(packOutput,
                 lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new ModRecipeProvider.Runner(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new ModGLM(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new ModLootTablesProvider(packOutput, List.of(new LootTableProvider.SubProviderEntry(
                 ChestLootSubProvider::new,
@@ -78,11 +81,11 @@ public class DataGenerators {
         )), lookupProvider));
     }
 
-    private static BoreHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine) {
-        return new BoreHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine);
+    private static BoreHead create(String id, float miningSpeed, int durability, HolderGetter<Block> blocks, TagKey<Block> canMine) {
+        return new BoreHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, blocks, canMine);
     }
 
-    private static BoreHead create(String id, float miningSpeed, int durability, TagKey<Block> canMine, Vec3i radius) {
-        return new BoreHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, canMine, radius);
+    private static BoreHead create(String id, float miningSpeed, int durability, HolderGetter<Block> blocks, TagKey<Block> canMine, Vec3i radius) {
+        return new BoreHead(Utils.rl("item/bore/" + id + "_bore_head"), miningSpeed, miningSpeed * 3, 0.1f, durability, blocks, canMine, radius);
     }
 }

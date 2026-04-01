@@ -8,7 +8,10 @@ import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.data.StackSmithingTransformRecipeBuilder;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Item;
@@ -20,28 +23,45 @@ import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import java.util.concurrent.CompletableFuture;
 
 public class ModRecipeProvider extends RecipeProvider {
-    public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public ModRecipeProvider(HolderLookup.Provider provider, RecipeOutput registries) {
+        super(provider, registries);
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput recipeOutput, HolderLookup.Provider lookup) {
-        SpecialRecipeBuilder.special(BoreColoring::new).save(recipeOutput, Utils.rl("bore_coloring"));
+    protected void buildRecipes() {
+        SpecialRecipeBuilder.special(BoreColoring::new).save(output, Utils.rl("bore_coloring").toString());
 
-        boreHead(recipeOutput,  lookup.holderOrThrow(ModRegistries.COPPER), Items.COPPER_INGOT);
-        boreHead(recipeOutput, lookup.holderOrThrow(ModRegistries.DIAMOND), Items.DIAMOND);
-        boreHead(recipeOutput, lookup.holderOrThrow(ModRegistries.GOLDEN), Items.GOLD_INGOT);
-        boreHead(recipeOutput, lookup.holderOrThrow(ModRegistries.IRON), Items.IRON_INGOT);
-        ItemStack result = Utils.bore(lookup.holderOrThrow(ModRegistries.NETHERITE));
+        boreHead(output, registries.holderOrThrow(ModRegistries.COPPER), Items.COPPER_INGOT);
+        boreHead(output, registries.holderOrThrow(ModRegistries.DIAMOND), Items.DIAMOND);
+        boreHead(output, registries.holderOrThrow(ModRegistries.GOLDEN), Items.GOLD_INGOT);
+        boreHead(output, registries.holderOrThrow(ModRegistries.IRON), Items.IRON_INGOT);
+        ItemStack result = Utils.bore(registries.holderOrThrow(ModRegistries.NETHERITE));
         StackSmithingTransformRecipeBuilder.smithing(
-                        Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), DataComponentIngredient.of(false, ModDataComponents.BORE.get(), lookup.holderOrThrow(ModRegistries.DIAMOND), ModItems.BORE_HEAD), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.TOOLS, result
+                        Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), DataComponentIngredient.of(false, ModDataComponents.BORE.get(), registries.holderOrThrow(ModRegistries.DIAMOND), ModItems.BORE_HEAD), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.TOOLS, result
                 )
                 .unlocks("has_bore", has(ModItems.BORE))
-                .save(recipeOutput, Utils.rl("diamond_bore_head_smithing"));
+                .save(output, Utils.rl("diamond_bore_head_smithing").toString());
     }
 
-    public static void boreHead(RecipeOutput recipeOutput, Holder<BoreHead> boreHead, Item item) {
+    public void boreHead(RecipeOutput recipeOutput, Holder<BoreHead> boreHead, Item item) {
         ItemStack stack = Utils.bore(boreHead);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore", has(ModItems.BORE)).save(recipeOutput, Utils.rl("bore_head_" + boreHead.getKey().location().getPath()));
+        ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore", this.has(ModItems.BORE)).save(recipeOutput, Utils.rl("bore_head_" + boreHead.getKey().location().getPath()).toString());
+    }
+
+    public static class Runner extends RecipeProvider.Runner {
+        // Get the parameters from GatherDataEvent.
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+            super(output, lookupProvider);
+        }
+
+        @Override
+        protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput output) {
+            return new ModRecipeProvider(provider, output);
+        }
+
+        @Override
+        public String getName() {
+            return "boers";
+        }
     }
 }

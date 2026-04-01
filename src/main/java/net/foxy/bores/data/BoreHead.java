@@ -6,10 +6,7 @@ import net.foxy.bores.base.ModRegistries;
 import net.foxy.bores.client.BoresClientConfig;
 import net.foxy.bores.util.FixerRegistryFixedCodec;
 import net.foxy.bores.util.Utils;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
-import net.minecraft.core.Vec3i;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -75,30 +72,30 @@ public record BoreHead(Texture texture, float defaultMiningSpeed, int durability
         return 1;
     }
 
-    public BoreHead(ResourceLocation texture, float miningSpeed, int durability, TagKey<Block> miningLevel) {
+    public BoreHead(ResourceLocation texture, float miningSpeed, int durability, HolderGetter<Block> blockGetter, TagKey<Block> miningLevel) {
         this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
-                List.of(Rule.deniesDrops(miningLevel),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed)
+                List.of(Rule.deniesDrops(blockGetter, miningLevel),
+                        Rule.minesAndDrops(blockGetter, BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed),
+                        Rule.minesAndDrops(blockGetter, BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed)
                 ), Optional.empty());
     }
 
-    public BoreHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, TagKey<Block> miningLevel) {
+    public BoreHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, HolderGetter<Block> blockGetter, TagKey<Block> miningLevel) {
         this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
-                List.of(Rule.deniesDrops(miningLevel),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed, maxSpeed, speedPerTick),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed, maxSpeed, speedPerTick)
+                List.of(Rule.deniesDrops(blockGetter, miningLevel),
+                        Rule.minesAndDrops(blockGetter, BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed, maxSpeed, speedPerTick),
+                        Rule.minesAndDrops(blockGetter, BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed, maxSpeed, speedPerTick)
                 ), Optional.empty());
     }
 
-    public BoreHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, TagKey<Block> miningLevel, Vec3i radius) {
+    public BoreHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, HolderGetter<Block> blockGetter, TagKey<Block> miningLevel, Vec3i radius) {
         this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
-                List.of(Rule.deniesDrops(miningLevel),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed, maxSpeed, speedPerTick),
-                        Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed, maxSpeed, speedPerTick)
+                List.of(Rule.deniesDrops(blockGetter, miningLevel),
+                        Rule.minesAndDrops(blockGetter, BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed, maxSpeed, speedPerTick),
+                        Rule.minesAndDrops(blockGetter, BlockTags.MINEABLE_WITH_SHOVEL, miningSpeed, maxSpeed, speedPerTick)
                 ), Optional.of(radius));
     }
 
@@ -145,28 +142,28 @@ public record BoreHead(Texture texture, float defaultMiningSpeed, int durability
             return forBlocks(blocks, Optional.of(speed), Optional.empty(), Optional.empty(), Optional.of(true), Optional.empty());
         }
 
-        public static Rule minesAndDrops(TagKey<Block> blocks, float speed) {
-            return forTag(blocks, Optional.of(speed), Optional.empty(), Optional.empty(), Optional.of(true), Optional.empty());
+        public static Rule minesAndDrops(HolderGetter<Block> blockGetter, TagKey<Block> blocks, float speed) {
+            return forTag(blockGetter, blocks, Optional.of(speed), Optional.empty(), Optional.empty(), Optional.of(true), Optional.empty());
         }
 
-        public static Rule minesAndDrops(TagKey<Block> blocks, float speed, float maxSpeed, float speedPerTick) {
-            return forTag(blocks, Optional.of(speed), Optional.of(maxSpeed), Optional.of(speedPerTick), Optional.of(true), Optional.empty());
+        public static Rule minesAndDrops(HolderGetter<Block> blockGetter, TagKey<Block> blocks, float speed, float maxSpeed, float speedPerTick) {
+            return forTag(blockGetter, blocks, Optional.of(speed), Optional.of(maxSpeed), Optional.of(speedPerTick), Optional.of(true), Optional.empty());
         }
 
-        public static Rule deniesDrops(TagKey<Block> blocks) {
-            return forTag(blocks, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(false), Optional.empty());
+        public static Rule deniesDrops(HolderGetter<Block> blockGetter, TagKey<Block> blocks) {
+            return forTag(blockGetter, blocks, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(false), Optional.empty());
         }
 
-        public static Rule overrideSpeed(TagKey<Block> blocks, float speed) {
-            return forTag(blocks, Optional.of(speed), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+        public static Rule overrideSpeed(HolderGetter<Block> blockGetter, TagKey<Block> blocks, float speed) {
+            return forTag(blockGetter, blocks, Optional.of(speed), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         }
 
         public static Rule overrideSpeed(List<Block> blocks, float speed) {
             return forBlocks(blocks, Optional.of(speed), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         }
 
-        private static Rule forTag(TagKey<Block> tag, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> maxSpeedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
-            return new Rule(BuiltInRegistries.BLOCK.getOrCreateTag(tag), speed, maxSpeed, maxSpeedPerTick, correctForDrops, damagePerBlock);
+        private static Rule forTag(HolderGetter<Block> blockGetter, TagKey<Block> tag, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> maxSpeedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {
+            return new Rule(blockGetter.getOrThrow(tag), speed, maxSpeed, maxSpeedPerTick, correctForDrops, damagePerBlock);
         }
 
         private static Rule forBlocks(List<Block> blocks, Optional<Float> speed, Optional<Float> maxSpeed, Optional<Float> maxSpeedPerTick, Optional<Boolean> correctForDrops, Optional<Integer> damagePerBlock) {

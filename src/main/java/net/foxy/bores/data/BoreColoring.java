@@ -79,16 +79,8 @@ public class BoreColoring extends CustomRecipe {
         return itemstack;
     }
 
-    /**
-     * Used to determine if this recipe can fit in a grid of the given width/height
-     */
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 2;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return ModRecipeSerializers.BORE_COLORING.get();
     }
 }

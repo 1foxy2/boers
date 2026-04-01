@@ -95,7 +95,7 @@ public final class BoreContents implements TooltipComponent {
         }
 
         public int tryInsert(ItemStack stack) {
-            if (!stack.isEmpty() && stack.canFitInsideContainerItems()) { // Neo: stack-aware placeability check
+            if (!stack.isEmpty() && stack.getItem().canFitInsideContainerItems()) { // Neo: stack-aware placeability check
                 int i = Math.min(stack.getCount(), this.getMaxAmountToAdd(stack));
                 if (i == 0) {
                     return 0;

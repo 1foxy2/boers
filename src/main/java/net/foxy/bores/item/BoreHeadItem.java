@@ -25,7 +25,7 @@ public class BoreHeadItem extends Item {
         return true;
     }
 
-    @Override
+    /*@Override TODO
     public String getDescriptionId(ItemStack stack) {
         Holder<BoreHead> head = Utils.getBoreHolder(stack);
 
@@ -34,7 +34,7 @@ public class BoreHeadItem extends Item {
         }
 
         return super.getDescriptionId(stack) + "." + head.getKey().location().toString().replace(":", ".");
-    }
+    }*/
 
     @Override
     public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {

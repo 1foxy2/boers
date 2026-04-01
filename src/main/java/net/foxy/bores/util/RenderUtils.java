@@ -30,7 +30,7 @@ public class RenderUtils {
             flag1 = true;
         }
 
-        BakedModel bakedModel = Minecraft.getInstance().getModelManager().getModel(modelLoc);
+        /*BakedModel bakedModel = Minecraft.getInstance().getModelManager().getModel(modelLoc);
         bakedModel = bakedModel.getOverrides().resolve(bakedModel, stack, Minecraft.getInstance().level, null, 0);
         ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         for (var model : bakedModel.getRenderPasses(stack, flag1)) {
@@ -42,7 +42,7 @@ public class RenderUtils {
             }
 
             renderer.renderModelLists(model, stack, packedLight, packedOverlay, poseStack, vertexconsumer);
-        }
+        }*/
     }
 
     public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
@@ -58,7 +58,7 @@ public class RenderUtils {
             flag1 = true;
         }
 
-        ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
+        /*ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         BakedModel bakedModel =  renderer.getItemModelShaper().getItemModel(stack);
         bakedModel = bakedModel.getOverrides().resolve(bakedModel, bore, Minecraft.getInstance().level, null, 0);
         for (var model : bakedModel.getRenderPasses(stack, flag1)) {
@@ -70,7 +70,7 @@ public class RenderUtils {
             }
 
             renderer.renderModelLists(model, stack, packedLight, packedOverlay, poseStack, vertexconsumer);
-        }
+        }*/
     }
 
     public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, int red, int green, int blue, int alpha) {
@@ -86,7 +86,7 @@ public class RenderUtils {
             flag1 = true;
         }
 
-        ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
+        /*ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         BakedModel bakedModel =  renderer.getItemModelShaper().getItemModel(stack);
         bakedModel = bakedModel.getOverrides().resolve(bakedModel, bore, Minecraft.getInstance().level, null, 0);
         for (var model : bakedModel.getRenderPasses(stack, flag1)) {
@@ -98,7 +98,7 @@ public class RenderUtils {
             }
 
             renderModelLists(model, stack, packedLight, packedOverlay, poseStack, vertexconsumer, red, green, blue, alpha);
-        }
+        }*/
     }
 
     public static void renderModelLists(BakedModel model, ItemStack stack, int combinedLight, int combinedOverlay, PoseStack poseStack, VertexConsumer buffer, int red, int green, int blue, int alpha) {
