@@ -19,13 +19,4 @@ public class BoreHeadSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
 	public @Nullable Object getSubtypeData(ItemStack ingredient, UidContext context) {
 		return ingredient.get(ModDataComponents.BORE);
 	}
-
-	@Override
-	public String getLegacyStringSubtypeInfo(ItemStack itemStack, UidContext context) {
-		Holder<BoreHead> bore = itemStack.get(ModDataComponents.BORE);
-		if (bore == null) {
-			return "";
-		}
-		return bore.getKey().location().toString();
-	}
 }

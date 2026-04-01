@@ -6,7 +6,7 @@ import net.foxy.bores.base.ModParticles;
 import net.foxy.bores.base.ModSounds;
 import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.event.ModClientEvents;
-import net.foxy.bores.particle.spark.SparkParticle;
+//import net.foxy.bores.particle.spark.SparkParticle;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
@@ -119,7 +119,7 @@ public class BoreItem extends Item {
         if (boreContents == null) {
             return false;
         } else {
-            if (!level.isClientSide && state.getDestroySpeed(level, pos) != 0.0F) {
+            if (!level.isClientSide() && state.getDestroySpeed(level, pos) != 0.0F) {
                 ItemStack bore = boreContents.getItemUnsafe();
                 BoreHead tool = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).items);
                 int damage = tool != null ? tool.getDamage(state) : 1;
@@ -127,7 +127,7 @@ public class BoreItem extends Item {
                 Utils.setBoreContents(stack, new BoreContents(bore));
                 if (tool != null && tool.radius().isPresent() && miningEntity instanceof ServerPlayer player) {
                     Utils.forEachBlock(level, player, pos, tool.radius().get(), (target, block) -> {
-                        boolean removed = block.onDestroyedByPlayer(level, target, player, true, level.getFluidState(target));
+                        boolean removed = block.onDestroyedByPlayer(level, target, player, stack, true, level.getFluidState(target));
                         if (removed) {
                             block.getBlock().destroy(level, target, block);
                             block.getBlock().playerDestroy(level, player, target, block, level.getBlockEntity(target), stack);
@@ -167,7 +167,7 @@ public class BoreItem extends Item {
 
             if (!targetEntities.isEmpty()) {
                 for (LivingEntity target : targetEntities) {
-                    if (level.isClientSide) {
+                    if (level.isClientSide()) {
                         Vec3 hitPos = target.position().add(0, target.getBbHeight() * 0.5, 0);
                         Vec3 playerEye = player.getEyePosition();
 
@@ -187,7 +187,7 @@ public class BoreItem extends Item {
                 return;
             }
 
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 ModClientEvents.handleTick(level, player, stack);
             } else {
                 Utils.increaseUseFor(stack);
@@ -214,15 +214,15 @@ public class BoreItem extends Item {
 
             Vec3 sparkPos = hitPos.add(spreadX, spreadY, spreadZ);
 
-            Vec3 velocity = SparkParticle.generateConeVelocity(
+            /*Vec3 velocity = SparkParticle.generateConeVelocity(
                     sparkPos, playerEye, 0.5F
-            );
+            );*/
 
-            level.addParticle(
+            /*level.addParticle(
                     ModParticles.SPARK_PARTICLE.get(),
                     sparkPos.x, sparkPos.y, sparkPos.z,
                     velocity.x, velocity.y, velocity.z
-            );
+            );*/
         }
     }
 

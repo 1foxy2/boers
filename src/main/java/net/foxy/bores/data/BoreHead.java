@@ -4,15 +4,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.foxy.bores.base.ModRegistries;
 import net.foxy.bores.client.BoresClientConfig;
-import net.foxy.bores.util.FixerRegistryFixedCodec;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.*;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
@@ -35,7 +34,7 @@ public record BoreHead(Texture texture, float defaultMiningSpeed, int durability
                     Vec3i.CODEC.optionalFieldOf("radius").forGetter(BoreHead::radius)
             ).apply(instance, BoreHead::new)
     );
-    public static final Codec<Holder<BoreHead>> ITEM_CODEC = FixerRegistryFixedCodec.create(ModRegistries.BORE_HEAD);
+    public static final Codec<Holder<BoreHead>> ITEM_CODEC = RegistryFixedCodec.create(ModRegistries.BORE_HEAD);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<BoreHead>> STREAM_CODEC = ByteBufCodecs.holderRegistry(ModRegistries.BORE_HEAD);
 
@@ -72,8 +71,8 @@ public record BoreHead(Texture texture, float defaultMiningSpeed, int durability
         return 1;
     }
 
-    public BoreHead(ResourceLocation texture, float miningSpeed, int durability, HolderGetter<Block> blockGetter, TagKey<Block> miningLevel) {
-        this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
+    public BoreHead(Identifier texture, float miningSpeed, int durability, HolderGetter<Block> blockGetter, TagKey<Block> miningLevel) {
+        this(new Texture(Identifier.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
                 List.of(Rule.deniesDrops(blockGetter, miningLevel),
                         Rule.minesAndDrops(blockGetter, BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed),
@@ -81,8 +80,8 @@ public record BoreHead(Texture texture, float defaultMiningSpeed, int durability
                 ), Optional.empty());
     }
 
-    public BoreHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, HolderGetter<Block> blockGetter, TagKey<Block> miningLevel) {
-        this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
+    public BoreHead(Identifier texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, HolderGetter<Block> blockGetter, TagKey<Block> miningLevel) {
+        this(new Texture(Identifier.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
                 List.of(Rule.deniesDrops(blockGetter, miningLevel),
                         Rule.minesAndDrops(blockGetter, BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed, maxSpeed, speedPerTick),
@@ -90,8 +89,8 @@ public record BoreHead(Texture texture, float defaultMiningSpeed, int durability
                 ), Optional.empty());
     }
 
-    public BoreHead(ResourceLocation texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, HolderGetter<Block> blockGetter, TagKey<Block> miningLevel, Vec3i radius) {
-        this(new Texture(ResourceLocation.fromNamespaceAndPath(texture.getNamespace(),
+    public BoreHead(Identifier texture, float miningSpeed, float maxSpeed, float speedPerTick, int durability, HolderGetter<Block> blockGetter, TagKey<Block> miningLevel, Vec3i radius) {
+        this(new Texture(Identifier.fromNamespaceAndPath(texture.getNamespace(),
                         texture.getPath() + "_idle"), texture), 1.0f, durability,
                 List.of(Rule.deniesDrops(blockGetter, miningLevel),
                         Rule.minesAndDrops(blockGetter, BlockTags.MINEABLE_WITH_PICKAXE, miningSpeed, maxSpeed, speedPerTick),
@@ -116,11 +115,11 @@ public record BoreHead(Texture texture, float defaultMiningSpeed, int durability
         return max;
     }
 
-    public record Texture(ResourceLocation idle, ResourceLocation active) {
+    public record Texture(Identifier idle, Identifier active) {
         public static final Codec<Texture> CODEC = RecordCodecBuilder.create(instance ->
                 instance.group(
-                        ResourceLocation.CODEC.fieldOf("idle").forGetter(Texture::idle),
-                        ResourceLocation.CODEC.fieldOf("active").forGetter(Texture::active)
+                        Identifier.CODEC.fieldOf("idle").forGetter(Texture::idle),
+                        Identifier.CODEC.fieldOf("active").forGetter(Texture::active)
                 ).apply(instance, Texture::new));
     }
 

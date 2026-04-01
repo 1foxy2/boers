@@ -8,7 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.phys.Vec3;
 
-public class SparkParticleProvider implements ParticleProvider<SimpleParticleType> {
+/*public class SparkParticleProvider implements ParticleProvider<SimpleParticleType> {
     private final SpriteSet sprites;
 
     public SparkParticleProvider(SpriteSet sprites) {
@@ -24,4 +24,4 @@ public class SparkParticleProvider implements ParticleProvider<SimpleParticleTyp
 
         return new SparkParticle(level, x, y, z, velocity, face, sprites);
     }
-}
+}*/

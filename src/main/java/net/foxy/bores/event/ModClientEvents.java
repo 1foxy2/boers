@@ -1,31 +1,22 @@
 package net.foxy.bores.event;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.base.ModEnums;
 import net.foxy.bores.base.ModItems;
-import net.foxy.bores.base.ModParticles;
 import net.foxy.bores.base.ModSounds;
 import net.foxy.bores.client.BoreSoundInstance;
 import net.foxy.bores.client.BoresClientConfig;
 import net.foxy.bores.client.ClientBoresTooltip;
-import net.foxy.bores.data.BoreHead;
-import net.foxy.bores.item.BoreItem;
 import net.foxy.bores.item.BoreContents;
+import net.foxy.bores.item.BoreItem;
 import net.foxy.bores.network.c2s.SetUseBorePacket;
 import net.foxy.bores.network.c2s.TickBorePacket;
-import net.foxy.bores.particle.spark.SparkParticle;
-import net.foxy.bores.particle.spark.SparkParticleProvider;
 import net.foxy.bores.util.ModItemProperties;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,17 +32,17 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.model.data.ModelData;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber(modid = BoresMod.MODID, value = Dist.CLIENT)
 public class ModClientEvents {
-    private static final ResourceLocation BORE_MODEL_LOADER = Utils.rl("bore");
+    private static final Identifier BORE_MODEL_LOADER = Utils.rl("bore");
     public static int lastProgress = 0;
     public static int usingProgress = 0;
     public static BoreSoundInstance soundInstance = null;
@@ -59,7 +50,7 @@ public class ModClientEvents {
     public static BoreSoundInstance idleSoundInstance = null;
     public static BoreSoundInstance idleSoundInstance2 = null;
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void renderOutline(RenderHighlightEvent.Block event) {
         if (!(event.getCamera().getEntity() instanceof Player player)) {
             return;
@@ -99,7 +90,7 @@ public class ModClientEvents {
                 }
             });
         }
-    }
+    }*/
 
     /*@SubscribeEvent
     public static void registerCustomModels(ModelEvent.RegisterGeometryLoaders event) {
@@ -111,10 +102,10 @@ public class ModClientEvents {
         event.register(BoreContents.class, ClientBoresTooltip::new);
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ModParticles.SPARK_PARTICLE.get(), SparkParticleProvider::new);
-    }
+    }*/
 
 
     @SubscribeEvent
@@ -206,7 +197,7 @@ public class ModClientEvents {
                     Minecraft.getInstance().getSoundManager().playDelayed(ModClientEvents.soundInstance2, 4);
                 }
             }
-            Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
+            //Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
             spawnSparks(level, player, result);
         } else {
             if (BoresClientConfig.CONFIG.BREAKING_SOUNDS.get()) {
@@ -243,15 +234,15 @@ public class ModClientEvents {
 
             Vec3 sparkPos = spawnPos.add(spreadX, spreadY, spreadZ);
 
-            Vec3 velocity = SparkParticle.generateConeVelocity(
+            /*Vec3 velocity = SparkParticle.generateConeVelocity(
                     hitPos, playerEye, 0.4F
-            );
+            );*/
 
-            level.addParticle(
+            /*level.addParticle(
                     ModParticles.SPARK_PARTICLE.get(),
                     sparkPos.x, sparkPos.y, sparkPos.z,
                     velocity.x, velocity.y, velocity.z
-            );
+            );*/
         }
     }
 }

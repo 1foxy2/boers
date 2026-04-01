@@ -1,22 +1,13 @@
 package net.foxy.bores.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
-
-import java.util.List;
 
 public class RenderUtils {
    /* public static void renderItemModel(ItemStack stack, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, ModelResourceLocation modelLoc) {
@@ -43,7 +34,7 @@ public class RenderUtils {
         }
     }*/
 
-    public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public static void renderItemModel(ItemStack bore, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         boolean flag1;
         ItemStack stack = Utils.getBoreContentsOrEmpty(bore).getItemUnsafe();
         if (stack.isEmpty()) {
@@ -71,7 +62,7 @@ public class RenderUtils {
         }*/
     }
 
-    public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, int red, int green, int blue, int alpha) {
+    public static void renderItemModel(ItemStack bore, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, int red, int green, int blue, int alpha) {
         boolean flag1;
         ItemStack stack = Utils.getBoreContentsOrEmpty(bore).getItemUnsafe();
         if (stack.isEmpty()) {

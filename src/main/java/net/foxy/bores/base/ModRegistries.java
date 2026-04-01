@@ -4,12 +4,12 @@ import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ModRegistries {
     public static final ResourceKey<Registry<BoreHead>> BORE_HEAD = ResourceKey.createRegistryKey(Utils.rl("bore_head"));
     public static final ResourceKey<Registry<BoreHead>> OLD_BOER_HEAD =
-            ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("boers", "boer_head"));
+            ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("boers", "boer_head"));
 
     public static final ResourceKey<BoreHead> COPPER = ResourceKey.create(BORE_HEAD, Utils.rl("copper"));
     public static final ResourceKey<BoreHead> IRON = ResourceKey.create(BORE_HEAD, Utils.rl("iron"));

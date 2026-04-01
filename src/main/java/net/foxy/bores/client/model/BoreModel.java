@@ -21,7 +21,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,9 +45,9 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
     @Nullable
     private ImmutableList<Material> textures;
     private final Int2ObjectMap<ExtraFaceData> layerData;
-    private final Int2ObjectMap<ResourceLocation> renderTypeNames;
+    private final Int2ObjectMap<Identifier> renderTypeNames;
 
-    private BoreModel(@Nullable ImmutableList<Material> textures, Int2ObjectMap<ExtraFaceData> layerData, Int2ObjectMap<ResourceLocation> renderTypeNames) {
+    private BoreModel(@Nullable ImmutableList<Material> textures, Int2ObjectMap<ExtraFaceData> layerData, Int2ObjectMap<Identifier> renderTypeNames) {
         this.textures = textures;
         this.layerData = layerData;
         this.renderTypeNames = renderTypeNames;
@@ -78,11 +78,11 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
 
         @Override
         public BoreModel read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) {
-            var renderTypeNames = new Int2ObjectOpenHashMap<ResourceLocation>();
+            var renderTypeNames = new Int2ObjectOpenHashMap<Identifier>();
             if (jsonObject.has("render_types")) {
                 var renderTypes = jsonObject.getAsJsonObject("render_types");
                 for (Map.Entry<String, JsonElement> entry : renderTypes.entrySet()) {
-                    var renderType = ResourceLocation.parse(entry.getKey());
+                    var renderType = Identifier.parse(entry.getKey());
                     for (var layer : entry.getValue().getAsJsonArray())
                         if (renderTypeNames.put(layer.getAsInt(), renderType) != null)
                             throw new JsonParseException("Registered duplicate render type for layer " + layer);
@@ -98,7 +98,7 @@ public class BoreModel implements IUnbakedGeometry<BoreModel> {
             return new BoreModel(null, emissiveLayers, renderTypeNames);
         }
 
-        private void readLayerData(JsonObject jsonObject, String name, Int2ObjectOpenHashMap<ResourceLocation> renderTypeNames, Int2ObjectMap<ExtraFaceData> layerData, boolean logWarning) {
+        private void readLayerData(JsonObject jsonObject, String name, Int2ObjectOpenHashMap<Identifier> renderTypeNames, Int2ObjectMap<ExtraFaceData> layerData, boolean logWarning) {
             if (!jsonObject.has(name)) {
                 return;
             }

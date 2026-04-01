@@ -6,7 +6,7 @@ import net.foxy.bores.base.ModItems;
 import net.foxy.bores.data.BoreColoring;
 import net.foxy.bores.util.Utils;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -56,13 +56,13 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private ItemModelBuilder simpleItem(DeferredItem<? extends ItemLike> item) {
         return withExistingParent(item.getId().getPath(),
-                ResourceLocation.parse("item/generated")).texture("layer0",
+                Identifier.parse("item/generated")).texture("layer0",
                 Utils.rl("item/" + item.getId().getPath()));
     }
 
     private ItemModelBuilder simpleItem(DeferredItem<? extends ItemLike> item, String string) {
         return withExistingParent(item.getId().getPath(),
-                ResourceLocation.parse("item/generated"))
+                Identifier.parse("item/generated"))
                 .texture("layer1", Utils.rl("item/" + item.getId().getPath()))
                 .texture("layer0", Utils.rl("item/" + string))
                 ;
@@ -82,14 +82,14 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private ItemModelBuilder tool(String name, String texture) {
         return withExistingParent(name,
-                ResourceLocation.parse("minecraft:item/handheld"))
+                Identifier.parse("minecraft:item/handheld"))
                 .texture("layer0",
                         Utils.rl("item/" + texture)).renderType("cutout");
     }
 
     private ItemModelBuilder tool(DeferredItem<? extends Item> item, int layers) {
         var model = withExistingParent(item.getId().getPath(),
-                ResourceLocation.parse("minecraft:item/handheld"))
+                Identifier.parse("minecraft:item/handheld"))
                 .texture("layer0",
                         Utils.rl("item/" + item.getId().getPath()));
 
@@ -103,17 +103,17 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private ItemModelBuilder blank(DeferredItem<? extends Item> item) {
         return withExistingParent(item.getId().getPath(),
-                ResourceLocation.parse("item/generated")).texture("layer0",
+                Identifier.parse("item/generated")).texture("layer0",
                 Utils.rl("item/blank"));
     }
     private ItemModelBuilder customTexture(DeferredItem<? extends Item> item, String texture) {
         return withExistingParent(item.getId().getPath(),
-                ResourceLocation.parse("item/generated")).texture("layer0",
+                Identifier.parse("item/generated")).texture("layer0",
                 Utils.rl("item/" + texture));
     }
     private ItemModelBuilder simpleBlockItem(DeferredItem<? extends ItemLike> item) {
         return withExistingParent(item.getId().getPath(),
-                ResourceLocation.parse("item/generated")).texture("layer0",
+                Identifier.parse("item/generated")).texture("layer0",
                 Utils.rl("block/" + item.getId().getPath()));
     }
 }*/

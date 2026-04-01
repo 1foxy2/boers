@@ -4,7 +4,7 @@ import net.foxy.bores.base.*;
 import net.foxy.bores.data.BoreColoring;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.*;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -30,11 +30,6 @@ public class BoresMod {
         ModParticles.PARTICLE_TYPES.register(modEventBus);
         modEventBus.addListener(BoresMod::buildCreativeTabs);
         modContainer.registerConfig(ModConfig.Type.COMMON, BoresConfig.CONFIG_SPEC);
-
-        ModItems.ITEMS.addAlias(ResourceLocation.fromNamespaceAndPath("boers", "boer_base"), Utils.rl("bore"));
-        ModItems.ITEMS.addAlias(ResourceLocation.fromNamespaceAndPath("boers", "boer_head"), Utils.rl("bore_head"));
-        ModDataComponents.COMPONENTS.addAlias(ResourceLocation.fromNamespaceAndPath("boers", "boer"), Utils.rl("bore"));
-        ModDataComponents.COMPONENTS.addAlias(ResourceLocation.fromNamespaceAndPath("boers", "boer_contents"), Utils.rl("bore_contents"));
     }
 
     public static void buildCreativeTabs(BuildCreativeModeTabContentsEvent event) {

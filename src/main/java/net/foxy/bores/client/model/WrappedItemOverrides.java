@@ -7,7 +7,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +17,7 @@ import java.util.List;
 
 /*public class WrappedItemOverrides extends ItemOverrides {
 
-    public final HashMap<ResourceLocation, BakedModel> children = new HashMap<>();
+    public final HashMap<Identifier, BakedModel> children = new HashMap<>();
 
     public WrappedItemOverrides() {
 
@@ -30,7 +30,7 @@ import java.util.List;
             stack = bore;
         }
         BoreHead head = Utils.getBore(stack);
-        final ResourceLocation texture;
+        final Identifier texture;
         if (head == null) {
             texture = Utils.rl("item/bore/default_bore_head_idle");
         } else if (!Utils.isUsed(bore)) {

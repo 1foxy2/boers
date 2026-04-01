@@ -46,7 +46,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
     public void boreHead(RecipeOutput recipeOutput, Holder<BoreHead> boreHead, Item item) {
         ItemStack stack = Utils.bore(boreHead);
-        ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore", this.has(ModItems.BORE)).save(recipeOutput, Utils.rl("bore_head_" + boreHead.getKey().location().getPath()).toString());
+        ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.TOOLS, stack).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore", this.has(ModItems.BORE)).save(recipeOutput, Utils.rl("bore_head_" + boreHead.getKey().identifier().getPath()).toString());
     }
 
     public static class Runner extends RecipeProvider.Runner {
@@ -62,7 +62,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
         @Override
         public String getName() {
-            return "boers";
+            return "bores";
         }
     }
 }
