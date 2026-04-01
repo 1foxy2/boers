@@ -10,23 +10,25 @@ import net.foxy.bores.particle.spark.SparkParticle;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,9 +66,9 @@ public class BoreItem extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, ServerLevel serverLevel, Entity entity, @Nullable EquipmentSlot equipmentSlot) {
         if (entity instanceof Player player) {
-            if (isSelected) {
+            if (equipmentSlot == EquipmentSlot.MAINHAND) {
                 if (player.getOffhandItem().isEmpty()) {
                     entity.setYBodyRot(entity.getYHeadRot() + (player.getMainArm() == HumanoidArm.LEFT ? -37 : 37));
                 }
@@ -83,7 +85,7 @@ public class BoreItem extends Item {
             }
         }
 
-        super.inventoryTick(stack, level, entity, slotId, isSelected);
+        super.inventoryTick(stack, serverLevel, entity, equipmentSlot);
     }
 
     @Override
@@ -225,8 +227,8 @@ public class BoreItem extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        return false;
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+
     }
 
     @Override
@@ -326,9 +328,10 @@ public class BoreItem extends Item {
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        return !stack.has(DataComponents.HIDE_TOOLTIP) && !stack.has(DataComponents.HIDE_ADDITIONAL_TOOLTIP)
-                ? Optional.ofNullable(Utils.getBoreContents(stack))
-                : Optional.empty();
+        TooltipDisplay tooltipdisplay = stack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT);
+        return !tooltipdisplay.shows(ModDataComponents.BORE_CONTENTS.get())
+                ? Optional.empty()
+                : Optional.ofNullable(Utils.getBoreContents(stack));
     }
 
     @Override

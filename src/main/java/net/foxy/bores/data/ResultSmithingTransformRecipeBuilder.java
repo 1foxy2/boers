@@ -16,20 +16,21 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.crafting.TransmuteResult;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class StackSmithingTransformRecipeBuilder {
+public class ResultSmithingTransformRecipeBuilder {
     private final Ingredient template;
     private final Ingredient base;
     private final Ingredient addition;
     private final RecipeCategory category;
-    private final ItemStack result;
+    private final TransmuteResult result;
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 
-    public StackSmithingTransformRecipeBuilder(Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, ItemStack result) {
+    public ResultSmithingTransformRecipeBuilder(Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, TransmuteResult result) {
         this.category = category;
         this.template = template;
         this.base = base;
@@ -37,13 +38,13 @@ public class StackSmithingTransformRecipeBuilder {
         this.result = result;
     }
 
-    public static StackSmithingTransformRecipeBuilder smithing(
-            Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, ItemStack result
+    public static ResultSmithingTransformRecipeBuilder smithing(
+            Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, TransmuteResult result
     ) {
-        return new StackSmithingTransformRecipeBuilder(template, base, addition, category, result);
+        return new ResultSmithingTransformRecipeBuilder(template, base, addition, category, result);
     }
 
-    public StackSmithingTransformRecipeBuilder unlocks(String key, Criterion<?> criterion) {
+    public ResultSmithingTransformRecipeBuilder unlocks(String key, Criterion<?> criterion) {
         this.criteria.put(key, criterion);
         return this;
     }
@@ -60,7 +61,7 @@ public class StackSmithingTransformRecipeBuilder {
                 .requirements(AdvancementRequirements.Strategy.OR);
         this.criteria.forEach(advancement$builder::addCriterion);
         SmithingTransformRecipe smithingtransformrecipe = new SmithingTransformRecipe(
-                Optional.of(this.template), Optional.of(this.base), Optional.of(this.addition), this.result
+                Optional.of(this.template), this.base, Optional.of(this.addition), this.result
         );
         output.accept(
                 resourceKey, smithingtransformrecipe, advancement$builder.build(resourceKey.location().withPrefix("recipes/" + this.category.getFolderName() + "/"))

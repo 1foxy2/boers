@@ -7,8 +7,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
@@ -21,7 +19,7 @@ import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import java.util.List;
 
 public class RenderUtils {
-    public static void renderItemModel(ItemStack stack, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, ModelResourceLocation modelLoc) {
+   /* public static void renderItemModel(ItemStack stack, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, ModelResourceLocation modelLoc) {
         boolean flag1;
         if (displayContext != ItemDisplayContext.GUI && !displayContext.firstPerson() && stack.getItem() instanceof BlockItem blockitem) {
             Block block = blockitem.getBlock();
@@ -42,8 +40,8 @@ public class RenderUtils {
             }
 
             renderer.renderModelLists(model, stack, packedLight, packedOverlay, poseStack, vertexconsumer);
-        }*/
-    }
+        }
+    }*/
 
     public static void renderItemModel(ItemStack bore, RenderType renderType, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         boolean flag1;
@@ -101,7 +99,7 @@ public class RenderUtils {
         }*/
     }
 
-    public static void renderModelLists(BakedModel model, ItemStack stack, int combinedLight, int combinedOverlay, PoseStack poseStack, VertexConsumer buffer, int red, int green, int blue, int alpha) {
+    /*public static void renderModelLists(BakedModel model, ItemStack stack, int combinedLight, int combinedOverlay, PoseStack poseStack, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         RandomSource randomsource = RandomSource.create();
         long i = 42L;
 
@@ -127,5 +125,5 @@ public class RenderUtils {
             float f3 = (float)blue / 255.0F;
             buffer.putBulkData(posestack$pose, bakedquad, f1, f2, f3, f, combinedLight, combinedOverlay, true); // Neo: pass readExistingColor=true
         }
-    }
+    }*/
 }

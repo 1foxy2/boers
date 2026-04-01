@@ -2,7 +2,6 @@ package net.foxy.bores.base;
 
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.util.Utils;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

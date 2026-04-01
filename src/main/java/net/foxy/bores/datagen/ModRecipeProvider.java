@@ -5,12 +5,11 @@ import net.foxy.bores.base.ModItems;
 import net.foxy.bores.base.ModRegistries;
 import net.foxy.bores.data.BoreColoring;
 import net.foxy.bores.data.BoreHead;
-import net.foxy.bores.data.StackSmithingTransformRecipeBuilder;
+import net.foxy.bores.data.ResultSmithingTransformRecipeBuilder;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -18,6 +17,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.crafting.TransmuteResult;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 import java.util.concurrent.CompletableFuture;
@@ -35,8 +36,8 @@ public class ModRecipeProvider extends RecipeProvider {
         boreHead(output, registries.holderOrThrow(ModRegistries.DIAMOND), Items.DIAMOND);
         boreHead(output, registries.holderOrThrow(ModRegistries.GOLDEN), Items.GOLD_INGOT);
         boreHead(output, registries.holderOrThrow(ModRegistries.IRON), Items.IRON_INGOT);
-        ItemStack result = Utils.bore(registries.holderOrThrow(ModRegistries.NETHERITE));
-        StackSmithingTransformRecipeBuilder.smithing(
+        TransmuteResult result = new TransmuteResult(ModItems.BORE_HEAD, 1, DataComponentPatch.builder().set(ModDataComponents.BORE.get(), registries.holderOrThrow(ModRegistries.NETHERITE)).build());
+        ResultSmithingTransformRecipeBuilder.smithing(
                         Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), DataComponentIngredient.of(false, ModDataComponents.BORE.get(), registries.holderOrThrow(ModRegistries.DIAMOND), ModItems.BORE_HEAD), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.TOOLS, result
                 )
                 .unlocks("has_bore", has(ModItems.BORE))

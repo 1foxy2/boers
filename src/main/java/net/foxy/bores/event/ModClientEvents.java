@@ -44,6 +44,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,10 +91,9 @@ public class ModClientEvents {
                     VertexConsumer vertexconsumer1 = new SheetedDecalTextureGenerator(
                             Minecraft.getInstance().renderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(k)), posestack$pose1, 1.0F
                     );
-                    net.neoforged.neoforge.client.model.data.ModelData modelData = level.getModelData(target);
                     Minecraft.getInstance()
                             .getBlockRenderer()
-                            .renderBreakingTexture(block, target, level, posestack, vertexconsumer1, modelData);
+                            .renderBreakingTexture(block, target, level, posestack, vertexconsumer1);
                     posestack.popPose();
                 }
             });
