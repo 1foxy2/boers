@@ -1,6 +1,6 @@
 {
   "default_mining_speed": 1.0,
-  "durability": 1000,
+  "durability": 2031,
   "mining_rules": [
     {
       "blocks": "#minecraft:mineable/pickaxe",

@@ -35,23 +35,23 @@ public class DataGenerators {
                                 ModRegistries.BORE_HEAD, bootstrap -> {
                                     bootstrap.register(
                                             ModRegistries.COPPER,
-                                            create("copper", 10, 95, Tiers.STONE)
+                                            create("copper", 10, 190, Tiers.STONE)
                                     );
                                     bootstrap.register(
                                             ModRegistries.IRON,
-                                            create("iron", 12, 125, Tiers.IRON)
+                                            create("iron", 12, 250, Tiers.IRON)
                                     );
                                     bootstrap.register(
                                             ModRegistries.DIAMOND,
-                                            create("diamond", 16, 800, Tiers.DIAMOND)
+                                            create("diamond", 16, 1561, Tiers.DIAMOND)
                                     );
                                     bootstrap.register(
                                             ModRegistries.GOLDEN,
-                                            create("golden", 24, 16, Tiers.GOLD)
+                                            create("golden", 24, 32, Tiers.GOLD)
                                     );
                                     bootstrap.register(
                                             ModRegistries.NETHERITE,
-                                            create("netherite", 18, 1000, Tiers.NETHERITE)
+                                            create("netherite", 18, 2031, Tiers.NETHERITE)
                                     );
                                 }
                         ) ,
