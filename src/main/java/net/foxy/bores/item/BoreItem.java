@@ -1,5 +1,6 @@
 package net.foxy.bores.item;
 
+import com.mojang.logging.LogUtils;
 import net.foxy.bores.base.ModDataComponents;
 import net.foxy.bores.base.ModItems;
 import net.foxy.bores.base.ModParticles;

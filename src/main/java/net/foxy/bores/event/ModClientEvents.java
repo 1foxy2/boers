@@ -1,17 +1,20 @@
 package net.foxy.bores.event;
 
+import jdk.jshell.execution.Util;
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.base.ModEnums;
 import net.foxy.bores.base.ModItems;
 import net.foxy.bores.base.ModSounds;
 import net.foxy.bores.client.BoreSoundInstance;
+import net.foxy.bores.client.BoreSpecialRenderer;
 import net.foxy.bores.client.BoresClientConfig;
 import net.foxy.bores.client.ClientBoresTooltip;
+import net.foxy.bores.client.model.BoreHeadModel;
+import net.foxy.bores.client.model.BoreItemSpecialRenderer;
 import net.foxy.bores.item.BoreContents;
 import net.foxy.bores.item.BoreItem;
 import net.foxy.bores.network.c2s.SetUseBorePacket;
 import net.foxy.bores.network.c2s.TickBorePacket;
-import net.foxy.bores.util.ModItemProperties;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -32,9 +35,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -92,10 +93,16 @@ public class ModClientEvents {
         }
     }*/
 
-    /*@SubscribeEvent
-    public static void registerCustomModels(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(BORE_MODEL_LOADER, BoreModel.Loader.INSTANCE);
-    }*/
+    @SubscribeEvent
+    public static void registerCustomModels(RegisterItemModelsEvent event) {
+        event.register(Utils.rl("bore_head"), BoreHeadModel.Unbaked.MAP_CODEC);
+        event.register(Utils.rl("bore_item"), BoreItemSpecialRenderer.Unbaked.MAP_CODEC);
+    }
+
+    @SubscribeEvent
+    public static void registerSpecialModelRenderers(RegisterSpecialModelRendererEvent event) {
+        event.register(Utils.rl("bore"), BoreSpecialRenderer.Unbaked.MAP_CODEC);
+    }
 
     @SubscribeEvent
     public static void registerTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
@@ -175,11 +182,6 @@ public class ModClientEvents {
                         ModEnums.BORE_SINGLE_STANDING_POS.getValue() : ModEnums.BORE_STANDING_POS.getValue();
             }
         }, ModItems.BORE);
-    }
-
-    @SubscribeEvent
-    public static void clientSetup(FMLClientSetupEvent event) {
-        ModItemProperties.addModItemProperties();
     }
 
     public static void handleTick(Level level, Player player, ItemStack stack) {

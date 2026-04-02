@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "X": {
-      "item": "minecraft:diamond"
-    }
+    "X": "minecraft:diamond"
   },
   "pattern": [
     "  X",
@@ -15,7 +13,6 @@
     "components": {
       "bores:bore": "bores:diamond"
     },
-    "count": 1,
     "id": "bores:bore_head"
   }
 }

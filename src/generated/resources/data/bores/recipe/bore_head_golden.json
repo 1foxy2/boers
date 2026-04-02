@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "X": {
-      "item": "minecraft:gold_ingot"
-    }
+    "X": "minecraft:gold_ingot"
   },
   "pattern": [
     "  X",
@@ -15,7 +13,6 @@
     "components": {
       "bores:bore": "bores:golden"
     },
-    "count": 1,
     "id": "bores:bore_head"
   }
 }

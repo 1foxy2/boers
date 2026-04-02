@@ -9,6 +9,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -54,7 +56,7 @@ public class Utils {
         stack.set(ModDataComponents.USED_FOR, stack.getOrDefault(ModDataComponents.USED_FOR, 0) + 1);
     }
 
-    public static boolean isUsed(ItemStack stack) {
+    public static boolean isUsed(DataComponentGetter stack) {
         return stack.getOrDefault(ModDataComponents.IS_USED, false);
     }
 
@@ -62,7 +64,7 @@ public class Utils {
         mainHandItem.set(ModDataComponents.IS_USED, used);
     }
 
-    public static BoreContents getBoreContents(ItemInstance stack) {
+    public static BoreContents getBoreContents(DataComponentGetter stack) {
         return stack.get(ModDataComponents.BORE_CONTENTS);
     }
 

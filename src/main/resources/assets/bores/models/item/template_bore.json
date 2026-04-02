@@ -1,6 +1,20 @@
 {
-  "parent": "bores:item/entity",
+  "credit": "Made with Blockbench",
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "bores:item/bore_blue"
+  },
   "display": {
+    "ground": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 2, 0],
+      "scale":[ 0.5, 0.5, 0.5 ]
+    },
+    "head": {
+      "rotation": [ 0, 180, 0 ],
+      "translation": [ 0, 13, 7],
+      "scale":[ 1, 1, 1]
+    },
     "bores:thirdperson_lefthand_single": {
       "rotation": [
         0,
@@ -102,6 +116,10 @@
         14.6,
         2.35
       ]
+    },
+    "fixed": {
+      "rotation": [ 0, 180, 0 ],
+      "scale": [ 1, 1, 1 ]
     }
   }
 }

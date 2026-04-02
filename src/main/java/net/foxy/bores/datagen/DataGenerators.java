@@ -65,7 +65,7 @@ public class DataGenerators {
 
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        //event.addProvider(new ModItemModelProvider(packOutput));
+        event.addProvider(new ModModelProvider(packOutput));
 
         ModBlockTagsProvider blockTagsProvider = event.addProvider(new ModBlockTagsProvider(packOutput, lookupProvider));
         event.addProvider(new ModRecipeProvider.Runner(packOutput, lookupProvider));

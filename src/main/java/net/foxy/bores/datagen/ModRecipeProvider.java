@@ -13,7 +13,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -43,8 +42,12 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     public void boreHead(RecipeOutput recipeOutput, Holder<BoreHead> boreHead, Item item) {
-        ItemStack stack = Utils.bore(boreHead);
-        ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.TOOLS, ItemStackTemplate.fromNonEmptyStack(stack)).pattern("  X").pattern("XX ").pattern("XX ").define('X', item).unlockedBy("has_bore", this.has(ModItems.BORE)).save(recipeOutput, Utils.rl("bore_head_" + boreHead.getKey().identifier().getPath()).toString());
+        ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.TOOLS,
+                new ItemStackTemplate(ModItems.BORE_HEAD.get(),
+                        DataComponentPatch.builder().set(ModDataComponents.BORE.get(), boreHead).build()))
+                .pattern("  X").pattern("XX ").pattern("XX ").define('X', item)
+                .unlockedBy("has_bore", this.has(ModItems.BORE))
+                .save(recipeOutput, Utils.rl("bore_head_" + boreHead.getKey().identifier().getPath()).toString());
     }
 
 

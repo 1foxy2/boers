@@ -4,6 +4,7 @@ import net.foxy.bores.BoresConfig;
 import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,16 +26,16 @@ public class BoreHeadItem extends Item {
         return true;
     }
 
-    /*@Override TODO
-    public String getDescriptionId(ItemStack stack) {
-        Holder<BoreHead> head = Utils.getBoreHolder(stack);
+    @Override
+    public Component getName(ItemStack itemStack) {
+        Holder<BoreHead> head = Utils.getBoreHolder(itemStack);
 
         if (head == null) {
-            return super.getDescriptionId(stack);
+            return super.getName(itemStack);
         }
 
-        return super.getDescriptionId(stack) + "." + head.getKey().location().toString().replace(":", ".");
-    }*/
+        return Component.translatable(getDescriptionId() + "." + head.getKey().identifier().toString().replace(":", "."));
+    }
 
     @Override
     public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {

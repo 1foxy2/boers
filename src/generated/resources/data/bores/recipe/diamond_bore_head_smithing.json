@@ -1,10 +1,8 @@
 {
   "type": "minecraft:smithing_transform",
-  "addition": {
-    "item": "minecraft:netherite_ingot"
-  },
+  "addition": "minecraft:netherite_ingot",
   "base": {
-    "type": "neoforge:components",
+    "neoforge:ingredient_type": "neoforge:components",
     "components": {
       "bores:bore": "bores:diamond"
     },
@@ -14,10 +12,7 @@
     "components": {
       "bores:bore": "bores:netherite"
     },
-    "count": 1,
     "id": "bores:bore_head"
   },
-  "template": {
-    "item": "minecraft:netherite_upgrade_smithing_template"
-  }
+  "template": "minecraft:netherite_upgrade_smithing_template"
 }
