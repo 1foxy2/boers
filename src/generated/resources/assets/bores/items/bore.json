@@ -1,0 +1,169 @@
+{
+  "model": {
+    "type": "bores:bore_wrapper",
+    "model": {
+      "type": "minecraft:select",
+      "cases": [
+        {
+          "model": {
+            "type": "minecraft:composite",
+            "models": [
+              {
+                "type": "minecraft:select",
+                "cases": [
+                  {
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "bores:item/bore_gui_white"
+                    },
+                    "when": "white"
+                  },
+                  {
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "bores:item/bore_gui_yellow"
+                    },
+                    "when": "yellow"
+                  },
+                  {
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "bores:item/bore_gui_lime"
+                    },
+                    "when": "lime"
+                  },
+                  {
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "bores:item/bore_gui_gray"
+                    },
+                    "when": "gray"
+                  },
+                  {
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "bores:item/bore_gui_green"
+                    },
+                    "when": "green"
+                  },
+                  {
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "bores:item/bore_gui_red"
+                    },
+                    "when": "red"
+                  },
+                  {
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "bores:item/bore_gui_black"
+                    },
+                    "when": "black"
+                  },
+                  {
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "bores:item/bore_gui_blue"
+                    },
+                    "when": "blue"
+                  }
+                ],
+                "component": "minecraft:base_color",
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "bores:item/bore_gui_blue"
+                },
+                "property": "minecraft:component"
+              },
+              {
+                "type": "bores:bore_item"
+              }
+            ]
+          },
+          "when": [
+            "gui",
+            "fixed",
+            "ground"
+          ]
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:composite",
+        "models": [
+          {
+            "type": "minecraft:select",
+            "cases": [
+              {
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "bores:item/bore_white"
+                },
+                "when": "white"
+              },
+              {
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "bores:item/bore_yellow"
+                },
+                "when": "yellow"
+              },
+              {
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "bores:item/bore_lime"
+                },
+                "when": "lime"
+              },
+              {
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "bores:item/bore_gray"
+                },
+                "when": "gray"
+              },
+              {
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "bores:item/bore_green"
+                },
+                "when": "green"
+              },
+              {
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "bores:item/bore_red"
+                },
+                "when": "red"
+              },
+              {
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "bores:item/bore_black"
+                },
+                "when": "black"
+              },
+              {
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "bores:item/bore_blue"
+                },
+                "when": "blue"
+              }
+            ],
+            "component": "minecraft:base_color",
+            "fallback": {
+              "type": "minecraft:model",
+              "model": "bores:item/bore_blue"
+            },
+            "property": "minecraft:component"
+          },
+          {
+            "type": "bores:bore_item"
+          }
+        ]
+      },
+      "property": "minecraft:display_context"
+    },
+    "modelId": "bores:item/template_bore"
+  }
+}

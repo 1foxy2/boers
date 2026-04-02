@@ -11,6 +11,7 @@ import net.foxy.bores.client.BoresClientConfig;
 import net.foxy.bores.client.ClientBoresTooltip;
 import net.foxy.bores.client.model.BoreHeadModel;
 import net.foxy.bores.client.model.BoreItemSpecialRenderer;
+import net.foxy.bores.client.model.BoreModelWrapper;
 import net.foxy.bores.item.BoreContents;
 import net.foxy.bores.item.BoreItem;
 import net.foxy.bores.network.c2s.SetUseBorePacket;
@@ -97,6 +98,7 @@ public class ModClientEvents {
     public static void registerCustomModels(RegisterItemModelsEvent event) {
         event.register(Utils.rl("bore_head"), BoreHeadModel.Unbaked.MAP_CODEC);
         event.register(Utils.rl("bore_item"), BoreItemSpecialRenderer.Unbaked.MAP_CODEC);
+        event.register(Utils.rl("bore_wrapper"), BoreModelWrapper.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent

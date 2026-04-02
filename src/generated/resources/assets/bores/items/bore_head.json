@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "bores:bore_head",
+    "model": "bores:item/template_bore_head"
+  }
+}

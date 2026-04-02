@@ -1,6 +1,6 @@
 {
   "parent": "bores:item/template_bore",
   "textures": {
-    "layer0": "bores:item/bore_green"
+    "layer0": "bores:item/bore_gui_blue"
   }
 }

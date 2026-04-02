@@ -1,0 +1,12 @@
+// 26.1.1	2026-04-02T12:54:43.3066084	bores
+754683f0201d7933e35ef373dd9c12308df19940 data/bores/advancement/recipes/tools/bore_head_copper.json
+4883822099567904d6b1e699c1499cd0dfefeae3 data/bores/advancement/recipes/tools/bore_head_diamond.json
+15dbb5d5f8847abc133c1c639084acd2d9984c78 data/bores/advancement/recipes/tools/bore_head_golden.json
+57668ec94cf36b6481bb0b3d8f017c033377478a data/bores/advancement/recipes/tools/bore_head_iron.json
+04be79821abb7863cde1c7754d26f4fea0cead26 data/bores/advancement/recipes/tools/diamond_bore_head_smithing.json
+fa23fd7144afb50e7b324dea23a8bc6dad0039e3 data/bores/recipe/bore_coloring.json
+8474b3f4530093d3a591e72c1c284e6266448eea data/bores/recipe/bore_head_copper.json
+9058640800ffa41e0e0ee0f212696c2b4fb4fe11 data/bores/recipe/bore_head_diamond.json
+447cfdfba779ef462dd6076c4c550bcd5fea9760 data/bores/recipe/bore_head_golden.json
+c789388c6f92f1af2d97dff5c08a14189f899007 data/bores/recipe/bore_head_iron.json
+2407838b1af6c3bc266f2a47238497ee7782de87 data/bores/recipe/diamond_bore_head_smithing.json

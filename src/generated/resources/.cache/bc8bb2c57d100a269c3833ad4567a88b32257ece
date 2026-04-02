@@ -1,0 +1,19 @@
+// 26.1.1	2026-04-02T23:58:26.8914176	Model Definitions - bores
+e1308f0d5ef7c50e8e7e47b8fc722e592801b2f1 assets/bores/items/bore.json
+ea6889e72de61d54c74fbcd6f7873137bba6c98f assets/bores/items/bore_head.json
+308426aa693267e3bf7564de3823d36ae8746571 assets/bores/models/item/bore_black.json
+b15ff2b0f9592810a58352730688808718ff305d assets/bores/models/item/bore_blue.json
+cffcb6b78f747a6a5f5dcfb6f0b0745538f8f6dc assets/bores/models/item/bore_gray.json
+28c5907177bb12e086aa425428bb35750deb248b assets/bores/models/item/bore_green.json
+551ed57c8dc1730c6373ee0535bdfba091990579 assets/bores/models/item/bore_gui_black.json
+69df4f6cd7423c317b2f090c1bd5553cb09f3df7 assets/bores/models/item/bore_gui_blue.json
+ed779e2ccbc2e120f6295419a89fec3bc0bbc28b assets/bores/models/item/bore_gui_gray.json
+e65aeb4836a926ddeca10912be5a0ca0b5711580 assets/bores/models/item/bore_gui_green.json
+708a65a0561d979afcfaee57cf707e9a217b71b0 assets/bores/models/item/bore_gui_lime.json
+3030149ee17173cd5ed82258a21e812c6c7b198a assets/bores/models/item/bore_gui_red.json
+59db30dafa9e3c1b3d5047aa74efcb16a8f8711f assets/bores/models/item/bore_gui_white.json
+04654b5bcf15b41506a892366bbfe31d6039799a assets/bores/models/item/bore_gui_yellow.json
+32af2c991211e28a808133ca260a81e41a738afa assets/bores/models/item/bore_lime.json
+02b57b5e6ae3261cae030d2c30272e630df7ba8d assets/bores/models/item/bore_red.json
+64476e0f807a52f92d8473c663a78c14378706b8 assets/bores/models/item/bore_white.json
+4540937bd0e7a766dac3adc66118c7a59687207e assets/bores/models/item/bore_yellow.json

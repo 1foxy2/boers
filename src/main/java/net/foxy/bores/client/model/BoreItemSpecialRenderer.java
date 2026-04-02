@@ -32,7 +32,7 @@ public class BoreItemSpecialRenderer implements ItemModel {
         output.appendModelIdentityElement(this);
         BoreContents selectedItem = Utils.getBoreContents(item);
         if (selectedItem != null && !selectedItem.isEmpty()) {
-            resolver.appendItemLayers(output, selectedItem.getItemUnsafe(), displayContext, level, new BoreItemOwner(Utils.isUsed(item)), seed);
+            resolver.appendItemLayers(output, selectedItem.getItemUnsafe(), displayContext, level, owner, seed);
         }
     }
 

@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/handheld",
+  "parent": "bores:item/template_bore",
   "textures": {
     "layer0": "bores:item/bore_gui_red"
   }

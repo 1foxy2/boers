@@ -8,6 +8,7 @@ import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.util.ModItemModelUtils;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.*;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -69,12 +70,12 @@ public class BoreHeadModel implements ItemModel {
 
         children.computeIfAbsent(texture, key -> {
             if (key == null) {
-                return new CuboidItemModelWrapper(Collections.emptyList(), QuadCollection.EMPTY, properties, transformation);
+                return new BoreHeadModelWrapper(Collections.emptyList(), QuadCollection.EMPTY, properties, transformation);
             }
             Material.Baked baked = new Material.Baked(Minecraft.getInstance().getAtlasManager()
                     .getAtlasOrThrow(AtlasIds.ITEMS).getSprite(key), false);
 
-            return new CuboidItemModelWrapper(
+            return new BoreHeadModelWrapper(
                     Collections.emptyList(),
                     ModItemModelUtils.bake(baked),
                     new ModelRenderProperties(false, baked, properties.transforms()),

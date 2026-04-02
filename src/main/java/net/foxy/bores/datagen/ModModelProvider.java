@@ -4,13 +4,17 @@ import net.foxy.bores.BoresMod;
 import net.foxy.bores.base.ModItems;
 import net.foxy.bores.client.BoreSpecialRenderer;
 import net.foxy.bores.client.model.BoreHeadModel;
+import net.foxy.bores.client.model.BoreItemSpecialRenderer;
+import net.foxy.bores.client.model.BoreModelWrapper;
 import net.foxy.bores.data.BoreColoring;
 import net.foxy.bores.util.Utils;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.CompositeModel;
 import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.item.SelectItemModel;
@@ -30,6 +34,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class ModModelProvider extends ModelProvider {
+    public static final ModelTemplate BORE_TEMPLATE = ModelTemplates.createItem(Utils.rl("template_bore").toString(), TextureSlot.LAYER0);
+
     public ModModelProvider(PackOutput output) {
         super(output, BoresMod.MODID);
     }
@@ -40,7 +46,7 @@ public class ModModelProvider extends ModelProvider {
         List<SelectItemModel.SwitchCase<DyeColor>> guiModels = new ArrayList<>();
         for (DyeColor color : BoreColoring.ALLOWED_COLORS) {
             Identifier bore = Utils.rl("item/bore_" + color.getSerializedName());
-            ModelTemplates.FLAT_HANDHELD_ITEM.create(bore, TextureMapping.layer0(new Material(bore)), itemModels.modelOutput);
+            BORE_TEMPLATE.create(bore, TextureMapping.layer0(new Material(bore)), itemModels.modelOutput);
             models.add(
                     new SelectItemModel.SwitchCase<>(
                             List.of(color),
@@ -52,7 +58,7 @@ public class ModModelProvider extends ModelProvider {
                     )
             );
             bore = Utils.rl("item/bore_gui_" + color.getSerializedName());
-            ModelTemplates.FLAT_HANDHELD_ITEM.create(bore, TextureMapping.layer0(new Material(bore)), itemModels.modelOutput);
+            BORE_TEMPLATE.create(bore, TextureMapping.layer0(new Material(bore)), itemModels.modelOutput);
             guiModels.add(
                     new SelectItemModel.SwitchCase<>(
                             List.of(color),
@@ -66,55 +72,64 @@ public class ModModelProvider extends ModelProvider {
         }
         itemModels.itemModelOutput.accept(
                 ModItems.BORE.get(),
-                new SelectItemModel.Unbaked(
-                        Optional.empty(),
-                        new SelectItemModel.UnbakedSwitch<>(
-                                new DisplayContext(),
-                                List.of(
-                                        new SelectItemModel.SwitchCase<>(
-                                                List.of(ItemDisplayContext.GUI, ItemDisplayContext.FIXED, ItemDisplayContext.GROUND),
-                                                new CompositeModel.Unbaked(
-                                                        List.of(
-                                                                new SelectItemModel.Unbaked(
-                                                                        Optional.empty(),
-                                                                        new SelectItemModel.UnbakedSwitch<>(
-                                                                                new ComponentContents<>(DataComponents.BASE_COLOR),
-                                                                                guiModels
-                                                                        ),
-                                                                        Optional.of(
-                                                                                new CuboidItemModelWrapper.Unbaked(
-                                                                                        Utils.rl("item/bore_gui_blue"),
-                                                                                        Optional.empty(),
-                                                                                        Collections.emptyList()
+                new BoreModelWrapper.Unbaked(
+                        Utils.rl("item/template_bore"),
+                        new SelectItemModel.Unbaked(
+                                Optional.empty(),
+                                new SelectItemModel.UnbakedSwitch<>(
+                                        new DisplayContext(),
+                                        List.of(
+                                                new SelectItemModel.SwitchCase<>(
+                                                        List.of(ItemDisplayContext.GUI, ItemDisplayContext.FIXED, ItemDisplayContext.GROUND),
+                                                        new CompositeModel.Unbaked(
+                                                                List.of(
+                                                                        new SelectItemModel.Unbaked(
+                                                                                Optional.empty(),
+                                                                                new SelectItemModel.UnbakedSwitch<>(
+                                                                                        new ComponentContents<>(DataComponents.BASE_COLOR),
+                                                                                        guiModels
+                                                                                ),
+                                                                                Optional.of(
+                                                                                        new CuboidItemModelWrapper.Unbaked(
+                                                                                                Utils.rl("item/bore_gui_blue"),
+                                                                                                Optional.empty(),
+                                                                                                Collections.emptyList()
+                                                                                        )
                                                                                 )
+                                                                        ),
+                                                                        new BoreItemSpecialRenderer.Unbaked(
+
                                                                         )
                                                                 ),
-                                                                new SpecialModelWrapper.Unbaked(
-                                                                        Utils.rl("item/template_bore"),
-                                                                        Optional.empty(),
-                                                                        new BoreSpecialRenderer.Unbaked(true, false)
-                                                                )
-                                                        ),
-                                                        Optional.empty()
-                                                )
-                                        ),
-                                        new SelectItemModel.SwitchCase<>(
-                                                List.of(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, ItemDisplayContext.FIRST_PERSON_LEFT_HAND),
-                                                new SpecialModelWrapper.Unbaked(
-                                                        Utils.rl("item/template_bore"),
-                                                        Optional.empty(),
-                                                        new BoreSpecialRenderer.Unbaked(false, true)
+                                                                Optional.empty()
+                                                        )
                                                 )
                                         )
-                                )
-                        ),
-                        Optional.of(
-                                new SpecialModelWrapper.Unbaked(
-                                        Utils.rl("item/template_bore"),
-                                        Optional.empty(),
-                                        new BoreSpecialRenderer.Unbaked(false, false)
+                                ),
+                                Optional.of(
+                                        new CompositeModel.Unbaked(
+                                                List.of(
+                                                        new SelectItemModel.Unbaked(
+                                                                Optional.empty(),
+                                                                new SelectItemModel.UnbakedSwitch<>(
+                                                                        new ComponentContents<>(DataComponents.BASE_COLOR),
+                                                                        models
+                                                                ),
+                                                                Optional.of(
+                                                                        new CuboidItemModelWrapper.Unbaked(
+                                                                                Utils.rl("item/bore_blue"),
+                                                                                Optional.empty(),
+                                                                                Collections.emptyList()
+                                                                        )
+                                                                )
+                                                        ),
+                                                        new BoreItemSpecialRenderer.Unbaked()
+                                                ),
+                                                Optional.empty()
+                                        )
                                 )
                         )
+
                 )
         );
         itemModels.itemModelOutput.accept(

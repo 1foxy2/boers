@@ -45,9 +45,7 @@ public final class BoreContents implements TooltipComponent {
         if (this == other) {
             return true;
         } else {
-            return !(other instanceof BoreContents bundlecontents)
-                ? false
-                : ItemStack.matches(this.items, bundlecontents.items);
+            return other instanceof BoreContents bundlecontents && ItemStack.matches(this.items, bundlecontents.items);
         }
     }
 
