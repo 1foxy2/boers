@@ -75,7 +75,7 @@ public class BoreHeadModel implements ItemModel {
         final Identifier texture;
         if (head == null) {
             texture = Utils.rl("item/bore/default_bore_head_idle");
-        } else if (owner instanceof BoreItemOwner(boolean isUsed) && isUsed) {
+        } else if (owner instanceof BoreItemOwner(boolean isUsed, int usedFor) && isUsed) {
             texture = head.texture().active();
         } else {
             texture = head.texture().idle();

@@ -6,6 +6,7 @@
   "client": [
     "HumanoidModelMixin",
     "ItemInHandLayerMixin",
+    "LevelRendererMixin",
     "LivingEntityMixin",
     "MultiPlayerGameModeMixin"
   ],

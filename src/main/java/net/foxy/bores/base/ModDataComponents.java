@@ -1,5 +1,6 @@
 package net.foxy.bores.base;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.data.BoreHead;
@@ -21,7 +22,7 @@ public class ModDataComponents {
             COMPONENTS.registerComponentType("used", builder -> builder
                     .networkSynchronized(ByteBufCodecs.BOOL));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> USED_FOR =
-            COMPONENTS.registerComponentType("used_for", builder -> builder
+            COMPONENTS.registerComponentType("used_for", builder -> builder.persistent(Codec.INT)
                     .networkSynchronized(ByteBufCodecs.INT));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BoreContents>> BORE_CONTENTS = COMPONENTS.registerComponentType(

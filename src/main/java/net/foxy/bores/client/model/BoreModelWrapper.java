@@ -61,7 +61,7 @@ public class BoreModelWrapper implements ItemModel {
     ) {
         output.appendModelIdentityElement(this);
         boolean isUsed = Utils.isUsed(item);
-        model.update(output, item, resolver, displayContext, level, new BoreItemOwner(isUsed), seed);
+        model.update(output, item, resolver, displayContext, level, new BoreItemOwner(isUsed, Utils.getUsedFor(item)), seed);
         Function<Matrix4f, Matrix4f> matrixModifier = matrix4f -> matrix4f;
         if (displayContext == ItemDisplayContext.GUI || displayContext == ItemDisplayContext.FIXED || displayContext == ItemDisplayContext.GROUND) {
             if (Utils.getBoreContentsOrEmpty(item).isEmpty()) {
@@ -95,7 +95,6 @@ public class BoreModelWrapper implements ItemModel {
             layer.setItemTransform(transforms.getTransform(displayContext));
             layer.setLocalTransform(matrixModifier.apply(layer.localTransform));
             if (!layer.tintLayers().isEmpty()) {
-                layer.tintLayers().removeLast();
                 layer.setLocalTransform(new Matrix4f(layer.localTransform).scale(0.5f, 0.5f, 1.01f).translate(12f * 0.0625f, 5f * 0.0625f, -0.005f));
             }
         }

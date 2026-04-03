@@ -7,6 +7,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -18,7 +19,7 @@ public class ModCreativeModeTabs {
             TABS.register("texture",
                     () -> CreativeModeTab.builder().icon(() -> {
                         ItemStack itemStack = ModItems.BORE.toStack();
-                        Utils.setBoreContents(itemStack, new BoreContents(ModItems.BORE_HEAD.toStack()));
+                        Utils.setBoreContents(itemStack, new BoreContents(new ItemStackTemplate(ModItems.BORE_HEAD)));
                         return itemStack;
                             })
                             .title(Component.translatable("item.bores.bores"))

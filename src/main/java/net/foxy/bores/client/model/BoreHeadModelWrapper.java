@@ -1,10 +1,14 @@
 package net.foxy.bores.client.model;
 
 import com.google.common.base.Suppliers;
+import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.foxy.bores.client.BoresClientConfig;
+import net.foxy.bores.data.BoreHead;
+import net.foxy.bores.util.Utils;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.color.item.ItemTintSources;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -21,6 +25,7 @@ import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -94,11 +99,17 @@ public class BoreHeadModelWrapper implements ItemModel {
         }
 
         layer.setExtents(this.extents);
-        if (owner instanceof BoreItemOwner) {
+        if (owner instanceof BoreItemOwner boreItemOwner) {
             if (displayContext == ItemDisplayContext.GUI || displayContext == ItemDisplayContext.FIXED || displayContext == ItemDisplayContext.GROUND) {
                 layer.setLocalTransform(new Matrix4f(this.transformation).translate(-1.0f * 0.0625f, 1.0f * 0.0625f, 0.002f));
             } else {
-                layer.tintLayers().add(0);
+                BoreHead boreHead = Utils.getBore(item);
+                int usedFor = 0;
+                if (boreHead != null) {
+                    usedFor = boreHead.getMaxAcceleration(boreItemOwner.usedFor());
+                }
+                int color = Math.max(255 - usedFor, 255 - BoresClientConfig.CONFIG.MAX_BORE_HEATING.get());
+                layer.tintLayers().add(ARGB.color(255, 255, color, color) );
             }
         } else {
             layer.setLocalTransform(this.transformation);

@@ -5,19 +5,21 @@ import net.foxy.bores.client.BoresClientConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
-/*
-public class SparkParticle extends TextureSheetParticle {
+
+public class SparkParticle extends SingleQuadParticle {
     private final SpriteSet spriteSet;
     private final float initialSize;
 
     protected SparkParticle(ClientLevel level, double x, double y, double z,
                             Vec3 velocity, Direction blockFace, SpriteSet spriteSet) {
-        super(level, x, y, z);
+        super(level, x, y, z, spriteSet.first());
 
         this.spriteSet = spriteSet;
 
@@ -38,8 +40,12 @@ public class SparkParticle extends TextureSheetParticle {
         this.bCol = 0.3F + colorVar * 0.5F;
         this.alpha = 1.0F;
 
-        this.pickSprite(spriteSet);
         this.hasPhysics = true;
+    }
+
+    @Override
+    protected Layer getLayer() {
+        return Layer.TRANSLUCENT;
     }
 
     @Override
@@ -84,7 +90,7 @@ public class SparkParticle extends TextureSheetParticle {
         this.setSpriteFromAge(this.spriteSet);
     }
 
-    @Override
+    /*@Override
     public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
         Vec3 cameraPos = camera.getPosition();
         float x = (float)(Mth.lerp(partialTicks, this.xo, this.x) - cameraPos.x);
@@ -171,16 +177,11 @@ public class SparkParticle extends TextureSheetParticle {
                 .setUv(u1, v1)
                 .setColor(this.rCol, this.gCol, this.bCol, this.alpha)
                 .setLight(light);
-    }
+    }*/
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
-    }
-
-    @Override
-    protected int getLightColor(float partialTick) {
-        return LightTexture.FULL_BRIGHT;
+    protected int getLightCoords(float a) {
+        return LightCoordsUtil.FULL_BRIGHT;
     }
 
     public static Vec3 generateConeVelocity(Vec3 contactPoint, Vec3 playerEye, float speed) {
@@ -207,4 +208,4 @@ public class SparkParticle extends TextureSheetParticle {
 
         return finalDir.scale(randomSpeed);
     }
-}*/
+}

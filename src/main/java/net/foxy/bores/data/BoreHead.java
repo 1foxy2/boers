@@ -1,5 +1,7 @@
 package net.foxy.bores.data;
 
+import com.mojang.datafixers.util.Pair;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.foxy.bores.base.ModRegistries;
@@ -24,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public record BoreHead(Texture texture, float defaultMiningSpeed, int durability, List<Rule> miningRules, Optional<Vec3i> radius) {
+public record BoreHead(Texture texture, float defaultMiningSpeed, int durability, List<Rule> miningRules, Optional<Vec3i> radius, int maxUse) {
     public static final Codec<BoreHead> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Texture.CODEC.fieldOf("texture").forGetter(BoreHead::texture),
@@ -37,6 +39,27 @@ public record BoreHead(Texture texture, float defaultMiningSpeed, int durability
     public static final Codec<Holder<BoreHead>> ITEM_CODEC = RegistryFixedCodec.create(ModRegistries.BORE_HEAD);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<BoreHead>> STREAM_CODEC = ByteBufCodecs.holderRegistry(ModRegistries.BORE_HEAD);
+
+    public BoreHead(Texture texture, float defaultMiningSpeed, int durability, List<Rule> miningRules, Optional<Vec3i> radius) {
+        this(texture, defaultMiningSpeed, durability, miningRules, radius, getMaxUseFor(miningRules));
+    }
+
+    public static int getMaxUseFor(List<Rule> miningRules) {
+        int max = 0;
+
+        for (Rule tool$rule : miningRules) {
+            if (tool$rule.speed().isPresent()) {
+                if (tool$rule.maxSpeed.isPresent() && tool$rule.speedPerTick.isPresent()) {
+                    int maxSpeed = (int) ((tool$rule.maxSpeed.get() - tool$rule.speed.get()) / tool$rule.speedPerTick.get());
+                    if (maxSpeed > max) {
+                        max = maxSpeed;
+                    }
+                }
+            }
+        }
+
+        return max;
+    }
 
     public float getMiningSpeed(ItemStack stack, BlockState state) {
         for (Rule tool$rule : miningRules) {
@@ -98,18 +121,10 @@ public record BoreHead(Texture texture, float defaultMiningSpeed, int durability
                 ), Optional.of(radius));
     }
 
-    public int getMaxAcceleration(ItemStack stack) {
+    public int getMaxAcceleration(int usedFor) {
         int max = 0;
-        for (Rule tool$rule : miningRules) {
-            if (tool$rule.speed().isPresent()) {
-                if (tool$rule.maxSpeed.isPresent() && tool$rule.speedPerTick.isPresent()) {
-                    float maxSpeed = tool$rule.maxSpeed.get() - tool$rule.speed.get();
-                    int m = (int) Mth.lerp(Math.min(tool$rule.speedPerTick.get() * Utils.getUsedFor(stack), maxSpeed) / maxSpeed, 0, BoresClientConfig.CONFIG.MAX_BORE_HEATING.getAsInt());
-                    if (m > max) {
-                        max = m;
-                    }
-                }
-            }
+        if (maxUse() != 0) {
+            max = (int) Mth.lerp((float) Math.min(usedFor, maxUse()) / maxUse(), 0, BoresClientConfig.CONFIG.MAX_BORE_HEATING.getAsInt());
         }
 
         return max;

@@ -6,9 +6,11 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
-/*public class SparkParticleProvider implements ParticleProvider<SimpleParticleType> {
+public class SparkParticleProvider implements ParticleProvider<SimpleParticleType> {
     private final SpriteSet sprites;
 
     public SparkParticleProvider(SpriteSet sprites) {
@@ -16,12 +18,12 @@ import net.minecraft.world.phys.Vec3;
     }
 
     @Override
-    public Particle createParticle(SimpleParticleType type, ClientLevel level,
-                                   double x, double y, double z,
-                                   double xSpeed, double ySpeed, double zSpeed) {
-        Vec3 velocity = new Vec3(xSpeed, ySpeed, zSpeed);
+    public @Nullable Particle createParticle(SimpleParticleType options, ClientLevel level,
+                                             double x, double y, double z,
+                                             double xAux, double yAux, double zAux, RandomSource random) {
+        Vec3 velocity = new Vec3(xAux, yAux, zAux);
         Direction face = Direction.UP;
 
         return new SparkParticle(level, x, y, z, velocity, face, sprites);
     }
-}*/
+}

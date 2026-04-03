@@ -4,7 +4,7 @@ import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public record BoreItemOwner(boolean isUsed) implements ItemOwner {
+public record BoreItemOwner(boolean isUsed, int usedFor) implements ItemOwner {
     @Override
     public Level level() {
         return null;

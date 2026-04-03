@@ -7,29 +7,31 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.math.Fraction;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public final class BoreContents implements TooltipComponent {
-    public static final BoreContents EMPTY = new BoreContents(ItemStack.EMPTY);
-    public static final Codec<BoreContents> CODEC = ItemStack.CODEC.xmap(BoreContents::new, p_331551_ -> p_331551_.items);
-    public static final StreamCodec<RegistryFriendlyByteBuf, BoreContents> STREAM_CODEC = ItemStack.STREAM_CODEC
-        .map(BoreContents::new, p_331649_ -> p_331649_.items);
-    private static final Fraction BUNDLE_IN_BUNDLE_WEIGHT = Fraction.getFraction(1, 16);
-    private static final int NO_STACK_INDEX = -1;
-    final ItemStack items;
+    public static final BoreContents EMPTY = new BoreContents(null);
+    public static final Codec<BoreContents> CODEC = ItemStackTemplate.CODEC.xmap(BoreContents::new, BoreContents::getItem);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BoreContents> STREAM_CODEC =
+            ItemStackTemplate.STREAM_CODEC.map(BoreContents::new, BoreContents::getItem);
+    final ItemStackTemplate item;
 
-    public BoreContents(ItemStack items) {
-        this.items = items;
+    public BoreContents(ItemStackTemplate item) {
+        this.item = item;
     }
 
-    public ItemStack getItemUnsafe() {
-        return this.items;
+    public ItemStackTemplate getItem() {
+        return this.item;
     }
 
-    public ItemStack itemsCopy() {
-        return items.copy();
+    public ItemStack itemCopy() {
+        if (item == null) {
+            return ItemStack.EMPTY;
+        }
+        return item.create();
     }
 
     public int size() {
@@ -37,7 +39,7 @@ public final class BoreContents implements TooltipComponent {
     }
 
     public boolean isEmpty() {
-        return this.items.isEmpty();
+        return this.item == null;
     }
 
     @Override
@@ -45,34 +47,36 @@ public final class BoreContents implements TooltipComponent {
         if (this == other) {
             return true;
         } else {
-            return other instanceof BoreContents bundlecontents && ItemStack.matches(this.items, bundlecontents.items);
+            return other instanceof BoreContents bundlecontents && Objects.equals(this.item, bundlecontents.item);
         }
     }
 
     @Override
     public int hashCode() {
-        return ItemStack.hashItemAndComponents(this.items);
+        if (item == null) {
+            return 0;
+        }
+        return this.item.hashCode();
     }
 
     @Override
     public String toString() {
-        return "BundleContents" + this.items;
+        return "BoreContents" + this.item;
     }
 
     public static class Mutable {
-        private ItemStack items;
-        private Fraction weight;
+        private ItemStack item;
 
-        public ItemStack getItems() {
-            return items;
+        public ItemStack getItem() {
+            return item;
         }
 
         public Mutable(BoreContents contents) {
-            this.items = contents.items;
+            this.item = contents.itemCopy();
         }
 
         public Mutable clearItems() {
-            this.items = ItemStack.EMPTY;
+            this.item = ItemStack.EMPTY;
             return this;
         }
 
@@ -80,7 +84,7 @@ public final class BoreContents implements TooltipComponent {
             if (!stack.isStackable()) {
                 return -1;
             } else {
-                    if (ItemStack.isSameItemSameComponents(this.items, stack)) {
+                    if (ItemStack.isSameItemSameComponents(this.item, stack)) {
                         return 0;
                     }
 
@@ -89,7 +93,7 @@ public final class BoreContents implements TooltipComponent {
         }
 
         private int getMaxAmountToAdd(ItemStack stack) {
-            return items.isEmpty() ? 1 : 0;
+            return item.isEmpty() ? 1 : 0;
         }
 
         public int tryInsert(ItemStack stack) {
@@ -100,12 +104,12 @@ public final class BoreContents implements TooltipComponent {
                 } else {
                     int j = this.findStackIndex(stack);
                     if (j != -1) {
-                        ItemStack itemstack = this.items;
+                        ItemStack itemstack = this.item;
                         ItemStack itemstack1 = itemstack.copyWithCount(itemstack.getCount() + i);
                         stack.shrink(i);
-                        this.items = itemstack1;
+                        this.item = itemstack1;
                     } else {
-                        this.items = stack.split(i);
+                        this.item = stack.split(i);
                     }
 
                     return i;
@@ -123,21 +127,17 @@ public final class BoreContents implements TooltipComponent {
 
         @Nullable
         public ItemStack removeOne() {
-            if (this.items.isEmpty()) {
+            if (this.item.isEmpty()) {
                 return null;
             } else {
-                ItemStack itemstack = this.items.copy();
-                items = ItemStack.EMPTY;
+                ItemStack itemstack = this.item.copy();
+                item = ItemStack.EMPTY;
                 return itemstack;
             }
         }
 
-        public Fraction weight() {
-            return this.weight;
-        }
-
         public BoreContents toImmutable() {
-            return new BoreContents(this.items);
+            return new BoreContents(item.isEmpty() ? null : ItemStackTemplate.fromNonEmptyStack(this.item));
         }
     }
 }

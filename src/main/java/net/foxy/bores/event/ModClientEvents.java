@@ -1,27 +1,35 @@
 package net.foxy.bores.event;
 
-import jdk.jshell.execution.Util;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.base.ModEnums;
 import net.foxy.bores.base.ModItems;
+import net.foxy.bores.base.ModParticles;
 import net.foxy.bores.base.ModSounds;
 import net.foxy.bores.client.BoreSoundInstance;
-import net.foxy.bores.client.BoreSpecialRenderer;
 import net.foxy.bores.client.BoresClientConfig;
 import net.foxy.bores.client.ClientBoresTooltip;
 import net.foxy.bores.client.model.BoreHeadModel;
 import net.foxy.bores.client.model.BoreItemSpecialRenderer;
 import net.foxy.bores.client.model.BoreModelWrapper;
+import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.item.BoreContents;
 import net.foxy.bores.item.BoreItem;
 import net.foxy.bores.network.c2s.SetUseBorePacket;
 import net.foxy.bores.network.c2s.TickBorePacket;
+import net.foxy.bores.particle.spark.SparkParticle;
+import net.foxy.bores.particle.spark.SparkParticleProvider;
 import net.foxy.bores.util.Utils;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -32,19 +40,21 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @EventBusSubscriber(modid = BoresMod.MODID, value = Dist.CLIENT)
 public class ModClientEvents {
-    private static final Identifier BORE_MODEL_LOADER = Utils.rl("bore");
     public static int lastProgress = 0;
     public static int usingProgress = 0;
     public static BoreSoundInstance soundInstance = null;
@@ -52,47 +62,71 @@ public class ModClientEvents {
     public static BoreSoundInstance idleSoundInstance = null;
     public static BoreSoundInstance idleSoundInstance2 = null;
 
-    /*@SubscribeEvent
-    public static void renderOutline(RenderHighlightEvent.Block event) {
-        if (!(event.getCamera().getEntity() instanceof Player player)) {
+    @SubscribeEvent
+    public static void renderOutline(ExtractBlockOutlineRenderStateEvent event) {
+        if (!(event.getCamera().entity() instanceof Player player)) {
             return;
         }
 
-        ItemStack stack = event.getCamera().getEntity().getWeaponItem();
+        ItemStack stack = event.getCamera().entity().getWeaponItem();
         if (stack == null) {
             return;
         }
-        BoreContents boreContents = Utils.getBoreContents(stack);
-        Level level = event.getCamera().getEntity().level();
-        if (boreContents == null) {
+        BoreContents boreContents = Utils.getBoreContentsOrEmpty(stack);
+        Level level = event.getLevel();
+        if (boreContents.isEmpty()) {
             return;
         }
 
-        BoreHead tool = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).getItemUnsafe());
-        int k = Minecraft.getInstance().gameMode.getDestroyStage();
+        BoreHead tool = Utils.getBore(boreContents.getItem());
         if (tool != null && tool.radius().isPresent()) {
-            Vec3 vec3 = event.getCamera().getPosition();
-            PoseStack posestack = event.getPoseStack();
-            VertexConsumer vertexconsumer2 = event.getMultiBufferSource().getBuffer(RenderType.lines());
-            Utils.forEachBlock(level, player, event.getTarget().getBlockPos(), tool.radius().get(), (target, block) -> {
-                event.getLevelRenderer().renderHitOutline(posestack,
-                        vertexconsumer2, player, vec3.x(), vec3.y(), vec3.z(), target, block, -16777216);
-
-                if (k != -1 && event.getTarget().getBlockPos().equals(Minecraft.getInstance().gameMode.destroyBlockPos)) {
-                    posestack.pushPose();
-                    posestack.translate((double) target.getX() - vec3.x, (double) target.getY() - vec3.y, (double) target.getZ() - vec3.z);
-                    PoseStack.Pose posestack$pose1 = posestack.last();
-                    VertexConsumer vertexconsumer1 = new SheetedDecalTextureGenerator(
-                            Minecraft.getInstance().renderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(k)), posestack$pose1, 1.0F
+            List<BlockOutlineRenderState> renderStates = new ArrayList<>();
+            Utils.forEachBlock(level, player, event.getBlockPos(), tool.radius().get(), (target, state) -> {;
+                VoxelShape shape = state.getShape(level, target, event.getCollisionContext());
+                BlockOutlineRenderState blockOutlineRenderState;
+                if (SharedConstants.DEBUG_SHAPES) {
+                    VoxelShape collisionShape = state.getCollisionShape(level, target, event.getCollisionContext());
+                    VoxelShape occlusionShape = state.getOcclusionShape();
+                    VoxelShape interactionShape = state.getInteractionShape(level, target);
+                    blockOutlineRenderState = new BlockOutlineRenderState(
+                            target, event.isInTranslucentPass(), event.isHighContrast(), shape,
+                            collisionShape, occlusionShape, interactionShape, event.getCustomRenderers()
                     );
-                    Minecraft.getInstance()
-                            .getBlockRenderer()
-                            .renderBreakingTexture(block, target, level, posestack, vertexconsumer1);
-                    posestack.popPose();
+                } else {
+                    blockOutlineRenderState = new BlockOutlineRenderState(target, event.isInTranslucentPass(), event.isHighContrast(), shape, event.getCustomRenderers());
                 }
+                renderStates.add(blockOutlineRenderState);
+            });
+            if (renderStates.isEmpty()) {
+                return;
+            }
+            event.addCustomRenderer((state, bufferSource, poseStack, translucentPass, levelRenderState) -> {
+                if (state.isTranslucent() == translucentPass) {
+                    Vec3 cameraPos = levelRenderState.cameraRenderState.pos;
+                    for (BlockOutlineRenderState renderState : renderStates) {
+                        if (renderState.highContrast()) {
+                            VertexConsumer buffer = bufferSource.getBuffer(RenderTypes.secondaryBlockOutline());
+                            event.getLevelRenderer().renderHitOutline(poseStack, buffer, cameraPos.x, cameraPos.y, cameraPos.z, renderState, -16777216, 7.0F);
+                        }
+
+                        VertexConsumer buffer = bufferSource.getBuffer(RenderTypes.lines());
+                        int outlineColor = renderState.highContrast() ? -11010079 : ARGB.black(102);
+                        event.getLevelRenderer().renderHitOutline(
+                                poseStack,
+                                buffer,
+                                cameraPos.x,
+                                cameraPos.y,
+                                cameraPos.z,
+                                renderState,
+                                outlineColor,
+                                Minecraft.getInstance().gameRenderer.getGameRenderState().windowRenderState.appropriateLineWidth
+                        );
+                    }
+                }
+                return false;
             });
         }
-    }*/
+    }
 
     @SubscribeEvent
     public static void registerCustomModels(RegisterItemModelsEvent event) {
@@ -102,19 +136,14 @@ public class ModClientEvents {
     }
 
     @SubscribeEvent
-    public static void registerSpecialModelRenderers(RegisterSpecialModelRendererEvent event) {
-        event.register(Utils.rl("bore"), BoreSpecialRenderer.Unbaked.MAP_CODEC);
-    }
-
-    @SubscribeEvent
     public static void registerTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(BoreContents.class, ClientBoresTooltip::new);
     }
 
-    /*@SubscribeEvent
+    @SubscribeEvent
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ModParticles.SPARK_PARTICLE.get(), SparkParticleProvider::new);
-    }*/
+    }
 
 
     @SubscribeEvent
@@ -165,19 +194,6 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void registerItemRenderers(RegisterClientExtensionsEvent event) {
         event.registerItem(new IClientItemExtensions() {
-            /*public static BoreRenderer renderer = null;
-
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (renderer == null) {
-                    renderer = new BoreRenderer(
-                            Minecraft.getInstance().getBlockEntityRenderDispatcher(),
-                            Minecraft.getInstance().getEntityModels());
-                }
-
-                return renderer;
-            }*/
-
             @Override
             public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
                 return !entityLiving.getMainHandItem().isEmpty() && !entityLiving.getOffhandItem().isEmpty() ?
@@ -238,15 +254,15 @@ public class ModClientEvents {
 
             Vec3 sparkPos = spawnPos.add(spreadX, spreadY, spreadZ);
 
-            /*Vec3 velocity = SparkParticle.generateConeVelocity(
+            Vec3 velocity = SparkParticle.generateConeVelocity(
                     hitPos, playerEye, 0.4F
-            );*/
+            );
 
-            /*level.addParticle(
+            level.addParticle(
                     ModParticles.SPARK_PARTICLE.get(),
                     sparkPos.x, sparkPos.y, sparkPos.z,
                     velocity.x, velocity.y, velocity.z
-            );*/
+            );
         }
     }
 }

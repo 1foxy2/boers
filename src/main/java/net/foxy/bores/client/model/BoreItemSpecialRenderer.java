@@ -9,10 +9,8 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.world.entity.ItemOwner;
-import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import org.joml.Matrix4fc;
 import org.jspecify.annotations.Nullable;
 
@@ -32,7 +30,7 @@ public class BoreItemSpecialRenderer implements ItemModel {
         output.appendModelIdentityElement(this);
         BoreContents selectedItem = Utils.getBoreContents(item);
         if (selectedItem != null && !selectedItem.isEmpty()) {
-            resolver.appendItemLayers(output, selectedItem.getItemUnsafe(), displayContext, level, owner, seed);
+            resolver.appendItemLayers(output, selectedItem.itemCopy(), displayContext, level, owner, seed);
         }
     }
 

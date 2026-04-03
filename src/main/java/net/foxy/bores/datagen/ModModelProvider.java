@@ -2,7 +2,6 @@ package net.foxy.bores.datagen;
 
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.base.ModItems;
-import net.foxy.bores.client.BoreSpecialRenderer;
 import net.foxy.bores.client.model.BoreHeadModel;
 import net.foxy.bores.client.model.BoreItemSpecialRenderer;
 import net.foxy.bores.client.model.BoreModelWrapper;
@@ -18,7 +17,6 @@ import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.CompositeModel;
 import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.item.SelectItemModel;
-import net.minecraft.client.renderer.item.SpecialModelWrapper;
 import net.minecraft.client.renderer.item.properties.select.ComponentContents;
 import net.minecraft.client.renderer.item.properties.select.DisplayContext;
 import net.minecraft.client.resources.model.sprite.Material;

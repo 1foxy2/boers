@@ -1,6 +1,5 @@
 package net.foxy.bores.item;
 
-import com.mojang.logging.LogUtils;
 import net.foxy.bores.base.ModDataComponents;
 import net.foxy.bores.base.ModItems;
 import net.foxy.bores.base.ModParticles;
@@ -8,6 +7,7 @@ import net.foxy.bores.base.ModSounds;
 import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.event.ModClientEvents;
 //import net.foxy.bores.particle.spark.SparkParticle;
+import net.foxy.bores.particle.spark.SparkParticle;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
@@ -48,22 +48,22 @@ public class BoreItem extends Item {
 
     @Override
     public boolean isDamaged(ItemStack stack) {
-        ItemStack boreItem = Utils.getBoreContents(stack).getItemUnsafe();
+        ItemStack boreItem = Utils.getBoreContents(stack).itemCopy();
         return !boreItem.isEmpty() && boreItem.isDamaged();
     }
 
     @Override
     public boolean isDamageable(ItemStack stack) {
-        ItemStack boreItem = Utils.getBoreContents(stack).getItemUnsafe();
+        ItemStack boreItem = Utils.getBoreContents(stack).itemCopy();
         return !boreItem.isEmpty() && boreItem.isDamageableItem();
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
-        ItemStack boreItem = Utils.getBoreContents(stack).itemsCopy();
+        ItemStack boreItem = Utils.getBoreContents(stack).itemCopy();
         if (!boreItem.isEmpty()) {
             boreItem.setDamageValue(damage);
-            Utils.setBoreContents(stack, new BoreContents(boreItem));
+            Utils.setBoreContents(stack, new BoreContents(ItemStackTemplate.fromNonEmptyStack(boreItem)));
         }
     }
 
@@ -92,12 +92,12 @@ public class BoreItem extends Item {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return Utils.getBoreContentsOrEmpty(stack).items.getMaxDamage();
+        return Utils.getBoreContentsOrEmpty(stack).itemCopy().getMaxDamage();
     }
 
     @Override
     public int getDamage(ItemStack stack) {
-        return Utils.getBoreContentsOrEmpty(stack).items.getDamageValue();
+        return Utils.getBoreContentsOrEmpty(stack).itemCopy().getDamageValue();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class BoreItem extends Item {
     }
 
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        BoreHead tool = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).items);
+        BoreHead tool = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).itemCopy());
         return tool != null ? tool.getMiningSpeed(stack, state) : 1.0F;
     }
 
@@ -117,16 +117,16 @@ public class BoreItem extends Item {
 
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
-        BoreContents boreContents = Utils.getBoreContents(stack);
-        if (boreContents == null) {
+        BoreContents boreContents = Utils.getBoreContentsOrEmpty(stack);
+        if (boreContents.isEmpty()) {
             return false;
         } else {
             if (!level.isClientSide() && state.getDestroySpeed(level, pos) != 0.0F) {
-                ItemStack bore = boreContents.getItemUnsafe();
-                BoreHead tool = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).items);
+                ItemStack bore = boreContents.itemCopy();
+                BoreHead tool = Utils.getBore(bore);
                 int damage = tool != null ? tool.getDamage(state) : 1;
                 bore.hurtAndBreak(damage, miningEntity, EquipmentSlot.MAINHAND);
-                Utils.setBoreContents(stack, new BoreContents(bore));
+                Utils.setBoreContents(stack, new BoreContents(ItemStackTemplate.fromNonEmptyStack(bore)));
                 if (tool != null && tool.radius().isPresent() && miningEntity instanceof ServerPlayer player) {
                     Utils.forEachBlock(level, player, pos, tool.radius().get(), (target, block) -> {
                         boolean removed = block.onDestroyedByPlayer(level, target, player, stack, true, level.getFluidState(target));
@@ -144,8 +144,8 @@ public class BoreItem extends Item {
 
     @Override
     public int getEnchantmentLevel(ItemInstance stack, Holder<Enchantment> enchantment) {
-        ItemStack contents = Utils.getBoreContents(stack).items;
-        if (!contents.isEmpty()) {
+        ItemStackTemplate contents = Utils.getBoreContentsOrEmpty(stack).item;
+        if (contents != null) {
             return contents.getEnchantmentLevel(enchantment);
         }
 
@@ -154,8 +154,8 @@ public class BoreItem extends Item {
 
     @Override
     public ItemEnchantments getAllEnchantments(ItemStack stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
-        ItemStack contents = Utils.getBoreContents(stack).items;
-        if (!contents.isEmpty()) {
+        ItemStack contents = Utils.getBoreContentsOrEmpty(stack).itemCopy();
+        if (contents != null) {
             return contents.getAllEnchantments(lookup);
         }
 
@@ -163,7 +163,7 @@ public class BoreItem extends Item {
     }
 
     public void onAttackTick(Level level, Player player, ItemStack stack, int used) {
-        ItemStack bore = Utils.getBoreContentsOrEmpty(stack).items;
+        ItemStack bore = Utils.getBoreContentsOrEmpty(stack).itemCopy();
         if (!bore.isEmpty()) {
             List<LivingEntity> targetEntities = getTargetEntity(player, level);
 
@@ -180,7 +180,7 @@ public class BoreItem extends Item {
                         if (player.tickCount % 10 == 0) {
                             target.hurt(level.damageSources().playerAttack(player), 2.0F);
                             bore.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
-                            Utils.setBoreContents(stack, new BoreContents(bore));
+                            Utils.setBoreContents(stack, new BoreContents(ItemStackTemplate.fromNonEmptyStack(bore)));
 
                             level.playSound(null, target.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.3F, 1.8F);
                         }
@@ -216,15 +216,15 @@ public class BoreItem extends Item {
 
             Vec3 sparkPos = hitPos.add(spreadX, spreadY, spreadZ);
 
-            /*Vec3 velocity = SparkParticle.generateConeVelocity(
+            Vec3 velocity = SparkParticle.generateConeVelocity(
                     sparkPos, playerEye, 0.5F
-            );*/
+            );
 
-            /*level.addParticle(
+            level.addParticle(
                     ModParticles.SPARK_PARTICLE.get(),
                     sparkPos.x, sparkPos.y, sparkPos.z,
                     velocity.x, velocity.y, velocity.z
-            );*/
+            );
         }
     }
 
@@ -235,7 +235,7 @@ public class BoreItem extends Item {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        BoreHead head = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).items);
+        BoreHead head = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).itemCopy());
         if (head != null) {
             return head.isCorrectForDrops(state);
         }
@@ -319,13 +319,13 @@ public class BoreItem extends Item {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        ItemStack bore = Utils.getBoreContentsOrEmpty(stack).items;
+        ItemStack bore = Utils.getBoreContentsOrEmpty(stack).itemCopy();
         return !bore.isEmpty() && bore.isDamaged();
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return Utils.getBoreContentsOrEmpty(stack).items.getBarWidth();
+        return Utils.getBoreContentsOrEmpty(stack).itemCopy().getBarWidth();
     }
 
     @Override
@@ -341,7 +341,7 @@ public class BoreItem extends Item {
         BoreContents bundlecontents = Utils.getBoreContents(itemEntity.getItem());
         if (bundlecontents != null) {
             Utils.setBoreContents(itemEntity.getItem(), BoreContents.EMPTY);
-            ItemUtils.onContainerDestroyed(itemEntity, Stream.of(bundlecontents.itemsCopy()));
+            ItemUtils.onContainerDestroyed(itemEntity, Stream.of(bundlecontents.itemCopy()));
         }
     }
 

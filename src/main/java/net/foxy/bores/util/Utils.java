@@ -34,13 +34,13 @@ public class Utils {
         return bore;
     }
 
-    public static BoreHead getBore(ItemStack stack) {
+    public static BoreHead getBore(ItemInstance stack) {
         Holder<BoreHead> boreHead = getBoreHolder(stack);
 
         return boreHead == null ? null : boreHead.value();
     }
 
-    public static Holder<BoreHead> getBoreHolder(ItemStack stack) {
+    public static Holder<BoreHead> getBoreHolder(ItemInstance stack) {
         return stack.get(ModDataComponents.BORE.get());
     }
 
@@ -53,7 +53,12 @@ public class Utils {
     }
 
     public static void increaseUseFor(ItemStack stack) {
-        stack.set(ModDataComponents.USED_FOR, stack.getOrDefault(ModDataComponents.USED_FOR, 0) + 1);
+        int max = 0;
+        BoreHead head = Utils.getBore(Utils.getBoreContentsOrEmpty(stack).itemCopy());
+        if (head != null) {
+            max = head.maxUse();
+        }
+        stack.set(ModDataComponents.USED_FOR, Math.min(Math.max(max, 100), stack.getOrDefault(ModDataComponents.USED_FOR, 0) + 1) );
     }
 
     public static boolean isUsed(DataComponentGetter stack) {
@@ -68,7 +73,7 @@ public class Utils {
         return stack.get(ModDataComponents.BORE_CONTENTS);
     }
 
-    public static BoreContents getBoreContentsOrEmpty(ItemStack stack) {
+    public static BoreContents getBoreContentsOrEmpty(ItemInstance stack) {
         return stack.getOrDefault(ModDataComponents.BORE_CONTENTS, BoreContents.EMPTY);
     }
 
