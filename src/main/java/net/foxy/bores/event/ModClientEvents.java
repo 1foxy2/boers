@@ -1,6 +1,5 @@
 package net.foxy.bores.event;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxy.bores.BoresMod;
 import net.foxy.bores.base.ModEnums;
@@ -20,14 +19,15 @@ import net.foxy.bores.network.c2s.SetUseBorePacket;
 import net.foxy.bores.network.c2s.TickBorePacket;
 import net.foxy.bores.particle.spark.SparkParticle;
 import net.foxy.bores.particle.spark.SparkParticleProvider;
+import net.foxy.bores.particle.spark.SparkParticleRenderGroup;
 import net.foxy.bores.util.Utils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.InteractionHand;
@@ -145,6 +145,10 @@ public class ModClientEvents {
         event.registerSpriteSet(ModParticles.SPARK_PARTICLE.get(), SparkParticleProvider::new);
     }
 
+    @SubscribeEvent
+    public static void registerParticleGroups(RegisterParticleGroupsEvent event) {
+        event.register(SparkParticleRenderGroup.TYPE, SparkParticleRenderGroup::new);
+    }
 
     @SubscribeEvent
     public static void tickBoreProgress(ClientTickEvent.Post event) {
@@ -217,7 +221,8 @@ public class ModClientEvents {
                     Minecraft.getInstance().getSoundManager().playDelayed(ModClientEvents.soundInstance2, 4);
                 }
             }
-            //Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
+            if (level instanceof ClientLevel clientLevel)
+                clientLevel.addBreakingBlockEffect(result.getBlockPos(), result.getDirection(), result);
             spawnSparks(level, player, result);
         } else {
             if (BoresClientConfig.CONFIG.BREAKING_SOUNDS.get()) {

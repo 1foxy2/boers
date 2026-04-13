@@ -7,10 +7,13 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class SparkParticle extends SingleQuadParticle {
@@ -44,8 +47,53 @@ public class SparkParticle extends SingleQuadParticle {
     }
 
     @Override
+    public ParticleRenderType getGroup() {
+        return SparkParticleRenderGroup.TYPE;
+    }
+
+    @Override
     protected Layer getLayer() {
         return Layer.TRANSLUCENT;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    @Override
+    protected void extractRotatedQuad(QuadParticleRenderState particleTypeRenderState, Quaternionf rotation, float x, float y, float z, float partialTickTime) {
+        if (particleTypeRenderState instanceof SparkParticleRenderState sparkParticleRenderState) {
+            sparkParticleRenderState.add(
+                    this.getLayer(),
+                    x,
+                    y,
+                    z,
+                    (float) xd,
+                    (float) yd,
+                    (float) zd,
+                    rotation.x,
+                    rotation.y,
+                    rotation.z,
+                    rotation.w,
+                    this.getQuadSize(partialTickTime),
+                    this.getU0(),
+                    this.getU1(),
+                    this.getV0(),
+                    this.getV1(),
+                    ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol),
+                    this.getLightCoords(partialTickTime)
+            );
+        } else {
+            super.extractRotatedQuad(particleTypeRenderState, rotation, x, y, z, partialTickTime);
+        }
     }
 
     @Override
@@ -89,95 +137,6 @@ public class SparkParticle extends SingleQuadParticle {
 
         this.setSpriteFromAge(this.spriteSet);
     }
-
-    /*@Override
-    public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
-        Vec3 cameraPos = camera.getPosition();
-        float x = (float)(Mth.lerp(partialTicks, this.xo, this.x) - cameraPos.x);
-        float y = (float)(Mth.lerp(partialTicks, this.yo, this.y) - cameraPos.y);
-        float z = (float)(Mth.lerp(partialTicks, this.zo, this.z) - cameraPos.z);
-
-        Vec3 velocity = new Vec3(this.xd, this.yd, this.zd);
-        float speed = (float)velocity.length();
-
-        if (speed < 0.01F) {
-            super.render(buffer, camera, partialTicks);
-            return;
-        }
-
-        Vec3 moveDir = velocity.normalize();
-        Vec3 toCamera = new Vec3(-x, -y, -z).normalize();
-        Vec3 right = moveDir.cross(toCamera);
-
-        if (right.lengthSqr() < 0.001) {
-            Vec3 altUp = Math.abs(moveDir.y) > 0.9 ? new Vec3(1, 0, 0) : new Vec3(0, 1, 0);
-            right = moveDir.cross(altUp);
-        }
-        right = right.normalize();
-
-        Vec3 up = right.cross(moveDir).normalize();
-
-        float baseStretch = 2.0F;
-        float speedStretch = Math.min(speed * 5.0F, 3.0F);
-        float totalStretch = baseStretch + speedStretch;
-
-        float halfWidth = this.quadSize * 0.25F;
-
-        float halfLength = this.quadSize * totalStretch * 0.5F;
-
-        float u0 = this.getU0();
-        float u1 = this.getU1();
-        float v0 = this.getV0();
-        float v1 = this.getV1();
-
-        int light = LightTexture.FULL_BRIGHT;
-
-        Vector3f[] vertices = new Vector3f[4];
-
-        Vec3 tail = new Vec3(x, y, z).subtract(moveDir.scale(halfLength));
-        vertices[0] = new Vector3f(
-                (float)(tail.x - right.x * halfWidth),
-                (float)(tail.y - right.y * halfWidth),
-                (float)(tail.z - right.z * halfWidth)
-        );
-        vertices[1] = new Vector3f(
-                (float)(tail.x + right.x * halfWidth),
-                (float)(tail.y + right.y * halfWidth),
-                (float)(tail.z + right.z * halfWidth)
-        );
-
-        Vec3 head = new Vec3(x, y, z).add(moveDir.scale(halfLength));
-        vertices[2] = new Vector3f(
-                (float)(head.x + right.x * halfWidth),
-                (float)(head.y + right.y * halfWidth),
-                (float)(head.z + right.z * halfWidth)
-        );
-        vertices[3] = new Vector3f(
-                (float)(head.x - right.x * halfWidth),
-                (float)(head.y - right.y * halfWidth),
-                (float)(head.z - right.z * halfWidth)
-        );
-
-        buffer.addVertex(vertices[0].x(), vertices[0].y(), vertices[0].z())
-                .setUv(u0, v1)
-                .setColor(this.rCol, this.gCol, this.bCol, this.alpha)
-                .setLight(light);
-
-        buffer.addVertex(vertices[1].x(), vertices[1].y(), vertices[1].z())
-                .setUv(u0, v0)
-                .setColor(this.rCol, this.gCol, this.bCol, this.alpha)
-                .setLight(light);
-
-        buffer.addVertex(vertices[2].x(), vertices[2].y(), vertices[2].z())
-                .setUv(u1, v0)
-                .setColor(this.rCol, this.gCol, this.bCol, this.alpha)
-                .setLight(light);
-
-        buffer.addVertex(vertices[3].x(), vertices[3].y(), vertices[3].z())
-                .setUv(u1, v1)
-                .setColor(this.rCol, this.gCol, this.bCol, this.alpha)
-                .setLight(light);
-    }*/
 
     @Override
     protected int getLightCoords(float a) {

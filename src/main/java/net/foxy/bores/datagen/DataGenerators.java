@@ -55,7 +55,7 @@ public class DataGenerators {
                             );
                             bootstrap.register(
                                     ModRegistries.NETHERITE,
-                                    create("netherite", 18, 2031, blocks, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, new Vec3i(2, 2, 2))
+                                    create("netherite", 18, 2031, blocks, BlockTags.INCORRECT_FOR_NETHERITE_TOOL)
                             );
                         }
                 ),

@@ -6,7 +6,6 @@ import net.foxy.bores.base.ModParticles;
 import net.foxy.bores.base.ModSounds;
 import net.foxy.bores.data.BoreHead;
 import net.foxy.bores.event.ModClientEvents;
-//import net.foxy.bores.particle.spark.SparkParticle;
 import net.foxy.bores.particle.spark.SparkParticle;
 import net.foxy.bores.util.Utils;
 import net.minecraft.core.*;

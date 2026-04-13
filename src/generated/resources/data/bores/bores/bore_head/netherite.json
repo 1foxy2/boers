@@ -21,11 +21,6 @@
       "speed_per_tick": 0.1
     }
   ],
-  "radius": [
-    2,
-    2,
-    2
-  ],
   "texture": {
     "active": "bores:item/bore/netherite_bore_head",
     "idle": "bores:item/bore/netherite_bore_head_idle"

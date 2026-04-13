@@ -8,8 +8,6 @@ import net.minecraft.resources.Identifier;
 
 public class ModRegistries {
     public static final ResourceKey<Registry<BoreHead>> BORE_HEAD = ResourceKey.createRegistryKey(Utils.rl("bore_head"));
-    public static final ResourceKey<Registry<BoreHead>> OLD_BOER_HEAD =
-            ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("boers", "boer_head"));
 
     public static final ResourceKey<BoreHead> COPPER = ResourceKey.create(BORE_HEAD, Utils.rl("copper"));
     public static final ResourceKey<BoreHead> IRON = ResourceKey.create(BORE_HEAD, Utils.rl("iron"));
